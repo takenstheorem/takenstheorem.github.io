@@ -1,0 +1,50 @@
+[
+    {
+        "title": "De-Automated",
+        "url": "https://x.com/patternbase/status/1775768003860107751",
+        "image_url": "assorted_imgs/deaut_featured.jpg",
+        "image_alt": "Piece at the gallery",
+        "date": "2024-04-03",
+        "description": "De-Automated featured at #NFTNYC2024! Artwork exhibited in person at the Artists Village (North Javits, Hudson Yards, April 3-5, 2024)."
+    },
+    {
+        "title": "Chain antics featured in blog",
+        "url": "https://sceneswithsimon.com/p/act-2-is-about-context-not-conflict",
+        "image_url": "assorted_imgs/rothko.webp",
+        "image_alt": "Rothko on Pennies",
+        "date": "2024-09-22",
+        "description": "I scratched then fully restored a brilliant on-chain NFT by Yigit Duman: \"Rothko on Pennies\". See here for Yigit's closing notes about this project, notes about my restoral, and my thread here about first scratching the work and this thread about restoring it. This fun on-chain adventure also summarized in Simon de la Rouviere's blog."
+    },
+    {
+        "title": "Metrix featured",
+        "url": "https://function.gallery/",
+        "image_url": "project_imgs/metrix.png",
+        "image_alt": "Metrix visual",
+        "date": "2024-02-01",
+        "description": "Metrix ordinal project included as part of inaugural collection for The Function Gallery release, an artist-led initiative for art inscribed on Bitcoin. You can also visit my artist's channel on their Discord."
+    },
+    {
+        "title": "Perpetual featured in MASSAGE MAGAZINE",
+        "url": "https://twitter.com/themassagejp/status/1761923426506420530",
+        "image_url": "project_imgs/some_filters.jpg",
+        "image_alt": "Rhopalic poetry! Perpetual pieces.",
+        "date": "2024-02-25",
+        "description": "Perpetual featured in MASSAGE MAGAZINE based in Tokyo: \"Perpetualのコンセプトは非常に興味深く、日本語ではイサーリアムnaviで詳細が紹介されています。\""
+    },
+    {
+        "title": "Release party at imnotArt gallery in Chicago with Patternbase",
+        "url": "https://x.com/im_not_art/status/1696613691213639750",
+        "image_url": "assorted_imgs/imnotart.jpg",
+        "image_alt": "Release party at imnotArt gallery in Chicago with Patternbase",
+        "date": "2023-08-29",
+        "description": "Release party at imnotArt gallery in Chicago with Patternbase (scroll down here to see images from the show)."
+    },
+    {
+        "title": "The Mesh featured in JPG gallery in Paris",
+        "url": "https://twitter.com/______jpg______/status/1628832751955677186",
+        "image_url": "assorted_imgs/meshparis.jpeg",
+        "image_alt": "The Mesh project seen here in their installation, adapted from token updates with on-chain data.",
+        "date": "2023-02-24",
+        "description": "Featured in JPG's Value Flows physical exhibition at NFT Paris 2023. The Mesh project seen here in their installation, adapted from token updates with on-chain data."
+    }
+]

@@ -1,0 +1,100 @@
+[
+    {
+      "title": "Elusive Definitions: Lessons from “Computer Art” for “Cryptoart”",
+      "url": "https://takenstheorem.medium.com/elusive-definitions-lessons-from-computer-art-for-cryptoart-7a412ef2940d",
+      "image_url": "assorted_imgs/monaleo.jpg",
+      "image_alt": "Mona/Leo by Schwartz",
+      "date": "2025-01-06",
+      "description": "In the 1980s, a graduate student named Richard Lucas embarked on an intriguing project: He wanted to define “computer art.” His method? A systematic interview process called the Delphi technique, which involved polling leading artists like Monique Nahas and Lillian Schwartz and Frieder Nake and others."
+    },
+    {
+      "title": "Aesthetic Commodities through a Collective Filter",
+      "url": "https://takenstheorem.medium.com/aesthetic-commodities-through-a-collective-filter-105adfad2dfb",
+      "image_url": "assorted_imgs/beuys.webp",
+      "image_alt": "Beuys’s Information Action (1972); collaboration + estrangement",
+      "date": "2024-11-30",
+      "description": "Surveying relationships between cryptoart and performance art and introducing a data performance that involves creators and collectors as awkward product recommendations."
+    },
+    {
+      "title": "Creating, Destroying, and Restoring On-Chain Artwork",
+      "url": "https://takenstheorem.medium.com/creating-destroying-and-restoring-on-chain-artwork-d6f1d031a2d5",
+      "image_url": "assorted_imgs/rothko.webp",
+      "image_alt": "Rothko on Pennies",
+      "date": "2024-10-07",
+      "description": "This post is about an amazing NFT project on Ethereum called \"Rothko on Pennies\" and the events surrounding it -- including my own participation. This project and its provocations illustrate that the artistic character of a project goes well beyond just the instant glimpse of its visual form."
+    },
+    {
+      "title": "Ethereum's New Data Economy",
+      "url": "https://medium.com/etherscan-blog/ethereums-new-data-economy-78511cad22c2",
+      "image_url": "assorted_imgs/symbol.webp",
+      "image_alt": "Symbol 1 #96, owned by me",
+      "date": "2023-07-04",
+      "description": "Forthcoming mainnet upgrades suggest a future of incentivized data preservation and a shared responsibility to encode the past ... A bird's-eye view over the planned upgrades reveals that data is an important part of Ethereum's future. Or, put differently, the absence of data is an important part of that future."
+    },
+    {
+      "title": "An Exploratory Visual for Tracking Flow of Funds on Blockchain",
+      "url": "https://medium.com/etherscan-blog/an-exploratory-visual-for-tracking-flow-of-funds-on-blockchain-fbeba2a761f3",
+      "image_url": "assorted_imgs/visualization.jpg",
+      "image_alt": "FTX stackplot",
+      "date": "2023-01-13",
+      "description": "This rich data availability invites exploratory analyses and visualizations. I enjoy this realm of blockchain analysis, a kind of frontier domain. The availability of so many variables allows us to explore these new possibilities easily."
+    },
+    {
+      "title": "Pandemic Pieces",
+      "url": "https://takenstheorem.medium.com/pandemic-pieces-34aab5745370",
+      "image_url": "assorted_imgs/infection.jpg",
+      "image_alt": "Infection from Reflective Recursion showing pandemic concepts invading descriptions",
+      "date": "2022-08-15",
+      "description": "A virus, its pervasive influence, through artists and their works."
+    },
+    {
+      "title": "Coordination and Crypto Charity",
+      "url": "https://medium.com/etherscan-blog/coordination-and-crypto-charity-b91ec4993a48",
+      "image_url": "assorted_imgs/charity.jpg",
+      "image_alt": "Green nodes are Gitcoin donors giving widely; open nodes are recipients",
+      "date": "2022-04-12",
+      "description": "Because charities sometimes have public addresses, the blockchain can be mined for patterns of coordination. I assembled a modest dataset of 100,000 inputs to about 20 public addresses on Ethereum mainnet ... This on-chain record of donation reveals the power of coordination, its speed and efficiency, and its varying forms."
+    },
+    {
+      "title": "Souls of Immortal NFTs",
+      "url": "https://medium.com/etherscan-blog/souls-of-immortal-nfts-de212a840de5",
+      "image_url": "assorted_imgs/soulsimmortal.jpg",
+      "image_alt": "Souls of Immortal NFTs",
+      "date": "2022-02-03",
+      "description": "These are the so-called 'on-chain NFTs.' These NFTs are stored internally, directly inside the blockchain in some way. So they are immortal souls, preserved forever (or, for as long as their home ledger survives)."
+    },
+    {
+      "title": "I Still Don't Know the Artist",
+      "url": "https://takenstheorem.medium.com/i-still-dont-know-the-artist-e54904fef93a",
+      "image_url": "assorted_imgs/priestess.jpg",
+      "image_alt": "Priestess, mystery piece",
+      "date": "2021-12-17",
+      "description": "...my hunt for the identity of an artist who made a particular work called 'Priestess,' on KnownOrigin in 2018. Cryptoart leaves all kinds of traces, on traditional web platforms, but also in the cavernous depths of the chain. How do you leverage these sources of information to find an artist?"
+    },
+    {
+      "title": "Automatic, Spontaneous Things",
+      "url": "https://takenstheorem.medium.com/automatic-spontaneous-things-7cc2e1851b39",
+      "image_url": "assorted_imgs/hex6c.jpg",
+      "image_alt": "@hex6c piece",
+      "date": "2021-08-11",
+      "description": "This brief blog post is a tribute to this artist. It draws on a beautiful paradox of his work. It contains elements of automated precision, yet reflects spontaneous human creativity — automatic, spontaneous, alluring things."
+    },
+    {
+      "title": "Chain analysis studies",
+      "url": "https://takenstheorem.medium.com/weird-wednesdays-another-case-study-in-how-on-chain-applications-can-skew-coin-metrics-152494c17db2",
+      "image_url": "assorted_imgs/mystery.jpg",
+      "image_alt": "Some data of XLM addresses going wild",
+      "date": "2020-04-25",
+      "description": "Mysterious patterns appeared in the on-chain activity of $XLM, $LTC and $BCH. Analyzing on-chain data revealed that curious external software packages using these chains radically skewed their on-chain metrics."
+    },
+    {
+      "title": "What's in a name? Predicting ENS Domain Value from Multiple Features",
+      "url": "https://opensea.io/blog/articles/predicting-ens-domain-value",
+      "image_url": "assorted_imgs/ens.jpg",
+      "image_alt": "Cute winter sweater with price tag for blizard.eth",
+      "date": "2019-12-01",
+      "description": "In an interesting way, ENS is very quickly approximating economic dynamics in other domain services. This is revealed in various patterns of economic strategy (squatting, homoglyphs, etc.), along with the 'at-scale' product-market predictability."
+    }
+  ]
+  
+

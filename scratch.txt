@@ -1,0 +1,18 @@
+<h1>Takens Theorem</h1>
+    <p>
+      <!--Data. Display. Discourse.<br />
+      <a target="_blank" href="https://twitter.com/takenstheorem" style="text-decoration:none;color:white;">
+        <img src="assorted_imgs/x.svg" alt="𝕏" width="12" style="vertical-align: top; margin-left:5px; border: 0.1px solid #aaa; border-radius: 10%; color:white !important; padding:5px;">
+      </a>
+      <a target="_blank" href="http://takenstheorem.medium.com" style="text-decoration:none;color:white;">
+        <img src="assorted_imgs/medium.svg" alt="Medium" width="20" style="vertical-align: top; border: 0.1px solid #aaa; border-radius: 5%; margin-left:5px;">
+      </a>
+      <a target="_blank" href="https://warpcast.com/takenstheorem" style="text-decoration:none;color:white;">
+        <img src="assorted_imgs/wc.svg" alt="Warpcast" width="20" style="vertical-align: top; margin-left:5px;">
+      </a>
+      <a target="_blank" href="https://opensea.io/takenstheorem" style="text-decoration:none;color:white;">
+        <img src="assorted_imgs/opensea.svg" alt="OpenSea" width="20" style="vertical-align: top; margin-left:5px;">
+      </a>-->
+    </p>
+
+

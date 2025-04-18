@@ -1,0 +1,137 @@
+[
+    {
+        "title": "Curious Circuits",
+        "image_url": "circuits/1_sm.jpg",
+        "alt_text": "Curious Circuits",
+        "description": "The GENESIS wallets did not sit still. Connection quickly extended beyond the first distribution, activity clustered here and there, mixing ether into new places, new hubs, exchanges, mysterious places. \"Curious Circuits\" mines a history using visuals from raw chain data, millions of tidbits rendered as curious circuits.",
+        "date": "2025-04-13",
+        "tags": [{"issuance":"12"}],
+        "url": "https://opensea.io/collection/curious-circuits-by-takens-theorem"
+    },
+    {
+        "title": "RAW MATERIALS",
+        "image_url": "project_imgs/raw_materials.jpeg",
+        "alt_text": "Raw Materials",
+        "description": "The sense of time & composition is lost, only a kind of mental flow, represented by the colors of thoughts, scintillated into millions of mind pixels.",
+        "date": "2024-06-23",
+        "tags": [{"issuance":"~50"},{"note":"tezos"}],
+        "url": "https://objkt.com/collections/KT1MjzGA4PHQEEZN9YhiBL9eTNyNRf8zp5NX"
+    },
+    {
+        "title": "Perpetual",
+        "image_url": "project_imgs/rhops.png",
+        "alt_text": "Perpetual pieces, rhopalisms",
+        "description": "Creator and collectors are woven into a little machine. And unlike its patrons, that little machine lives forever.",
+        "date": "2024-01-01",
+        "tags": [{"issuance":"∞"},{"note":"on-chain"}],
+        "url": "https://github.com/takenstheorem/perpetual"
+    },
+    {
+        "title": "De-Automated",
+        "image_url": "project_imgs/de-aut.jpg",
+        "alt_text": "De-Automated visual example",
+        "description": "De-Automated is a new visual series about reclaiming human expression by Patternbase & Takens Theorem that delves into the realm of redefined automation and the fusion of human creativity and digital precision.",
+        "date": "2023-08-29",
+        "tags": [{"issuance":"48"},{"note":"physical piece redeemable"}],
+        "url": "https://www.patternbase.io/de-automated"
+    },
+    {
+        "title": "Identity_{i/j/k}",
+        "image_url": "project_imgs/identity.jpg",
+        "alt_text": "Identity_{i/j/k}",
+        "description": "Contribution to the G/L Space on SuperRare, expressing interconnections in an expanding concept of identity. The visuals go along with a wonderful and elaborate summary led by hex6l and Chiara Braidotti in a project that visualizes and introduces web3 concepts.",
+        "date": "2023-07-07",
+        "tags": [{"issuance":"3"},{"note":"1/1s"}],
+        "url": "https://cubiclearn.gitbook.io/dae/dae/g-l-space/identity"
+    },
+    {
+        "title": "Metrix",
+        "image_url": "project_imgs/metrix.png",
+        "alt_text": "Metrix",
+        "description": "Interactive project about the intrinsic aesthetics of data, expressed through blockchain and its metrics. \"Metrix\" visually encodes a numeric history revealed on Bitcoin's public blockchain.",
+        "date": "2023-03-19",
+        "tags": [{"issuance":"42"},{"note":"on-chain"},{"note":"interactive"},{"note":"bitcoin ordinals"}],
+        "url": "https://takenstheorem.github.io/metrix.html"
+    },
+    {
+        "title": "ourData",
+        "image_url": "project_imgs/ourdata.jpg",
+        "alt_text": "ourData",
+        "description": "An experimental, interactive project. Your mints, your actions on chain are collaborations with me. Our data determine the final piece. We raised almost 2 ETH for the Ahbap contract, supplying humanitarian relief after the earthquake in Turkey and Syria. A little study of the conceptual richness of just a bit of on-chain data.",
+        "date": "2023-02-12",
+        "tags": [{"issuance":"5"},{"note":"ERC-1155"}],
+        "url": "https://takenstheorem.medium.com/flows-of-support-charitable-nft-project-for-turkey-syria-disaster-relief-dd00c8f8ceb3"
+    },
+    {
+        "title": "New Home",
+        "image_url": "project_imgs/newhome.jpeg",
+        "alt_text": "New Home",
+        "description": "A new contract released on Manifold for the \"New Home of the Heart\" collection released on Sep. 12th, 2022. Coordinated and curated by Stateful Works, JPG, and Sofia Garcia, the collection commemorates and supports development on the Ethereum blockchain in conjunction with The Merge.",
+        "date": "2022-09-08",
+        "tags": [{"issuance":"3"},{"note":"1/1s"}],
+        "url": "https://takenstheorem.medium.com/new-visuals-for-a-new-home-e817ae50ae7a"
+    },
+    {
+        "title": "Reflective Recursion",
+        "image_url": "project_imgs/creation.png",
+        "alt_text": "Reflective Recursion",
+        "description": "Released on KnownOrigin before it left us. Themes of cryptoart communities through thousands of data points. Visualizations rendered directly from raw data with minimal transformation. \"Carved out of data: As much as possible, everything should be data driven. Only in rare cases did I depart from generating a visual directly from data, and use aesthetics untethered from it.\"",
+        "date": "2022-06-19",
+        "tags": [{"issuance":"12"}],
+        "url": "https://takenstheorem.medium.com/i-still-dont-know-the-artist-e54904fef93a"
+    },
+    {
+        "title": "layer_two",
+        "image_url": "project_imgs/layer_two.png",
+        "alt_text": "layer_two",
+        "description": "For collectors of the_coin to mint, and all can collect. Experimental \"second-order\" NFT: layer_two calls the_coin token's on-chain data to create new visualizations, little tapestries more complex and curious. layer_two tokens are also 100% on-chain, an expression of expanding, diversifying crypto ecosystems, built on top of each other, fusing into new forms.",
+        "date": "2022-05-16",
+        "tags": [{"issuance":"∞"},{"note":"on-chain"}],
+        "url": "https://takenstheorem.weebly.com/layer_two.html"
+    },
+    {
+        "title": "The Mesh",
+        "image_url": "project_imgs/mesh.png",
+        "alt_text": "The Mesh",
+        "description": "100% on-chain NFT project that visualizes the social connectivity intrinsic to blockchain data. Each visualization is called a \"node\", and displays some properties of its owner. But The Mesh is more than this. It's a fusion of a social network, a DAO and NFT to create a kind of integrated on-chain experience.",
+        "date": "2022-02-27",
+        "tags": [{"issuance":"72"},{"note":"on-chain"},{"note":"dynamic"},{"note":"interactive"}],
+        "url": "https://the-mesh.eth.limo/"
+    },
+    {
+        "title": "Indivisuals",
+        "image_url": "project_imgs/indivisuals.jpeg",
+        "alt_text": "Indivisuals",
+        "description": "ERC-721 contract for 1-of-1 JPEGs as small studies of various on-chain data. Pieces will be released across 2021 and 2022. Metadata stored on chain, and image field in metadata points to IPFS file of JPEG.",
+        "date": "2021-11-08",
+        "tags": [{"issuance":"~20"},{"note":"1/1s"}],
+        "url": "https://opensea.io/collection/indivisuals-by-takens-theorem"
+    },
+    {
+        "title": "Gaussian Timepieces",
+        "image_url": "project_imgs/gtp.svg",
+        "alt_text": "Gaussian Timepieces",
+        "description": "100% on-chain study of time and blockchain. Unique ERC-721 contract renders a \"timepiece\" that encapsulates stochastic representations of time on chain, along with visual representations of an owner's on-chain NFT collection, base fee, current blocks, and more. When timepieces cycle, their colors change.",
+        "date": "2021-09-12",
+        "tags": [{"issuance":"100"},{"note":"on-chain"},{"note":"dynamic"},{"note":"interactive"}],
+        "url": "https://takenstheorem.medium.com/gaussian-timepieces-9dc08cc8b344"
+    },
+    {
+        "title": "the_coin",
+        "image_url": "project_imgs/thecoin.svg",
+        "alt_text": "the_coin",
+        "description": "100% on-chain SVGs rendered by ERC-721 contract. Pieces are drawn from data or theory of Bitcoin, offering a visual representation of its core definition, history and possible future. Owners can interact with the contract via changeStyle() and alter the underlying CSS of their pieces, giving the original visual a \"base layer\" identity to be built upon.",
+        "date": "2022-06-24",
+        "tags": [{"issuance":"84"},{"note":"on-chain"},{"note":"dynamic"},{"note":"interactive"}],
+        "url": "https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
+    },
+    {
+        "title": "Ethstory",
+        "image_url": "project_imgs/ethstory.jpg",
+        "alt_text": "Ethstory",
+        "description": "110 pieces released on OpenSea's OPENSTORE token (ERC-1155). Owners had access to unlocked content on OS1 that includes links to IPFS files, including a vector-quality PDF representation that is encrypted with a password that only owners receive. Each piece includes a unique, individual PDF rendering encrypted with a unique password.",
+        "date": "2021-03-06",
+        "tags": [{"issuance":"110"},{"note":"ERC-1155"}],
+        "url": "https://ethstory.eth.limo/"
+    }
+]
