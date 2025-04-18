@@ -19,37 +19,6 @@
       color: #fff;
     }
 
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      padding: 1rem 2rem;
-      background: rgba(18, 18, 18, 0.85);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-      border-bottom: 1px solid #333;
-    }
-
-    .navbar .logo {
-      font-weight: 600;
-      font-size: 1.2rem;
-    }
-
-    .navbar nav a {
-      color: #f0f0f0;
-      margin-left: 1.5rem;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .navbar nav a:hover {
-      color: #00bcd4;
-    }
-
     .hero {
       padding: 6rem 2rem 2rem;
       text-align: center;
@@ -99,7 +68,6 @@
     .panel {
       position: relative;
       overflow: hidden;
-      cursor: pointer;
       transition: transform 0.3s ease;
     }
 
@@ -119,6 +87,7 @@
       color: #fff;
       padding: 1rem;
       opacity: 0;
+      cursor: pointer;
       transform: translateY(100%);
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
@@ -188,6 +157,21 @@
 
   <section class="hero">
     <h1>Takens Theorem</h1>
+    <span style="font-size: 0.8em; color: #ccc;">
+      Data. Display. Discourse. 
+      <a target="_blank" href="https://twitter.com/takenstheorem" style="text-decoration:none;color:white;">
+        X
+      </a>
+      <a target="_blank" href="http://takenstheorem.medium.com" style="text-decoration:none;color:white;">
+        MD
+      </a>
+      <a target="_blank" href="https://warpcast.com/takenstheorem" style="text-decoration:none;color:white;">
+        FC
+      </a>
+      <a target="_blank" href="https://opensea.io/takenstheorem" style="text-decoration:none;color:white;">
+        OS
+      </a>
+    </span>
   </section>
 
   <section id="bio" class="gallery wide">

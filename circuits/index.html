@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Takens Theorem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wide {
+            grid-column: span 2;
+        }
+
+        .very-wide {
+            grid-column: 1 / -1;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .bio {
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .panel img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .panel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .panel:hover .panel-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-content h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .panel-content p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .article-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .text-date {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+        }
+
+        .panel:hover .article-date {
+            opacity: 1;
+        }
+
+        #featured_txt {
+            line-height: 1.5;
+        }
+
+        .project_badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 0.65em;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero">
+        <h1>Curious Circuits</h1>
+        <p>Collector Site</p>
+        <span style="font-size: 0.8em; color: #ccc;">
+            <a target="_blank" href="../" style="text-decoration:none;color:white;">
+                Takens <span>🏠</span>
+            </a>
+            |
+            <a target="_blank" href="https://opensea.io/collection/curious-circuits-by-takens-theorem"
+                style="text-decoration:none;color:white;">
+                Curious Circuits on OpenSea
+            </a>
+        </span>
+    </section>
+
+    <div class="gallery">
+        <div class="very-wide">
+            <p><img src="1_sm_half.jpg" style="width:100%;"></p>
+            <p><b>Mass circuits.</b> The GENESIS wallets did not sit still. Connection quickly extended beyond the first
+                distribution, activity clustered here and there, mixing ether into new places, new hubs, exchanges,
+                mysterious places. "Curious Circuits" mines a history using visuals from raw chain data, millions of
+                tidbits rendered as curious circuits. Issuance: There will be 12 curious circuits. JPEGs stored on
+                Arweave, brief
+                descriptions in each piece. First collectors receive an interactive interface allowing the owner to
+                explore the early ecosystem's circuitry.
+            </p>
+        </div>
+    </div>
+
+    <div class="gallery">
+        <div class="panel very-wide">
+            <h2>Series 1</h2>
+            Tokens 1-4 visualize the circuitry of the first million blocks on Ethereum. Drawing from raw transaction
+            data, lines and colors and markers indicate the clustering, growing activity.
+        </div>
+        <div class="panel very-wide">
+            <p><img src="1_sm.jpg" style="width:100%;"></p>
+            <a href="https://arweave.net/5y5eEOcx-5ZY92uttLb53v0gfaJ2c_lbajkE8QCDlS0" target="_blank">
+                <div class="panel-content">
+                    <p>Token #1: 0xd4e56</p>
+                    <p>
+                        Blocks 0 - 400,000<br />
+                        Lines ~ txs<br />
+                        Color ~ calls & codes<br />
+                        Media: 7,500 x 7,500 JPEG ~14MB<br />
+                        Full media on Arweave<br />
+                        First collectors &rarr; interactive interface (DM)
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="panel very-wide">
+            <p><img src="2_sm.jpg" style="width:100%;"></p>
+            <a href="https://arweave.net/kaj2A7x9_lLyYmzu4iyI77BBcGwjriaWnqT7cTv0f18" target="_blank">
+                <div class="panel-content">
+                    <p>Token #2: 0x13ced</p>
+                    <p>
+                        Blocks 200,000 - 600,000<br />
+                        Lines ~ txs<br />
+                        Color ~ calls & codes<br />
+                        Media: 7,500 x 7,500 JPEG ~10MB<br />
+                        Full media on Arweave<br />
+                        First collectors &rarr; interactive interface (DM)
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="panel very-wide">
+            <p><img src="3_sm.jpg" style="width:100%;"></p>
+            <a href="https://arweave.net/M4Rv49kcc7TMNjOdoj81gaZkGsV01dFsl2gAGMPybo8" target="_blank">
+                <div class="panel-content">
+                    <p>Token #3: 0x5d156</p>
+                    <p>
+                        Blocks 400,000 - 800,000<br />
+                        Lines ~ txs<br />
+                        Color ~ calls & codes<br />
+                        Media: 7,500 x 7,500 JPEG ~12MB<br />
+                        Full media on Arweave<br />
+                        First collectors &rarr; interactive interface (DM)
+                    </p>
+                </div>
+            </a>
+        </div>
+        <div class="panel very-wide">
+            <p><img src="4_sm.jpg" style="width:100%;"></p>
+            <a href="https://arweave.net/dvAquIhvDjHBp6324hVaiybBJaDkVmiSGuy4VCMFIpU" target="_blank">
+                <div class="panel-content">
+                    <p>Token #4: 0x068c1</p>
+                    <p>
+                        Blocks 600,000 - 1,000,000<br />
+                        Lines ~ txs<br />
+                        Color ~ calls & codes<br />
+                        Media: 7,500 x 7,500 JPEG ~15MB<br />
+                        Full media on Arweave<br />
+                        First collectors &rarr; interactive interface (DM)
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="gallery">
+        <div class="panel very-wide">
+            <h2>Series 2</h2>
+            Tokens 5-8 will present curious pointed moments of the maturing sociotechnical space. Hacks. Mania. Obfuscation. And much else. Return here when they're ready, early May.
+        </div>
+    </div>
+
+</body>
