@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Takens Theorem | Ethstory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wide {
+            grid-column: span 2;
+            /* Span two columns */
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .bio {
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .panel img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .panel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .panel:hover .panel-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-content h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .panel-content p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .article-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .text-date {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+        }
+
+        .panel:hover .article-date {
+            opacity: 1;
+        }
+
+        #featured_txt {
+            line-height: 1.5;
+        }
+
+        .project_badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 0.65em;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero">
+        <h1>Ethstory</h1>
+        <p>A Visual History of Ethereum in Data</p>
+        <span style="font-size: 0.8em; color: #ccc;">
+            <a target="_blank" href="../" style="text-decoration:none;color:white;">
+                Takens <span>🏠</span>
+            </a>
+            |
+            <a target="_blank" href="https://opensea.io/collection/ethstory" style="text-decoration:none;color:white;">
+                Ethstory on OpenSea
+            </a>
+        </span>
+    </section>
+
+    <div class="gallery">
+        <div class="very-wide">
+            <p><img src="deposits.jpg" style="width:100%;"></p>
+            <p>
+                <em>"In the last few months, there has been a great amount of interest into the area of using
+                    Bitcoin-like
+                    blockchains - the mechanism that allows for the entire world to agree on the state of a public
+                    ownership
+                    database - for more than just money."</em>
+                <br>— Vitalik Buterin, 2013
+            </p>
+        </div>
+    </div>
+
+    <div class="gallery">
+        <div class="very-wide">
+
+            <p>Ethstory was a data visualization project released in early 2021. It used network and other diagrams to
+                depict major themes and events in the history of Ethereum. Visualizations were released as NFTs, and
+                draw inspiration from many exciting artists in this space who use crypto themes to underpin their work.
+                Scarcity was associated with depth in time — the earlier the depicted events, the rarer the items. On
+                OpenSea, owners (and only owners) could unlock a link to a password-protected vector-quality PDF,
+                permitting
+                printing, zooming, etc. to any resolution. Ethstory was a charitable project.
+            </p>
+
+            <p>
+                All initial auction proceeds went to public goods initiatives and mainly 501(c)(3) organizations such as
+                GiveDirectly,
+                GiveWell, EFF, Wild Tomorrow Foundation, Heifer International, SENS Research Foundation and more. <a
+                    href="https://ethstory.eth.limo/" target="_blank">See here</a> for a list.
+            </p>
+
+            <p class="panel wide" style="font-size: 1.2em; text-align: center;">
+                Expansive detail, discussion here:<br />
+                <span style="font-size: 1.8em;"><a href="https://ethstory.eth.limo/"
+                        target="_blank">ethstory.eth.limo</a></span>
+            </p>
+
+            <p>
+                <b>Update (4/21/2025):</b> OpenSea 2 will no longer support "unlockable content." Owners who have not
+                downloaded
+                their PDFs and password yet can revert to "OS1" in the left menu and download the necessary information
+                under "unlockable content" on their token's page.
+            </p>
+
+            <div class="gallery">
+                <div class="panel wide">
+                    <img src="items/11.jpg">
+                    <div class="panel-content">
+                        <h3>WPYP Chromosome</h3>
+                        <p>Series 1, Token 1</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/12.jpg">
+                    <div class="panel-content">
+                        <h3>Inject BTC</h3>
+                        <p>Series 1, Token 2</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/13.jpg">
+                    <div class="panel-content">
+                        <h3>Bridging BTC</h3>
+                        <p>Series 1, Token 3</p>
+                    </div>
+                </div>
+                <div class="panel wide">
+                    <img src="items/14.jpg">
+                    <div class="panel-content">
+                        <h3>Birth</h3>
+                        <p>Series 1, Token 4</p>
+                    </div>
+                </div>
+        
+                <div class="panel">
+                    <img src="items/21.jpg">
+                    <div class="panel-content">
+                        <h3>Clients</h3>
+                        <p>Series 2, Token 1</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/22.jpg">
+                    <div class="panel-content">
+                        <h3>Big Bang</h3>
+                        <p>Series 2, Token 2</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/23.jpg">
+                    <div class="panel-content">
+                        <h3>Reentrancy</h3>
+                        <p>Series 2, Token 3</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/24.jpg">
+                    <div class="panel-content">
+                        <h3>Hardest Fork</h3>
+                        <p>Series 2, Token 4</p>
+                    </div>
+                </div>
+        
+                <div class="panel">
+                    <img src="items/31.jpg">
+                    <div class="panel-content">
+                        <h3>Proliferation</h3>
+                        <p>Series 3, Token 1</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/32.jpg">
+                    <div class="panel-content">
+                        <h3>Mania</h3>
+                        <p>Series 3, Token 2</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/33.jpg">
+                    <div class="panel-content">
+                        <h3>Swapcircuit</h3>
+                        <p>Series 3, Token 3</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/34.jpg">
+                    <div class="panel-content">
+                        <h3>The Open Sea</h3>
+                        <p>Series 3, Token 4</p>
+                    </div>
+                </div>
+        
+                <div class="panel">
+                    <img src="items/41.jpg">
+                    <div class="panel-content">
+                        <h3>TCP/IP</h3>
+                        <p>Series 4, Token 1</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/42.jpg">
+                    <div class="panel-content">
+                        <h3>The Metaverse</h3>
+                        <p>Series 4, Token 2</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/43.jpg">
+                    <div class="panel-content">
+                        <h3>64 Shards</h3>
+                        <p>Series 4, Token 3</p>
+                    </div>
+                </div>
+                <div class="panel">
+                    <img src="items/44.jpg">
+                    <div class="panel-content">
+                        <h3>Deposits</h3>
+                        <p>Series 4, Token 4</p>
+                    </div>
+                </div>
+        
+            </div>
+
+        
+            <p>
+            <ul>
+                <li>Full project page is located at <a href="https://ethstory.eth.limo/"
+                        target="_blank">ethstory.eth.limo</a></li>
+                <li>A quick introduction to the project can be found on these two blog posts:</li>
+                <ul>
+                    <li><a href="https://andrewsteinwold.substack.com/p/visualizing-ethereums-history"
+                            target="_blank">Wrap up</a> post about Ethstory on <a href="https://x.com/AndrewSteinwold"
+                            target="_blank">Andrew Steinwold</a>'s Zima Red</li>
+                    <li><a href="https://medium.com/coinmonks/ethereum-history-in-5-minutes-ca3aa7061397"
+                            target="_blank">Ethereum History in 5 Minutes, with Visuals</a> (Syndicated on <a
+                            href="https://medium.com/coinmonks" target="_blank">Coin Monks</a>)</li>
+                </ul>
+            </ul>
+            </p>
+
+            <p>
+                Owners have access to a vector-quality PDF in OS1's unlockable content for their assets, though see the
+                note above that it is important to secure this unlockable content. For all interested, the following is
+                a list of the JPG version of each piece. Ethstory detailed 4 phases of Ethereum's history:
+
+            <ul>
+                <li>Series 1: 36PrZ (Conception)</li>
+                <ul>
+                    <li>Original 1: <a href="https://ipfs.io/ipfs/QmdAgx7jDNiynDHXLRe5PSXYMM87VgfuWTQ4SpYk9P4oyS/"
+                            target="_blank">WPYP Chromosome</a> (4 Editions)</li>
+                    <li>Original 2: <a href="https://ipfs.io/ipfs/QmdZK66cns522koeV7Yaq8v3C12UU6CNUQqBoFU9odiHGG/"
+                            target="_blank">Inject BTC</a> (5 Editions)</li>
+                    <li>Original 3: <a href="https://ipfs.io/ipfs/Qma4uhuDmAx9Ue6yj2CPJApcGoHwMTM7zqgkJw5ecbKavs/"
+                            target="_blank">Bridging BTC</a> (6 Editions)</li>
+                    <li>Original 4: <a href="https://ipfs.io/ipfs/QmTRGwMH15mPTe8KhwRq2yyHxAxx45Tax1JmW4BGgLxcNy/"
+                            target="_blank">Birth</a> (7 Editions)</li>
+                </ul>
+                <li>Series 2: 0xBB9bc (Branching)</li>
+                <ul>
+                    <li>Original 1: <a href="https://ipfs.io/ipfs/QmX7u5f8S6Xe8BFE8krUUq3Y8uGWoC9BrSGGsSqN9QH3LV/"
+                            target="_blank">Clients</a> (5 Editions)</li>
+                    <li>Original 2: <a href="https://ipfs.io/ipfs/QmUUf2WpiTE2SepGbyLz9n8o2HCkiNHwme48yKU46n8WT5/"
+                            target="_blank">Big Bang</a> (6 Editions)</li>
+                    <li>Original 3: <a href="https://ipfs.io/ipfs/QmXVmoEbdSmAfnNnerv9f3enhB5L9FjRbdmfRYAR5LGRwf/"
+                            target="_blank">Reentrancy</a> (7 Editions)</li>
+                    <li>Original 4: <a href="https://ipfs.io/ipfs/QmdctJ5gxGnC23WPAMJaXnodC6pYiGJGWQgBdBySHaJyZK/"
+                            target="_blank">Hardest Fork</a> (8 Editions)</li>
+                </ul>
+                <li>Series 3: 0x06012 (Complexifying)</li>
+                <ul>
+                    <li>Original 1: <a href="https://ipfs.io/ipfs/QmbBCycMmkJsXAo8josBNvKpoPVY14vg6qTSXjnWuuUvF7/"
+                            target="_blank">Proliferation</a> (6 Editions)</li>
+                    <li>Original 2: <a href="https://ipfs.io/ipfs/QmVArDXuFhC6ELzP4UHQXw16YXeZfxgQ5U4a6XpMMeU1ed/"
+                            target="_blank">Mania</a> (7 Editions)</li>
+                    <li>Original 3: <a href="https://ipfs.io/ipfs/QmZyw1tmnh2v9mbHRUTSEFnd7rehvz3ASJJeSw3kmEKGj4/"
+                            target="_blank">Swapcircuit</a> (8 Editions)</li>
+                    <li>Original 4: <a href="https://ipfs.io/ipfs/QmZRk1cKFx8m15ZyYcUF8uEv5DbGZg17d6XZALv1prbCEu/"
+                            target="_blank">The Open Sea</a> (8 Editions)</li>
+                </ul>
+                <li>Series 4: 0x00000 (Transforming)</li>
+                <ul>
+                    <li>Original 1: <a href="https://ipfs.io/ipfs/QmV5htnbhN6B1ixbkUwL8U5MjaNfF6t1Wp8G2wa4YeSGqd/"
+                            target="_blank">TCP/IP</a> (7 Editions)</li>
+                    <li>Original 2: <a href="https://ipfs.io/ipfs/QmRpm3HMsY77T7xNEcZGXp4abTBnBQWFboUVjPqkFT74t7/"
+                            target="_blank">The Metaverse</a> (8 Editions)</li>
+                    <li>Original 3: <a href="https://ipfs.io/ipfs/QmZ4acSP9dceoxjkfHsRm1uQnaDfYhqYjgkyekvq448NzL/"
+                            target="_blank">64 Shards</a> (9 Editions)</li>
+                    <li>Original 4: <a href="https://ipfs.io/ipfs/QmVp57uytE8n3hDgHQyYvKCbMFgBMTfwr5zFg7wKFt1wVJ/"
+                            target="_blank">Deposits</a> (9 Editions)</li>
+                </ul>
+            </ul>
+
+            </p>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

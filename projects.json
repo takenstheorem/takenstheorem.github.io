@@ -132,6 +132,6 @@
         "description": "110 pieces released on OpenSea's OPENSTORE token (ERC-1155). Owners had access to unlocked content on OS1 that includes links to IPFS files, including a vector-quality PDF representation that is encrypted with a password that only owners receive. Each piece includes a unique, individual PDF rendering encrypted with a unique password.",
         "date": "2021-03-06",
         "tags": [{"issuance":"110"},{"note":"ERC-1155"}],
-        "url": "https://ethstory.eth.limo/"
+        "url": "ethstory"
     }
 ]
