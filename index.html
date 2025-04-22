@@ -223,7 +223,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-      function populateDiv(id) {
+      function populateDiv(id, toBlank = false) {
         fetch(id + '.json')
           .then(response => response.json())
           .then(data => {
@@ -240,7 +240,9 @@
 
               const aLink = document.createElement('a');
               aLink.href = article.url;
-              aLink.target = '_blank';
+              if (toBlank) {
+                aLink.target = '_blank';
+              }
 
               const panelContent = document.createElement('div');
               panelContent.classList.add('panel-content');
@@ -329,9 +331,9 @@
           });
       }
 
-      populateDiv('writings');
-      populateDiv('projects');
-      populateDiv('featured');
+      populateDiv('writings', true);
+      populateDiv('projects', false);
+      populateDiv('featured', true);
 
     });
 
