@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Takens Theorem | Curious Circuits</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wide {
+            grid-column: span 2;
+            /* Span two columns */
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .bio {
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .panel img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .panel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 1rem;
+            opacity: 0;
+            cursor: pointer;
+            transform: translateY(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .panel:hover .panel-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-content h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .panel-content p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .article-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .text-date {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+        }
+
+        .panel:hover .article-date {
+            opacity: 1;
+        }
+
+        #featured_txt {
+            line-height: 1.5;
+            padding-left: 6.5em;
+            text-indent: -6.1em;
+        }
+
+        .project_badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 0.65em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="pw"><input type="password" id="pw_input" /><button>go</button></div>
+    <div id="hidden_div" style="display: none;">
+        <section class="hero">
+            <h1>MATERIALS OF ABUNDANCE<span style="color: #3344ff;font-size:0.6em;"> ꜩ</span></h1>
+            <p>Collector Site</p>
+            <span style="font-size: 0.8em; color: #ccc;">
+                <a href="../" style="text-decoration:none;color:white;">
+                    Takens <span>🏠</span>
+                </a>
+                <br />
+                <a href="https://objkt.com/collections/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ" target="_blank"
+                    style="text-decoration:none;color:white;">
+                    Abundance</a> (by ZeroContract Artist Studio)
+                <br />
+                <a target="_blank" href="javascript:void(0);" style="text-decoration:none;color:white;">
+                    MATERIALS OF ABUNDANCE</a> on objtk.com
+
+            </span>
+        </section>
+
+        <div class="gallery">
+            <div class="very-wide">
+
+                <p><b>To the artists</b>: I like <a href="https://x.com/takenstheorem" target="_blank">data visuals</a>,
+                    especially curious ones. Last year I worked with <a href="https://x.com/ernestoasch"
+                        target="_blank">Ernesto Asch</a> on <a
+                        href="https://objkt.com/collections/KT1MjzGA4PHQEEZN9YhiBL9eTNyNRf8zp5NX" target="_blank">RAW
+                        MATERIALS</a>. The
+                    challenge was to use the artist as a source of data for new visuals. I extracted the millions of
+                    pixels from his works, and rendered new, curious forms. Artists into their raw materials. Mind
+                    pixels.
+                </p>
+            </div>
+        </div>
+
+        <div class="gallery">
+            <div class="very-wide">
+                <p><a href="https://x.com/JestemZero/status/1908820132585255423" target="_blank">ZeroContract</a>
+                    presents a new challenge with its <a
+                        href="https://objkt.com/collections/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ"
+                        target="_blank">inaugural "Abundance" series</a>. There are 28
+                    contributions from distinct artists. I extracted their millions of pixels, and fused them in pairs
+                    into 14 new forms. I chose forms expressing the idea of abundance. Using the pixels of each pair of
+                    pieces, I reconstituted images of the awe-inspiring abundance of
+                    nature, industry, and the sometimes maladaptive consequences of their combination.
+                </p>
+                <p>
+                    <img src="preview.png" style="width: 100%;" />
+                </p>
+                <p>I tried to stay true to the original works, fusing them meaningfully under the selected images. This
+                    was challenging sometimes. Artists in "Abundance" sometimes used very simple palettes, other times
+                    more opulent and complex. When fusing them, I tried to use these differences as a resource,
+                    sometimes in coherence, sometimes as contrast. I hope you find them intriguing or beautiful.
+                </p>
+                <p>The pieces below are ordered from nature to industry to psychology. Almost like a natural evolution
+                    of a mass universe whose abundance cannot be fully fathomed but sometimes felt.
+                </p>
+                <p style="font-size: 0.8em; color: #ccc;">Reconstituted base images from Library of Congress 'free to
+                    use' and Wikimedia's public domain images. I do not link to them. The viewer can interpret the
+                    reconstituted images through their own lens. Each piece is a 500 x 500 JPG. The JPG has the form of
+                    these public domain images of 'abundance,' but their pixels derive from the pixels of two
+                    "Abundance" pieces.
+                </p>
+            </div>
+        </div>
+
+        <div class="gallery">
+            <div class="very-wide">
+                <p><b><a href="https://objkt.com/collections/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ" target="_blank">Artists</a></b>: 0xEdwoods, 369, aria ☰ ~, ate8a, AUSTIN, bimo arts, Dither, Ernesto ASCH, fabianospeziari, fragmenꜩ, GreenGinger, jams2blues, JestemZero, Kyle Flemmer, Let's Not Know Us, LFG, Malicious Sheep, my 3y3 👁️👁️ , neuromancer, Oblivion Fields, oddlavox, OFF, PaxRomanArt, scottx, skulltakes, Stalomir, Tornado Rodriguez, tz1ccube</p>
+            </div>
+        </div>
+
+        <section class="hero">
+            <h2>Pieces (n = 14)</h2>
+        </section>
+
+        <section id="pieces" class="gallery">
+        </section>
+
+    </div>
+
+    <div id="zoom" style="display: none;"></div>
+    <script>
+
+        function zPad(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function addBadge(f) {
+            const badge = document.createElement('span');
+            badge.classList.add('project_badge');
+            badge.textContent = f;
+            badge.style.cursor = 'pointer';
+            badge.addEventListener('mouseover', () => {
+                img.style.display = 'block';
+            });
+            badge.addEventListener('mouseout', () => {
+                img.style.display = 'none';
+            });
+            badge.addEventListener('click', () => {
+                window.open(`https://objkt.com/tokens/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ/${f}`, '_blank');
+            });
+
+            const id = 28 - f;
+            const img = document.createElement('img');
+            img.src = `abundance-images/image_${zPad(id)}.jpg`;
+            img.style.height = '100px';
+            img.style.width = '100px';
+            img.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+            img.style.float = 'right';
+            img.style.marginTop = '-10px';
+            img.style.display = 'none';
+            img.style.borderRadius = '50%';
+            badge.appendChild(img);
+
+            return badge;
+        }
+
+        function zoomImg(img) {
+            console.log(img);
+
+            const main = document.getElementById('hidden_div');
+            main.style.opacity = '.1';
+
+            const zoom = document.getElementById('zoom');
+            zoom.style.backgroundImage = `url('${img}')`;
+            zoom.style.backgroundSize = 'contain';
+            zoom.style.backgroundPosition = 'center';
+            zoom.style.backgroundRepeat = 'no-repeat';
+            zoom.style.width = '100%';
+            zoom.style.height = '100%';
+            zoom.style.position = 'fixed';
+            zoom.style.top = '0';
+            zoom.style.left = '0';
+            zoom.style.zIndex = '1000';
+            zoom.style.cursor = 'pointer';
+            zoom.style.display = 'block';
+            zoom.addEventListener('click', () => {
+                zoom.style.display = 'none';
+                main.style.opacity = '1';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            function populateDiv(id, toBlank = false) {
+                fetch(id + '.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const container = document.getElementById(id);
+
+                        data.forEach((article, index) => {
+                            const panel = document.createElement('div');
+                            panel.classList.add('panel');
+
+                            const img = document.createElement('img');
+                            img.src = article.img;
+                            img.alt = article.nm;
+                            /* give panel glowing background shadow */
+                            panel.style.boxShadow = '0 0 100px rgba(255, 255, 255, 0.3)';
+                            //panel.style.border = '1px solid #333';                            
+                            panel.appendChild(img);
+
+                            const badgeContainer = document.createElement('div');
+                            badgeContainer.style.position = 'absolute';
+                            badgeContainer.style.top = '2px';
+                            badgeContainer.style.right = '2px';
+
+                            badgeContainer.appendChild(addBadge(article.f1));
+                            badgeContainer.appendChild(addBadge(article.f2));
+
+                            const panelContent = document.createElement('div');
+                            panelContent.classList.add('panel-content');
+
+                            const h3 = document.createElement('h3');
+                            h3.textContent = article.nm;
+                            panelContent.appendChild(h3);
+
+                            const p = document.createElement('p');
+                            p.textContent = article.desc;
+                            panelContent.appendChild(p);
+
+                            panelContent.addEventListener('click', () => {
+                                zoomImg(article.img[0]);
+                            });
+                            panel.appendChild(panelContent);
+                            panel.appendChild(badgeContainer);
+
+                            container.appendChild(panel);
+                        });
+                    });
+            }
+
+            populateDiv('pieces', true);
+
+        });
+
+        const pw_input = document.getElementById('pw_input');
+        const hidden_div = document.getElementById('hidden_div');
+        const button = document.querySelector('button');
+        const pw_div = document.getElementById('pw');
+        button.addEventListener('click', () => {
+            if (pw_input.value === 'abundantresource') {
+                hidden_div.style.display = 'block';
+                pw_div.style.display = 'none';
+            } else {
+                hidden_div.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
