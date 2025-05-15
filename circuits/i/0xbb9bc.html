@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curious Circuits | 0xbb9bc</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .more-container {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+    }
+
+    .dots {
+      cursor: pointer;
+      font-size: 1em;
+      user-select: none;
+      padding: 5px;
+    }
+
+    .modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 400px;
+      height: 100vh;
+      background-color: #222;
+      border: 1px solid #222;
+      color: #aaa;
+      font-size: 0.7em;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translateX(-320px);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .modal a {
+      color: #aaa;
+    }
+
+    .more-container:hover .modal {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="output_container" style="position:absolute; top:0px; left:0px;">
+    <div id="output" style="position:relative; width:100%; height:100%;"></div>
+  </div>
+
+  <div class="more-container">
+    <div class="modal">
+      <p><a href="../">back to project page</a></p>
+      <p><b>Curious Circuits</b></p>
+      <p>Token #6: 0xbb9bc</p>
+      <p>Txs/calls represented ≥ 1,500,000</p>
+      <p>Centered dates: <a href="https://etherscan.io/block/1599884" target="_blank">5/28/16</a>, <a
+          href="https://etherscan.io/block/1721462" target="_blank">6/17/16</a></p>
+      <p>Palette: mixed, busy</p>
+      <p>Tens of thousands of lines approximate millions of ledger actions, colors represent some clustering including
+        major action types (calls) and activity of some hubs. Mouseover to get some links for prominent addresses. This
+        is an experimental interface for collectors, it renders approximately for position of links, but the rendering
+        is vector quality SVG, feel free to zoom in.</p>
+      <p style="color: #bbb;">Data and rendering are approximate but they are fully based on raw transaction data
+        gathered from Blockchair under force-directed layout algorithm in ccNetViz and rendered, styled with p5.js by
+        Takens. Circuitry algorithm uses jointed edge paths, algorithm by Takens.</p>
+      <button onclick="forceDownloadSVG('0xbb9bc.svg')">Download SVG</button><br />
+      warnings:<br /> SVG is very large file<br />SVG strips mouseover links
+    </div>
+    <div class="dots">...</div>
+  </div>
+
+  <script src="pako.min.js"></script>
+  <script src="p5.svg.js"></script>
+  <script src="p5.min.js"></script>
+
+  <script>
+    fetch('6.content.gz')
+      .then(response => response.arrayBuffer())
+      .then(data => {
+        const decompressed = pako.ungzip(new Uint8Array(data), { to: 'string' });
+        document.getElementById('output').innerHTML = decompressed;
+        let svg = document.querySelector('svg');
+        // svg.attributes.viewBox.value = "200 300 400 450";
+        svg.attributes.viewBox.value = "200 300 460 460";
+        /* loop through a elements that are in #output and reposition */ 
+        const links = document.querySelectorAll('#output a');
+        links.forEach(link => {
+          let x = parseFloat(link.style.left);
+          let y = parseFloat(link.style.top);
+          x = (x - 200) * 2;
+          y = (y - 300) * 2;
+          // link.style.position = 'relative';
+          link.style.left = x + 'px';
+          link.style.top = y + 'px';
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching or decompressing the file:', error);
+      });
+
+    function forceDownloadSVG(filename = 'image.svg') {
+      const svg = document.querySelector('svg');
+      const clone = svg.cloneNode(true);
+
+      const scripts = clone.querySelectorAll('script');
+      scripts.forEach(script => script.remove());
+
+      const serializer = new XMLSerializer();
+      const svgString = '<?xml version="1.0" encoding="UTF-8"?>\n' + serializer.serializeToString(clone);
+
+      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+  </script>
+</body>
+
+</html>
