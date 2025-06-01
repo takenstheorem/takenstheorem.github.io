@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Takens Theorem | Reflective Recursion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wide {
+            grid-column: span 2;
+            /* Span two columns */
+        }
+
+        .gallery,
+        .gallery-2w {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .gallery-2w {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .bio {
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-2w {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .panel img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .panel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .panel:hover .panel-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-content h3 {
+            margin: 0 0 0.75rem;
+            font-size: 1rem;
+        }
+
+        .panel-content p {
+            margin: 0;
+            font-size: 0.7rem;
+            color: #ccc;
+        }
+
+        .article-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .text-date {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+        }
+
+        .panel:hover .article-date {
+            opacity: 1;
+        }
+
+        #featured_txt {
+            line-height: 1.5;
+        }
+
+        .project_badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 0.65em;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero">
+        <h1>Reflective Recursion</h1>
+        <p>Recursive visual study of an ecosystem.</p>
+        <span style="font-size: 0.8em; color: #ccc;">
+            <a href="../" style="text-decoration:none;color:white;">
+                Takens <span>🏠</span>
+            </a>
+        </span>
+    </section>
+
+    <!--
+
+https://opensea.io/collection/known-origin?traits=[{%22traitType%22:%22artist%22,%22values%22:[%22takenstheorem%22]}]
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/13705000
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/13711000
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/13957001
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14256001
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/13957000
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14169001
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14173000
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14173001
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14256002
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14169000
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14173002
+https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14256000
+https://medium.com/p/cd3040fbc7ff/edit
+
+-->
+    <div class="gallery">
+        <div class="very-wide">
+            <p><img src="spectrum.jpg" style="width:100%;"></p>
+        </div>
+    </div>
+
+    <div class="gallery">
+        <div class="very-wide">
+            <p>
+                In 2022, I released 6 expressive data visualizations on KnownOrigin. It was a "recursive" project: visualizations of the platform itself. The visuals encapsulate some themes by analyzing thousands of data points drawn from on-chain data on KnownOrigin's own contracts. Each is shown below with a <a href="https://opensea.io/collection/known-origin?traits=[{%22traitType%22:%22artist%22,%22values%22:[%22takenstheorem%22]}]&sortBy=created_date" target="_blank">link to OpenSea</a> because KnownOrigin, sadly, closed. I called the series "Reflective Recursion," echoing the core idea of self-referentiality: The pieces are based on the data from the platform on which the pieces themselves were released. Each asset is about 15,000<sup>2</sup> JPEG with a lot of fine detail: zoom for some proof of data.
+            </p>
+            <p>
+                Why KnownOrigin? It illustrated that human communities, even highly technologized ones, remain richly social and thus organic in emergence and complexity. Our sociotechnical spaces remain very human ones, at least for now. In studying KnownOrigin and analyzing its data, some qualities of the platform concept struck me as worthy of some focus. A living, evolving cryptoart platform, recursive in more ways than one, meshwork of artists, collectors, coders, and curators.
+            </p>
+        </div>
+    </div>
+
+    <div class="gallery-2w">
+        <div>
+            <div class="panel"><img src="creation.jpg" alt="Creation">
+                <div style="position: absolute; top: 2px; right: 2px;"><span class="project_badge"
+                        title="issuance: 1">1</span></div><a
+                    href="https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/13705000"
+                    target="_blank">
+                    <div class="panel-content">
+                        <h3>Creation</h3>
+                        <p>An art platform's smart contract is crafted by coders. Its contents grow through community.
+                            Materials: Sample of edition data from KnownOrigin (V2 & V3, 2018-2022) that includes 500
+                            artists and over 15,000 editions based on artists that have contributed 10 or more editions.
+                            Details: Rows are artist wallets, and dots are creation of a new edition over time (greener
+                            dots represent earlier pieces by artist). Column lines are the dates at which artists appear
+                            in this sample, projected with some time warping to render orderly rise of editions over
+                            time. Key visible in low-contrast labels at margins. JPEG, 15,000 x 15,000 pixels, 37MB.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div>
+            <div class="panel"><img src="scaffold.jpg" alt="Scaffold">
+                <div style="position: absolute; top: 2px; right: 2px;"><span class="project_badge"
+                        title="issuance: 1">1</span></div><a
+                    href="https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/13711000"
+                    target="_blank">
+                    <div class="panel-content">
+                        <h3>Scaffold</h3>
+                        <p>Artist community, a "scaffold" for emergent culture. Materials: Sample of transfer data of
+                            KnownOrigin pieces (V2 & V3, 2018-2022) of creators who at one time collected other artists.
+                            Details: Each thin column represents a creator or artist whose work was sold or transferred,
+                            and each thin row reflects an artist or creator who collected them at some point in
+                            KnownOrigin's transfer history. Dots represent the number of transfers for each pair, the
+                            larger the more tokens once collected. At the margins, depth of the key represents the
+                            extent of collecting and collected, ordered by wallet addresses. 745 creator collectors
+                            (rows) of 862 artists (columns). JPEG, 15,000 x 15,000 pixels, 46MB.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div>
+            <div class="panel"><img src="collectors.jpg" alt="Collectors">
+                <div style="position: absolute; top: 2px; right: 2px;"><span class="project_badge"
+                        title="issuance: 2">2</span></div><a
+                    href="https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/13957001"
+                    target="_blank">
+                    <div class="panel-content">
+                        <h3>Collectors</h3>
+                        <p>Taste yields emergent infrastructure. Materials: Sample of transfer data on KnownOrigin (V2 &
+                            V3, 2018-2022) of major collector wallets (who are not themselves artists or creators in the
+                            data sample). Details: Lines connect collector and artist wallets. Major collector wallets
+                            are hubs on an interlocking network, where lines represent collecting an artist at one time.
+                            Collectors on network ordered to generate a cavernous meshwork and emerging edifice. 64
+                            collectors of over 700 creators (more than 2,000 connections). Key visible near node center
+                            in low contrast. JPEG, 15,000 x 15,000 pixels, 48MB.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div>
+            <div class="panel"><img src="spectrum.jpg" alt="Collectors">
+                <div style="position: absolute; top: 2px; right: 2px;"><span class="project_badge"
+                        title="issuance: 2">2</span></div><a
+                    href="https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14169001"
+                    target="_blank">
+                    <div class="panel-content">
+                        <h3>Spectrum</h3>
+                        <p>Semantic spectra; conceptual mixtures of many minds. Materials: Sample of edition data from
+                            KnownOrigin (V2 & V3, 2018-2022) with sentiment dictionary applied to edition title and
+                            description. Details: Each thin row reflects the sentiment density of one edition's title
+                            and description. Rows are sorted chronologically top to bottom. Colors along a row reflect
+                            an edition's concentration of different sentiments (e.g., blue = positive, red = negative,
+                            etc.; low contrast key in bottom margin with example edition ID). Subsample of over 10,000
+                            editions represented, selected based on threshold of description length. JPEG, 15,000 x
+                            15,000 pixels, 33MB.
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div>
+            <div class="panel"><img src="infection.jpg" alt="Infection">
+                <div style="position: absolute; top: 2px; right: 2px;"><span class="project_badge"
+                        title="issuance: 3">3</span></div><a
+                    href="https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14173000"
+                    target="_blank">
+                    <div class="panel-content">
+                        <h3>Infection</h3>
+                        <p>Resonance in a shared upheaval. Materials: Sample of edition data from KnownOrigin (V2 & V3,
+                            2018-2022) filtered to almost 200 artists who use COVID-related concepts in at least one
+                            edition description (virus, COVID, coronavirus, lockdown, etc.). Details: Data are presented
+                            on sinusoids, with each wave line representing one artist's wallet. Dots are editions
+                            released, and the horizontal extent in white represents an artist's time on platform. Four
+                            sine cycles are used, representing KnownOrigin's approximately 4-year history. Red triangles
+                            are editions with virus-related concepts in their description. A spike of these is visible
+                            at the date corresponding to spring 2020, and this "infection" is visualized across various
+                            waves of creators up to spring 2022. JPEG, 15,000 x 15,000 pixels, 20MB.
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div>
+            <div class="panel"><img src="sunrise.jpg" alt="Sunrise">
+                <div style="position: absolute; top: 2px; right: 2px;"><span class="project_badge"
+                        title="issuance: 3">3</span></div><a
+                    href="https://opensea.io/item/ethereum/0xabb3738f04dc2ec20f4ae4462c3d069d02ae045b/14256001"
+                    target="_blank">
+                    <div class="panel-content">
+                        <h3>Sunrise</h3>
+                        <p>All the artists; sunrise, drenched in motes of light, each unique and complex. Materials:
+                            Sample of edition data on KnownOrigin (V2 & V3, 2018-2022), containing over 3,500 artist
+                            names from over 25,000 editions. Details: Artist name assigned a color based on first
+                            edition date using RGB intensities that run from yellow to blue by dampening the
+                            intermediate (green) intensity. Artist names are ordered chronologically as sequences of
+                            characters from left to right, bottom to top. Plot composed of over 250,000 such letters.
+                            Emerging from this is a sunrise-like tapestry, from early artists at the bottom, to new
+                            artists entering KnownOrigin in reds and blues at the top. Artist names are repeated when
+                            they create a new edition. JPEG, 15,000 x 15,000 pixels, 29MB.
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hero">
+        <h2>Further Notes</h2>
+    </div>
+
+    <div class="gallery">
+        <div class="very-wide">
+            <p>
+                <a href="https://medium.com/knownorigin/knownorigin-can-we-enhance-digital-asset-ownership-6a7d78d85fae" target="_blank">KnownOrigin</a> was built in spring 2018. Its birthplace is where modern computing was born, in Manchester, UK. KnownOrigin's founders recruited a group of diverse artists and their works, many of them in Manchester too. These contributors helped grow its earliest community. On KnownOrigin's first contract, dozens of artists produced just over 300 works. Those contributing artists are familiar names in cryptoart: Stina Jones, hex6c, Hackatao, oficinastk, Alina Loseva, Aktiv Protesk, Martin Lukas Ostachowski and more.
+            </p>
+
+            <p>
+                An interesting feature of KnownOrigin's history was its robust social community. This community was like a "scaffold" helping to build cryptoart culture. Artists supported artists. In the first year or two of KnownOrigin's existence, about a third of all art collecting was done by other artists. Some prominentartist collectors are shown on the right in "Creation" above (with their wallet's line indicated). In a general pattern of exchange, artists created and listed their works for modest sums, sometimes just $5. And often, other artists would devour these listings. Artists like Mattia Cuttini and Stina Jones and WGMeets and others were voracious collectors on early KnownOrigin.
+            </p>
+
+            <p>
+                Importantly: This community scaffold also involved major collectors. They include ModeratsArt, AAbranches, C34, WhaleShark, Redlioneye and many more including KnownOrigin's founders.
+            </p>
+
+            <p>
+                Despite the retirement of KnownOrigin itself, their scaffold still stands. Evidence for this is readily found on social media. You can follow Moxarra Gonzalez, artplusbrad, Bard Ionson, miss al simpson, Ernesto Asch and others. They share works in progress, and sometimes they descend into each other's threads to comment, encourage. You can also attend the weekly <a href="https://medium.com/r/?url=https%3A%2F%2Ftwitter.com%2FtheWIPmeetup" target="_blank">TheWIPMeetup</a>. Amazingly, this weekly event has been held in the nascent metaverse mostly uninterrupted for many years. Some early KnownOrigin artists attend regularly with many others.
+            </p>
+
+            <p>
+                In late 2021, the MoCA "Cryptoart Revolution" event in France brought many of these artists together to celebrate these early days (some maybe meeting for the first time in person!). Organized by BnoiitC, the event illustrates the staying power of this community. Many KnownOrigin, SuperRare and <a href="https://medium.com/r/?url=https%3A%2F%2Ftwitter.com%2FJessy_Jeanne%2Fstatus%2F1470886040416174083" target="_blank">other early cryptoartists</a> attended.
+            </p>
+
+            <p>For more of this history, check out <a href="https://takenstheorem.medium.com/i-still-dont-know-the-artist-e54904fef93a" target="_blank">my blog post here</a> which includes an interface to explore old KOv1 pieces. Also see the many interesting discussions led by <a href="https://x.com/MLOdotArt" target="_blank">Martin Lukas Ostachowski</a>.</p>
+
+        </div>
+    </div>
+
+    <div class="gallery">
+        <div class="very-wide">
+            <p><img src="cryptoartrev.jpg" style="width:100%;"></p>
+        </div>
+    </div>
+
+</body>
+
+</html>

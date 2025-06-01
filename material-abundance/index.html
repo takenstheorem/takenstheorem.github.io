@@ -156,8 +156,7 @@
 </head>
 
 <body>
-    <div id="pw"><input type="password" id="pw_input" /><button>go</button></div>
-    <div id="hidden_div" style="display: none;">
+    <div id="main_div">
         <section class="hero">
             <h1>MATERIALS OF ABUNDANCE<span style="color: #3344ff;font-size:0.6em;"> ꜩ</span></h1>
             <p>Collector Site</p>
@@ -178,25 +177,19 @@
 
         <div class="gallery">
             <div class="very-wide">
-
-                <p><b>To the artists</b>: I like <a href="https://x.com/takenstheorem" target="_blank">data visuals</a>,
-                    especially curious ones. Last year I worked with <a href="https://x.com/ernestoasch"
-                        target="_blank">Ernesto Asch</a> on <a
-                        href="https://objkt.com/collections/KT1MjzGA4PHQEEZN9YhiBL9eTNyNRf8zp5NX" target="_blank">RAW
+                <p>Last year, in summer 2024, I worked with <a href="https://x.com/ernestoasch" target="_blank">Ernesto
+                        Asch</a> on <a href="https://objkt.com/collections/KT1MjzGA4PHQEEZN9YhiBL9eTNyNRf8zp5NX"
+                        target="_blank">RAW
                         MATERIALS</a>. The
-                    challenge was to use the artist as a source of data for new visuals. I extracted the millions of
-                    pixels from his works, and rendered new, curious forms. Artists into their raw materials. Mind
+                    challenge was to use the artist as a source of data for new visuals. I extracted the
+                    millions of
+                    pixels from his works, and rendered <a href="https://objkt.com/tokens/KT1MjzGA4PHQEEZN9YhiBL9eTNyNRf8zp5NX/8" target="_blank">new, curious forms</a>. Artists into their raw materials. Mind
                     pixels.
                 </p>
-            </div>
-        </div>
-
-        <div class="gallery">
-            <div class="very-wide">
                 <p><a href="https://x.com/JestemZero/status/1908820132585255423" target="_blank">ZeroContract</a>
                     presents a new challenge with its <a
                         href="https://objkt.com/collections/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ"
-                        target="_blank">inaugural "Abundance" series</a>. There are 28
+                        target="_blank">inaugural "Abundance" series</a>. There were 28
                     contributions from distinct artists. I extracted their millions of pixels, and fused them in pairs
                     into 14 new forms. I chose forms expressing the idea of abundance. Using the pixels of each pair of
                     pieces, I reconstituted images of the awe-inspiring abundance of
@@ -206,9 +199,11 @@
                     <img src="preview.png" style="width: 100%;" />
                 </p>
                 <p>I tried to stay true to the original works, fusing them meaningfully under the selected images. This
-                    was challenging sometimes. Artists in "Abundance" sometimes used very simple palettes, other times
+                    was challenging sometimes. Artists in "Abundance" sometimes used strikingly simple palettes, other times
                     more opulent and complex. When fusing them, I tried to use these differences as a resource,
-                    sometimes in coherence, sometimes as contrast. Some reconstitutions have insufficient raw material, they have bands of color that can indicate absence -- or saturation. I hope you find them intriguing or beautiful.
+                    sometimes in coherence, sometimes as contrast. Some reconstitutions have insufficient raw material,
+                    they have bands of color that can indicate absence -- or saturation. I hope you find them intriguing
+                    or even beautiful.
                 </p>
                 <p>The pieces below are ordered from nature to industry to psychology. Almost like a natural evolution
                     of a mass universe whose abundance cannot be fully fathomed but sometimes felt.
@@ -224,12 +219,17 @@
 
         <div class="gallery">
             <div class="very-wide">
-                <p><b><a href="https://objkt.com/collections/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ" target="_blank">Artists</a></b>: 0xEdwoods, 369, aria ☰ ~, ate8a, AUSTIN, bimo arts, Dither, Ernesto ASCH, fabianospeziari, fragmenꜩ, GreenGinger, jams2blues, JestemZero, Kyle Flemmer, Let's Not Know Us, LFG, Malicious Sheep, my 3y3 👁️👁️ , neuromancer, Oblivion Fields, oddlavox, OFF, PaxRomanArt, scottx, skulltakes, Stalomir, Tornado Rodriguez, tz1ccube</p>
+                <p><b><a href="https://objkt.com/collections/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ"
+                            target="_blank">Artists</a></b>: 0xEdwoods, 369, aria ☰ ~, ate8a, AUSTIN, bimo arts, Dither,
+                    Ernesto ASCH, fabianospeziari, fragmenꜩ, GreenGinger, jams2blues, JestemZero, Kyle Flemmer, Let's
+                    Not Know Us, LFG, Malicious Sheep, my 3y3 👁️👁️ , neuromancer, Oblivion Fields, oddlavox, OFF,
+                    PaxRomanArt, scottx, skulltakes, Stalomir, Tornado Rodriguez, tz1ccube</p>
             </div>
         </div>
 
         <section class="hero">
             <h2>Pieces (n = 14)</h2>
+            <p>1,000<sup>2</sup> JPGs fully encoded on-chain on Tezos.</p>
         </section>
 
         <section id="pieces" class="gallery">
@@ -277,7 +277,7 @@
         function zoomImg(img) {
             console.log(img);
 
-            const main = document.getElementById('hidden_div');
+            const main = document.getElementById('main_div');
             main.style.opacity = '.1';
 
             const zoom = document.getElementById('zoom');
@@ -353,18 +353,6 @@
 
         });
 
-        const pw_input = document.getElementById('pw_input');
-        const hidden_div = document.getElementById('hidden_div');
-        const button = document.querySelector('button');
-        const pw_div = document.getElementById('pw');
-        button.addEventListener('click', () => {
-            if (pw_input.value === 'abundantresource') {
-                hidden_div.style.display = 'block';
-                pw_div.style.display = 'none';
-            } else {
-                hidden_div.style.display = 'none';
-            }
-        });
     </script>
 </body>
 
