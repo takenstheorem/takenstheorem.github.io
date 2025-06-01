@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Takens Theorem | Reflective Recursion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wide {
+            grid-column: span 2;
+            /* Span two columns */
+        }
+
+        .gallery,
+        .gallery-2w {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .gallery-2w {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .bio {
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-2w {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .panel img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .panel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .panel:hover .panel-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-content h3 {
+            margin: 0 0 0.75rem;
+            font-size: 1rem;
+        }
+
+        .panel-content p {
+            margin: 0;
+            font-size: 0.7rem;
+            color: #ccc;
+        }
+
+        .article-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .text-date {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+        }
+
+        .panel:hover .article-date {
+            opacity: 1;
+        }
+
+        #featured_txt {
+            line-height: 1.5;
+        }
+
+        .project_badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 0.65em;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero">
+        <h1>SEIZED</h1>
+        <p>"MEMES OF PRODUCTION, SEIZED"</p>
+        <span style="font-size: 0.8em; color: #ccc;">
+            <a href="../" style="text-decoration:none;color:white;">
+                Takens <span>🏠</span>
+            </a> | <a href="./" target="_blank" style="text-decoration:none;color:white;">
+                6529 data waves
+            </a>
+            </a> | <a href="https://6529.io/takenstheorem" target="_blank" style="text-decoration:none;color:white;">
+                6529.io
+            </a>
+        </span>
+    </section>
+
+    <div class="gallery">
+        <div class="very-wide">
+            <p>
+                I extracted the first 288 meme cards of the amazing social, conceptual community of 6529.io. I then used
+                the pixels of each card to create a 12x24 grid. The grid renders a message. Memes seized. This "rememe"
+                is inspired by prior project "<a href="https://x.com/takenstheorem/status/1790567583655092675"
+                    target="_blank">RAW MATERIALS</a>" that treats artists as a raw source of data. Pixels extracted,
+                reused to my own purpose, mind pixels blended into new ideas. Mouseover below for the meme card ID.
+                Click to head to 6529.io to view the meme card.
+            </p>
+            <p>
+                This piece is a 5000x2600 pixel JPG. Zoom to see subtle features of the image showing how I've
+                rearranged some of the pixels from that card. See examples of the grid below the asset. Mouseover for
+                notes.
+            </p>
+
+        </div>
+    </div>
+
+    <div style="width:100%;">
+        <div style="padding:20px;">
+            <button onclick="openFullscreen()">&nearr;</button><br /><br />
+            <img src="seized_composed.jpg" style="width:100%;" onclick="getImageClick(event)"
+                onmouseover="showMemeIdTooltip(event)" onmousemove="showMemeIdTooltip(event)"
+                onmouseout="hideMemeIdTooltip()">
+            <span id="meme_id_tooltip" style="position: fixed;
+                       top: 0;
+                       left: 0;
+                       background-color: #333;
+                       color: #fff;
+                       padding: 5px 10px;
+                       border-radius: 5px;
+                       display: none;
+                       pointer-events: none;
+                       transform: translate(-50%, -100%);
+                       will-change: transform;
+                       transition: transform 0.1s ease-out;
+                       z-index: 1000;
+                       font-family: monospace;
+                       font-size: 14px;
+                       white-space: nowrap;">
+            </span>
+        </div>
+    </div>
+
+    <div class="gallery-2w">
+        <div class="panel"><img src="101.webp" alt="Card #101">
+            <div style="position: absolute; top: 2px; right: 2px;"></div><a
+                href="https://6529.io/the-memes/101?focus=live" target="_blank">
+                <div class="panel-content">
+                    <h3>Card #101</h3>
+                    <p>WAGMI: Legacy by Lord Jamie V. Shill.</p>
+                </div>
+            </a>
+        </div>
+        <div class="panel"><img src="zoom1.jpg" alt="Zoom of card 101">
+            <div style="position: absolute; top: 2px; right: 2px;"></div><a
+                href="https://6529.io/the-memes/101?focus=live" target="_blank">
+                <div class="panel-content">
+                    <h3>Zoom of card #101</h3>
+                    <p>Artist's pixels are extracted from the piece and sampled to render that corresponding cell of the
+                        broader message.</p>
+                </div>
+            </a>
+        </div>       
+        <div class="panel"><img src="61.webp" alt="Card #61">
+            <div style="position: absolute; top: 2px; right: 2px;"></div><a
+                href="https://6529.io/the-memes/61?focus=live" target="_blank">
+                <div class="panel-content">
+                    <h3>Card #61</h3>
+                    <p>survive at all cost by tjo</p>
+                </div>
+            </a>
+        </div> 
+        <div class="panel"><img src="zoom2.jpg" alt="Zoom of card 61">
+            <div style="position: absolute; top: 2px; right: 2px;"></div><a
+                href="https://6529.io/the-memes/61?focus=live" target="_blank">
+                <div class="panel-content">
+                    <h3>Zoom of card #61</h3>
+                    <p>Artist's pixels are extracted from the piece and sampled to render that corresponding cell of the
+                        broader message.</p>
+                </div>
+            </a>
+        </div>         
+    </div>
+
+    <script>
+        // Cache DOM elements and state
+        let lastMemeId = null;
+        let lastX = null;
+        let lastY = null;
+        const tooltip = document.getElementById('meme_id_tooltip');
+
+        function openFullscreen() {
+            window.open('seized_composed.jpg', '_blank');
+        }
+        function getImageClick(e) {
+            const img = e.target;
+            const rect = img.getBoundingClientRect();
+
+            // Calculate scaling factors
+            const scaleX = img.naturalWidth / rect.width;
+            const scaleY = img.naturalHeight / rect.height;
+
+            // Get click position relative to the image and scale to natural dimensions
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+
+            // Grid dimensions (12 rows x 24 columns)
+            const nrows = 12;
+            const ncols = 24;
+
+            // Calculate cell dimensions
+            const cellWidth = img.naturalWidth / ncols;
+            const cellHeight = img.naturalHeight / nrows;
+
+            // Calculate which cell was clicked (0-based)
+            const col = Math.min(Math.floor(x / cellWidth), ncols - 1);
+            const row = Math.min(Math.floor(y / cellHeight), nrows - 1);
+
+            // Calculate 1-based ID (top-to-bottom, then left-to-right)
+            const meme_id = (col * nrows) + row + 1;
+
+            window.open(`https://6529.io/the-memes/${meme_id}?focus=live`, '_blank');
+        }
+        function showMemeIdTooltip(e) {
+            const img = e.target;
+            const rect = img.getBoundingClientRect();
+
+            // Only update if mouse moved significantly (5px threshold)
+            if (lastX !== null && lastY !== null &&
+                Math.abs(e.clientX - lastX) < 5 &&
+                Math.abs(e.clientY - lastY) < 5) {
+                return;
+            }
+            lastX = e.clientX;
+            lastY = e.clientY;
+
+            const scaleX = img.naturalWidth / rect.width;
+            const scaleY = img.naturalHeight / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            const nrows = 12, ncols = 24;
+            const cellWidth = img.naturalWidth / ncols;
+            const cellHeight = img.naturalHeight / nrows;
+            const col = Math.min(Math.floor(x / cellWidth), ncols - 1);
+            const row = Math.min(Math.floor(y / cellHeight), nrows - 1);
+            const meme_id = (col * nrows) + row + 1;
+
+            // Only update DOM if value changed
+            if (meme_id !== lastMemeId) {
+                tooltip.textContent = `#${meme_id}`;
+                lastMemeId = meme_id;
+            }
+
+            // Position the tooltip with transform for better performance
+            tooltip.style.transform = `translate(${e.clientX}px, ${e.clientY - 10}px)`;
+            tooltip.style.display = 'block';
+        }
+
+        function hideMemeIdTooltip() {
+            tooltip.style.display = 'none';
+            lastX = null;
+            lastY = null;
+        }
+    </script>
+</body>
+
+</html>
