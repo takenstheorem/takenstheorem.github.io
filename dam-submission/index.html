@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Takens Theorem | DAM Submission</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wide {
+            grid-column: span 2;
+            /* Span two columns */
+        }
+
+        .gallery,
+        .gallery-2w {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .gallery-2w {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .bio {
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-2w {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .panel video {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+        
+        .video-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        /* Standard video controls styling */
+        video {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+        
+        /* Hide controls by default, show on hover */
+        video::-webkit-media-controls {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .video-container:hover video::-webkit-media-controls {
+            opacity: 1;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .modal-video {
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .panel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .panel:hover .panel-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-content h3 {
+            margin: 0 0 0.75rem;
+            font-size: 1rem;
+        }
+
+        .panel-content p {
+            margin: 0;
+            font-size: 0.7rem;
+            color: #ccc;
+        }
+
+        .article-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .text-date {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+        }
+
+        .panel:hover .article-date {
+            opacity: 1;
+        }
+
+        #featured_txt {
+            line-height: 1.5;
+        }
+
+        .project_badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 0.65em;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero">
+        <h1>Attentional Dynamics</h1>
+        <span style="font-size: 0.8em; color: #ccc;">
+            <a href="../" style="text-decoration:none;color:white;">
+                Takens <span>🏠</span>
+            </a>
+        </span>
+    </section>
+
+    <div class="gallery-2w">
+        <div>
+            <div class="panel">
+                <div class="video-container">
+                    <video id="video1" width="100%" height="350" loop muted autoplay controls>
+                        <source src="version_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <!-- Modal for fullscreen video -->
+                    <div id="version1-modal" class="modal" onclick="closeModal('version1-modal')">
+                        <button class="close-modal" onclick="event.stopPropagation(); closeModal('version1-modal')">×</button>
+                        <div class="modal-content" onclick="event.stopPropagation()">
+                            <video class="modal-video" controls loop>
+                                <source src="version_1.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+                <div style="position: absolute; top: 2px; right: 2px;"></div>
+                <div class="panel-content">
+                </div>
+            </div>
+            <h3>Version 1</h3>
+            <p>Date visible in crisp rendering of the dynamic word cloud. Format MP4, 53 seconds, size 1000 x 1000 ~19MB. Originally created fall 2021, never minted.</p>
+        </div>
+        <div>
+            <div class="panel">
+                <div class="video-container">
+                    <video id="video2" width="100%" height="350" loop muted autoplay controls>
+                        <source src="version_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <!-- Modal for fullscreen video -->
+                    <div id="version2-modal" class="modal" onclick="closeModal('version2-modal')">
+                        <button class="close-modal" onclick="event.stopPropagation(); closeModal('version2-modal')">×</button>
+                        <div class="modal-content" onclick="event.stopPropagation()">
+                            <video class="modal-video" controls loop>
+                                <source src="version_2.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+                <div style="position: absolute; top: 2px; right: 2px;"></div>
+                <div class="panel-content">
+                </div>
+            </div>
+            <h3>Version 2</h3>
+            <p>Designed to highlight the chaos in the last few seconds enhanced by the compression chosen for this rendering along with the colors too: burnout. Format MP4, 75 seconds, size 1000 x 1000 ~14MB. Originally created fall 2021, never minted.</p>
+        </div>
+    </div>
+
+    <div class="gallery">
+        <div class="very-wide">
+            <h2>Artwork Description</h2>
+            <p>
+                 Made in 2021 with sampling of OpenSea historical data. This was just a draft at the time exploring the history of NFTs on Ethereum. The visualization is a dynamic word cloud. Each date is rendered with the names of prominent NFT projects, font size proportional to trading volume each day from 2018 to late 2021, from the kitties to the on-chain text SVGs. Slow, suddenly, suddenlier. These visual dynamics intrigued me. They highlight our space's tendency then and still to focus like an attentional flock on a concentrated set of winners. And around these winners, a frantic expansion of the space, others seeking a slice of that attention. This pattern is not unique to crypto. Such attentional dynamics seem natural to socioeconomic systems. Crypto reflects them and makes it easy to measure them. I never contemplated minting back when I created this, but looking back, the way it "burns out" in the last few seconds also expresses how the market could feel. I submit this animation as-is: It derives directly from those feelings then, feelings probably shared by many at the time.
+            </p>
+            <p>Submitted to <a href="https://x.com/theDAMmuseum" target="_blank">THE DAM GENESIS</a></p>
+        </div>
+    </div>    
+
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                // Play the video in the modal
+                const video = modal.querySelector('video');
+                if (video) {
+                    video.currentTime = 0;
+                    video.play().catch(e => console.log('Video play failed:', e));
+                }
+                // Pause the original video
+                const originalVideo = document.querySelector(`.video-container video:not(.${modalId} video)`);
+                if (originalVideo) originalVideo.pause();
+            }
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                // Pause the video in the modal
+                const video = modal.querySelector('video');
+                if (video) video.pause();
+            }
+        }
+        
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    closeModal(modal.id);
+                });
+            }
+        });
+        
+        // Add click-to-play/pause functionality
+        document.querySelectorAll('.video-container video').forEach(video => {
+            video.addEventListener('click', function() {
+                if (this.paused) {
+                    this.play();
+                } else {
+                    this.pause();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
