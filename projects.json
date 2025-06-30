@@ -1,5 +1,23 @@
 [
     {
+        "title": "Materials of Abundance",
+        "image_url": "material-abundance/complete/volcano.jpg",
+        "image_alt": "Materials of Abundance",
+        "description": "Pixels extracted, fused into new forms. Homage to abundance. Fully on-chain Tezos project.",
+        "date": "2025-06-30",
+        "tags": [{"issuance":"392"},{"note":"tezos"},{"note":"on-chain"}],
+        "url": "https://takenstheorem.github.io/material-abundance"
+    },
+    {
+        "title": "Attentional Dynamics",
+        "image_url": "project_imgs/attentional_dynamics.png",
+        "image_alt": "Attentional Dynamics, DAM Submission",
+        "description": "This was just a draft at the time exploring the history of NFTs on Ethereum. Submitted to the DAM GENESIS Collection. I submit this animation as-is: It derives directly from those feelings then, feelings probably shared by many at the time.",
+        "date": "2025-06-01",
+        "tags": [{"issuance":"2"}],
+        "url": "https://takenstheorem.github.io/dam-submission"
+    },    
+    {
         "title": "Curious Circuits",
         "image_url": "circuits/1_sm.jpg",
         "image_alt": "Curious Circuits",

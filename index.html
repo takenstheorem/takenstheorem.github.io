@@ -314,7 +314,7 @@
               panel.appendChild(badgeContainer);
 
               const articleDateString = article.date;
-              const articleDate = new Date(articleDateString);
+              const articleDate = new Date(articleDateString + 'T12:00:00');
               const formattedDate = articleDate.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
