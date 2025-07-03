@@ -169,12 +169,53 @@
                     style="text-decoration:none;color:white;">
                     Abundance</a> (by ZeroContract Artist Studio)
                 <br />
-                <a target="_blank" href="https://objkt.com/collections/KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy?sort=timestamp:asc" style="text-decoration:none;color:white;">
+                <a target="_blank"
+                    href="https://objkt.com/collections/KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy?sort=timestamp:asc"
+                    style="text-decoration:none;color:white;">
                     MATERIALS OF ABUNDANCE</a> on objtk.com<br />
-                    <em>Listings begin July 1st 9AM NYC time</em>
+                <em>Listings begin July 1st 9AM NYC time</em>
 
             </span>
         </section>
+
+        <script>
+
+            const contractAddress = "KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy";
+            function hexToUtf8(hexString) {
+                // Remove any non-hex characters
+                const hex = hexString.replace(/[^0-9a-fA-F]/g, '');
+
+                // Convert hex to bytes
+                const bytes = new Uint8Array(hex.length / 2);
+                for (let i = 0; i < hex.length; i += 2) {
+                    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+                }
+
+                // Decode as UTF-8
+                return new TextDecoder().decode(bytes);
+            }
+
+            async function getContractStorage() {
+                try {
+                    // https://api.tzkt.io/v1/contracts/KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy/bigmaps/token_metadata/keys/1
+                    const response = await fetch(`https://api.tzkt.io/v1/contracts/${contractAddress}/bigmaps/token_metadata/keys/0`);
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const storage = await response.json();
+                    console.log(hexToUtf8(storage.value.token_info.name));
+
+                    const storageString = JSON.stringify(storage); // Store to a string
+                    console.log("Contract storage:", storageString);
+
+                    return storageString;
+                } catch (error) {
+                    console.error("Failed to fetch contract storage:", error);
+                }
+            }
+            getContractStorage();
+        </script>
+
 
         <div class="gallery">
             <div class="very-wide">
@@ -184,7 +225,9 @@
                         MATERIALS</a>. The
                     challenge was to use the artist as a source of data for new visuals. I extracted the
                     millions of
-                    pixels from his works, and rendered <a href="https://objkt.com/tokens/KT1MjzGA4PHQEEZN9YhiBL9eTNyNRf8zp5NX/8" target="_blank">new, curious forms</a>. Artists into their raw materials. Mind
+                    pixels from his works, and rendered <a
+                        href="https://objkt.com/tokens/KT1MjzGA4PHQEEZN9YhiBL9eTNyNRf8zp5NX/8" target="_blank">new,
+                        curious forms</a>. Artists into their raw materials. Mind
                     pixels.
                 </p>
                 <p><a href="https://x.com/JestemZero/status/1908820132585255423" target="_blank">ZeroContract</a>
@@ -199,8 +242,9 @@
                 <p>
                     <img src="preview.png" style="width: 100%;" />
                 </p>
-                <p>I tried to stay true to the original works, fusing them meaningfully under the selected images. This
-                    was challenging sometimes. Artists in "Abundance" sometimes used strikingly simple palettes, other times
+                <p><em>Does meaning inhere in raw materials?</em> I tried to stay true to the original works, fusing them meaningfully under the selected images. This
+                    was challenging sometimes. Artists in "Abundance" sometimes used strikingly simple palettes, other
+                    times
                     more opulent and complex. When fusing them, I tried to use these differences as a resource,
                     sometimes in coherence, sometimes as contrast. Some reconstitutions have insufficient raw material,
                     they have bands of color that can indicate absence -- or saturation. I hope you find them intriguing
@@ -213,29 +257,38 @@
                     Notes<br /><br />
                     Reconstituted base images from Library of Congress 'free to
                     use' and Wikimedia's public domain images. I do not link to them. The viewer can interpret the
-                    reconstituted images through their own lens. Each piece is a 1,000 x 1,000 JPG. The JPG has the form of
+                    reconstituted images through their own lens. Each piece is a 1,000 x 1,000 JPG. The JPG has the form
+                    of
                     these public domain images of 'abundance,' but their pixels derive from the pixels of two
                     "Abundance" pieces. All pieces are encoded entirely on-chain on Tezos with the amazing
                     <a href="https://zerounbound.art" target="_blank">Zero Unbound</a> project.
 
-                    <ul style="font-size: 0.7em; color: #ccc;">
-                        <li>Format: 1,000<sup>2</sup> JPGs encoded on-chain on Tezos wth <a href="https://zerounbound.art" target="_blank">Zero Unbound</a>.</li>
-                        <li>Editions: Each piece has 28 editions available on <a href="https://objkt.com/collections/KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy?sort=timestamp:asc" target="_blank">objkt.com</a>.</li>
-                        <li>Distribution: As a token of appreciation for helping this project and also for
-                        their contributions to the kind collective experience with the <a href="https://zeroart.app/" target="_blank">Zero Contract</a> community, 
-                        a full set will be shared with jams2blues, Jestem Zero and Ernesto Asch. The remaining 25 sets will 
-                    be listed for sale on objkt.com. Proceeds will be split between Takens Theorem and the artists whose
-                    pixels ("raw materials") are the basis of each piece.</li>
-                        <li>License: CC0 1.0</li>
-                    </ul>
+                <ul style="font-size: 0.7em; color: #ccc;">
+                    <li>Format: 1,000<sup>2</sup> JPGs encoded on-chain on Tezos wth <a href="https://zerounbound.art"
+                            target="_blank">Zero Unbound</a>.</li>
+                    <li>Editions: Each piece has 28 editions available on <a
+                            href="https://objkt.com/collections/KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy?sort=timestamp:asc"
+                            target="_blank">objkt.com</a>.</li>
+                    <li>Distribution: As a token of appreciation for helping this project and also for
+                        their contributions to the kind collective experience with the <a href="https://zeroart.app/"
+                            target="_blank">Zero Contract</a> community,
+                        a full set will be shared with jams2blues, Jestem Zero and Ernesto Asch. The remaining 25 sets
+                        will
+                        be listed for sale on objkt.com. Proceeds will be split between Takens Theorem and the artists
+                        whose
+                        pixels ("raw materials") are the basis of each piece.</li>
+                    <li>License: CC0 1.0</li>
+                </ul>
                 </p>
             </div>
         </div>
 
         <div class="gallery">
             <div class="very-wide">
-                <p><b>Aritsts in the original <a href="https://objkt.com/collections/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ"
-                            target="_blank">Abundance</a> collection</b>: 0xEdwoods, 369, aria ☰ ~, ate8a, AUSTIN, bimo arts, Dither,
+                <p><b>Aritsts in the original <a
+                            href="https://objkt.com/collections/KT1KyEo6DeKzpxCT1qusrgPJt5noWdiEpYPJ"
+                            target="_blank">Abundance</a> collection</b>: 0xEdwoods, 369, aria ☰ ~, ate8a, AUSTIN, bimo
+                    arts, Dither,
                     Ernesto ASCH, fabianospeziari, fragmenꜩ, GreenGinger, jams2blues, JestemZero, Kyle Flemmer, Let's
                     Not Know Us, LFG, Malicious Sheep, my 3y3 👁️👁️ , neuromancer, Oblivion Fields, oddlavox, OFF,
                     PaxRomanArt, scottx, skulltakes, Stalomir, Tornado Rodriguez, tz1ccube</p>
