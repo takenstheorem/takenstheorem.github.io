@@ -40,7 +40,6 @@
 
         .wide {
             grid-column: span 2;
-            /* Span two columns */
         }
 
         .gallery {
@@ -152,6 +151,98 @@
             margin: 2px;
             font-size: 0.65em;
         }
+
+        .accordion-container {
+            max-width: 800px;
+            margin: 20px auto;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .accordion {
+            background-color: #000;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: 1px solid #fff;
+            text-align: center;
+            outline: none;
+            font-size: 1rem;
+            transition: 0.4s;
+            margin: 10px 0;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .active, .accordion:hover {
+            background-color: #333;
+        }
+
+        .accordion-content {
+            padding: 20px;
+            background-color: #000;
+            border: 1px solid #fff;
+            border-top: none;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion.active + .accordion-content {
+            max-height: 2000px; 
+            transition: max-height 0.5s ease-in;
+        }
+
+        .ledger-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .ledger-navigation button {
+            background: #000;
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .ledger-navigation button:hover:not(:disabled) {
+            background: #333;
+        }
+
+        .ledger-navigation button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ledger-image-container {
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+        }
+
+        .ledger-image {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .ledger-image.loaded {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -173,25 +264,23 @@
                     href="https://objkt.com/collections/KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy?sort=timestamp:asc"
                     style="text-decoration:none;color:white;">
                     MATERIALS OF ABUNDANCE</a> on objtk.com<br />
-                <em>Listings begin July 1st 9AM NYC time</em>
+                <em>First released 7/1/2025 9AM NYC time</em>
 
             </span>
         </section>
+
+
 
         <script>
 
             const contractAddress = "KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy";
             function hexToUtf8(hexString) {
-                // Remove any non-hex characters
                 const hex = hexString.replace(/[^0-9a-fA-F]/g, '');
-
-                // Convert hex to bytes
                 const bytes = new Uint8Array(hex.length / 2);
                 for (let i = 0; i < hex.length; i += 2) {
                     bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
                 }
 
-                // Decode as UTF-8
                 return new TextDecoder().decode(bytes);
             }
 
@@ -204,18 +293,101 @@
 
                     const storage = await response.json();
                     console.log(hexToUtf8(storage.value.token_info.name));
-
-                    const storageString = JSON.stringify(storage); // Store to a string
-                    console.log("Contract storage:", storageString);
-
+                    img = hexToUtf8(storage.value.token_info.artifactUri);
+                    console.log(img);
+                    const storageString = JSON.stringify(storage);
                     return storageString;
                 } catch (error) {
                     console.error("Failed to fetch contract storage:", error);
                 }
             }
-            getContractStorage();
+            let currentIndex = 0;
+            let storageData = [];
+
+            async function loadLedgerData() {
+                try {
+                    const response = await fetch(`https://api.tzkt.io/v1/contracts/${contractAddress}/bigmaps/token_metadata/keys`);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    storageData = await response.json();
+                    updateLedgerDisplay();
+                } catch (error) {
+                    console.error("Failed to fetch ledger data:", error);
+                }
+            }
+
+            function updateLedgerDisplay() {
+                if (storageData.length === 0) return;
+                
+                const item = storageData[currentIndex];
+                if (!item) return;
+                
+                const name = hexToUtf8(item.value.token_info.name);
+                const description = hexToUtf8(item.value.token_info.description);
+                const imageUrl = hexToUtf8(item.value.token_info.artifactUri);
+                const ledgerImage = document.getElementById('ledger-image');
+                
+                ledgerImage.style.opacity = '0';
+                document.getElementById('ledger-name').textContent = 'loading...';
+                document.getElementById('ledger-description').textContent = '';
+                
+                setTimeout(() => {
+                    if (imageUrl && imageUrl.startsWith('data')) {
+                        const img = new Image();
+                        img.onload = function() {
+                            ledgerImage.src = imageUrl;
+                            requestAnimationFrame(() => {
+                                setTimeout(() => {
+                                    ledgerImage.style.opacity = '1';
+                                    document.getElementById('ledger-name').textContent = name;
+                                    document.getElementById('ledger-description').textContent = description;
+                                }, 500);
+                            });
+                        };
+                        img.src = imageUrl;
+                    } else {
+                        ledgerImage.removeAttribute('src');
+                    }
+                }, 700); 
+                document.getElementById('ledger-counter').textContent = `${currentIndex + 1} / ${storageData.length}`;
+                
+                document.getElementById('prev-btn').disabled = currentIndex === 0;
+                document.getElementById('next-btn').disabled = currentIndex >= storageData.length - 1;
+            }
+
+            function navigate(direction) {
+                currentIndex = Math.max(0, Math.min(storageData.length - 1, currentIndex + direction));
+                updateLedgerDisplay();
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                loadLedgerData();
+                
+                const accordion = document.getElementById('ledger-accordion');
+                accordion.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+                });
+            });
         </script>
 
+        <div class="accordion-container">
+            <button id="ledger-accordion" class="accordion">Load from the Ledger</button>
+            <div class="accordion-content" style="display: none;">
+                <div class="ledger-navigation">
+                    <button id="prev-btn" onclick="navigate(-1)">❮</button>
+                    <span id="ledger-counter">0 / 0</span>
+                    <button id="next-btn" onclick="navigate(1)">❯</button>
+                </div>
+                <div class="ledger-content">
+                    <div class="ledger-image-container">
+                        <img id="ledger-image" src="" alt="Ledger Artwork" class="ledger-image">
+                    </div>
+                    <h3 id="ledger-name"></h3>
+                    <p id="ledger-description"></p>
+                </div>
+            </div>
+        </div>
 
         <div class="gallery">
             <div class="very-wide">
