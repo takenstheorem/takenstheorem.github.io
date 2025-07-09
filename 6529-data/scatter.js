@@ -18,7 +18,7 @@ svg.append("text")
     .attr("class", "title")
     .attr("x", width / 2)
     .attr("y", -20)
-    .text("TDH vs Token Balance");
+    .text("TDH x Token Balance");
 
 // Create scales
 const x = d3.scaleLog()
@@ -108,12 +108,33 @@ function updateChart(season) {
         .duration(500)
         .call(yAxis);
 
-    // Update dots
+    // Group data by id
+    const groupedData = d3.group(filteredData, d => d.id);
+    
+    // Remove old lines and dots
+    svg.selectAll(".connector").remove();
     const dots = svg.selectAll(".dot")
         .data(filteredData, d => d.id);
-
-    // Remove old dots
     dots.exit().remove();
+    
+    // Add connecting lines for each group with more than one point
+    svg.selectAll(".connector")
+        .data([...groupedData.values()].filter(group => group.length > 1))
+        .enter()
+        .append("path")
+        .attr("class", "connector")
+        .attr("d", d => {
+            const sorted = [...d].sort((a, b) => +a.tdh - +b.tdh);
+            const line = d3.line()
+                .x(d => x(+d.tdh))
+                .y(d => y(+d.balance))
+                .curve(d3.curveMonotoneX);
+            return line(sorted);
+        })
+        .style("fill", "none")
+        .style("stroke", "#4CAF50")
+        .style("stroke-opacity", 0.3)
+        .style("stroke-width", 1.5);
 
     // Add new dots and update existing ones
     dots.enter()
