@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>6529 studies: collector &rarr; token_id</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            width: 100%;
+            background: #000000;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            color: #ffffff;
+        }
+        #chart {
+            width: 100%;
+            height: auto;
+            float:left;
+            position:absolute;
+            top:2vh;
+            bottom:5vh;
+            margin: 0 auto;
+            background: #000000;
+            border-radius: 8px;
+        }
+        svg {
+            max-width: 100%;
+            max-height: 100%;
+            overflow: visible;
+        }
+        .arc-group {
+            cursor: pointer;
+        }
+        .arc-group path {
+            opacity: 1;
+            transition: opacity 0.2s;
+        }
+        .arc-group:hover path {
+            opacity: 1;
+            stroke: #000;
+            stroke-width: 1.5px;
+        }
+        text {
+            font-size: 12px;
+            pointer-events: none;
+        }
+        .chord-tooltip {
+            position: absolute;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: monospace;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            max-width: 200px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="chart"></div>
+    </div>
+    <div id="viz_name" style="position: absolute; top: 20px; left: 20px;">
+        <a href="../index.html" style="color: #ffffff;">6529 studies</a> | collector &rarr; token_id
+    </div>
+    <div id="control_panel" style="position: absolute; top: 20px; right: 20px;">
+        <div id="season_selector">
+            <label for="season">Season:</label>
+            <select id="season">
+                <option value="1">Season 1</option>
+                <option value="2">Season 2</option>
+                <option value="3">Season 3</option>
+                <option value="4">Season 4</option>
+                <option value="5">Season 5</option>
+                <option value="6">Season 6</option>
+                <option value="7">Season 7</option>
+                <option value="8">Season 8</option>
+                <option value="9">Season 9</option>
+                <option value="10">Season 10</option>
+                <option value="11">Season 11</option>
+            </select>
+        </div>
+    </div>
+    <div class="chord-tooltip"></div>
+    
+    <script src="d3.v7.min.js"></script>
+    <script src="chord.js"></script>
+</body>
+</html>

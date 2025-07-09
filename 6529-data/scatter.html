@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>6529 Waves: TDH vs Balance</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            width: 100%;
+            background: #000000;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            color: #ffffff;
+        }
+        #chart {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100px;
+            bottom: 0;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .dot {
+            fill: #4CAF50;
+            fill-opacity: 0.7;
+            stroke: #333;
+            stroke-width: 0.5px;
+        }
+        .dot:hover {
+            fill: #ff5722;
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+        .axis text {
+            fill: #e0e0e0;
+            font-size: 12px;
+        }
+        .axis path,
+        .axis line {
+            stroke: #666;
+        }
+        .axis-label {
+            fill: #e0e0e0;
+            font-size: 14px;
+            text-anchor: middle;
+        }
+        .title {
+            fill: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            text-anchor: middle;
+        }
+        .tooltip {
+            position: absolute;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 4px;
+            pointer-events: none;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        #viz_name {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #ffffff;
+        }
+        #viz_name a {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div id="viz_name">
+        <a href="index.html">6529 studies</a> | TDH vs Balance
+    </div>
+    <div id="chart"></div>
+    <div id="control_panel" style="position: absolute; top: 20px; right: 20px;">
+        <div id="season_selector">
+            <label for="season">Season:</label>
+            <select id="season">
+                <option value="1">Season 1</option>
+                <option value="2">Season 2</option>
+                <option value="3">Season 3</option>
+                <option value="4">Season 4</option>
+                <option value="5">Season 5</option>
+                <option value="6">Season 6</option>
+                <option value="7">Season 7</option>
+                <option value="8">Season 8</option>
+                <option value="9">Season 9</option>
+                <option value="10">Season 10</option>
+                <option value="11">Season 11</option>
+            </select>
+        </div>
+    </div>
+    <script src="scatter.js"></script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6529 STUDIES</title>
+    <style>
+        
+        a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #111;
+            color: #fff;
+            line-height: 1.6;
+            padding: 1rem;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            padding: 0rem;
+            text-align: center;
+        }
+        
+        header {
+            background-color: #111;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 1rem;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem auto;
+            max-width: 1200px;
+        }
+        
+        .tool-card {
+            background: #222;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #444;
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .screenshot-placeholder {
+            background: #222;
+            border-radius: 8px;
+            height: 200px;
+            margin: 0 0 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            border: 2px dashed #444;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screenshot-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .tool-card h2 {
+            color: #fff;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+            text-align: left;
+        }
+
+        .tool-name {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-align: left;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .tool-card p {
+            color: #bbb;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            flex-grow: 1;
+        }
+        
+        .btn {
+            display: inline-block;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            margin-top: auto;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        .coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .tool-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>6529 STUDIES</h1>
+            <p class="subtitle">Advanced econosemantic studies of a memetic nexus.</p>
+            <p><a href="https://x.com/takenstheorem">Takens</a> made these tools with amazing data by <a href="https://x.com/Vantekai_">Vantekai</a> from <a href="https://6529.io">6529.io</a>. Last data snapshot: 6/27/2025</p>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div class="tools-grid">
+            <a href="treemap.html" class="tool-card">
+                <div class="screenshot-placeholder">
+                    <img src="treemap.png" alt="Treemap Preview">
+                </div>
+                <h2>Token Distribution</h2>
+                <div class="tool-name">Treemap Visualizer</div>
+                <p>Interactive visualization of token distribution patterns across different wallet addresses. Analyze concentration and distribution metrics at a glance. Animate.</p>
+            </a>
+            
+            <a href="chord.html" class="tool-card">
+                <div class="screenshot-placeholder">
+                    <img src="chord.png" alt="Chord Diagram Preview">
+                </div>
+                <h2>Holder Relationships</h2>
+                <div class="tool-name">Chord Diagram</div>
+                <p>Explore relationships between token holders and tokens with  chord diagram. Visualize flows and concentrations of card collections.</p>
+            </a>
+            
+            <a href="scatter.html" class="tool-card">
+                <div class="screenshot-placeholder">
+                    <img src="scatter.png" alt="Scatter Plot Preview">
+                </div>
+                <h2>TDH vs Balance</h2>
+                <div class="tool-name">Scatter Plot</div>
+                <p>Visualize relationship between TDH and balance holdings across tokens and seasons in a scatterplot.</p>
+            </a>
+            
+            <div class="tool-card coming-soon">
+                <div class="screenshot-placeholder">
+                    <span>Coming Soon</span>
+                </div>
+                <h2>More Tools</h2>
+                <div class="tool-name">Under Development</div>
+                <p>Hit up <a href="https://x.com/takenstheorem">Takens</a> on X for feature or tool requests.</p>                
+            </div>
+        </div>
+    </main>
+    
+</body>
+</html>
