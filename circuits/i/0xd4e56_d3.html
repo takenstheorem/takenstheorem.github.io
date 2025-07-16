@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curious Circuits | 0xbb9bc</title>
+  <title>Curious Circuits | 0xd4e56</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+  <script src="d3.v7.min.js"></script>
   <style>
     svg {
       transition: opacity 4s cubic-bezier(0.25, 0.1, 0.25, 1),
@@ -105,21 +106,34 @@
     <div class="modal">
       <p><a href="../">back to project page</a></p>
       <p><b>Curious Circuits</b></p>
-      <p>Token #6: 0xbb9bc</p>
-      <p>Txs/calls represented ≥ 1,500,000</p>
-      <p>Centered dates: <a href="https://etherscan.io/block/1599884" target="_blank">5/28/16</a>, <a
-          href="https://etherscan.io/block/1721462" target="_blank">6/17/16</a></p>
-      <p>Palette: mixed, busy</p>
+      <p>Token #1: 0xd4e56</p>
+      <p>Txs/calls represented ≥ 1,000,000</p>
+      <p>Approx. block range: <a href="https://etherscan.io/block/0" target="_blank">0</a> - <a
+          href="https://etherscan.io/block/400000" target="_blank">400,000</a></p>
+      <p>Palette: mixed, early sunrise</p>
       <p>Tens of thousands of lines approximate millions of ledger actions, colors represent some clustering including
         major action types (calls) and activity of some hubs. Mouseover to get some links for prominent addresses. This
         is an experimental interface for collectors, it renders approximately for position of links, but the rendering
         is vector quality SVG, feel free to zoom in.</p>
-      <p>Gallery mode: keypress g to enter/exit gallery mode, 15s transitions of views of the curious circuit
-        across scales, from individual nodes to cliques and communities</p>
+      <p>
+        Gallery mode: transitions of views of the curious circuit
+        across scales, from individual nodes to cliques and communities. Click 'go' below
+        after confirming parameters. Press `x` to escape gallery mode.
+        <br />
+        Number of scales: <input type="number" id="number-of-scales" value="7" min="1" max="10" />
+        <br />
+        Pause time (ms): <input type="range" id="time-between-scales" value="20000" min="5000" max="30000" step="1000" oninput="document.getElementById('time-between-scales-value').textContent = this.value;">
+        <span id="time-between-scales-value">20000</span>
+        <br />
+        Transition time (ms): <input type="range" id="time-between-views" value="20000" min="5000" max="30000" step="1000" oninput="document.getElementById('time-between-views-value').textContent = this.value;">
+        <span id="time-between-views-value">20000</span>
+        <br />
+        <button onclick="toggleFullscreen()">go</button>
+      </p>
       <p style="color: #bbb;">Data and rendering are approximate but they are fully based on raw transaction data
         gathered from Blockchair under force-directed layout algorithm in ccNetViz and rendered, styled with p5.js by
         Takens. Circuitry algorithm uses jointed edge paths, algorithm by Takens.</p>
-      <button onclick="forceDownloadSVG('0xbb9bc.svg')">Download SVG</button><br />
+      <button onclick="forceDownloadSVG('0xd4e56.svg')">Download SVG</button><br />
       warnings: (i) SVG is very large file, (ii) SVG strips mouseover links, (iii) tested in Brave,
       so render may be slightly different in other browsers, (iv) gallery mode transition may be
       be more irregular when displaying thousands of the paths during animation.
@@ -133,7 +147,12 @@
 
   <script>
     let zoomInterval = null;
-    let originalViewBox = '0 0 921 921'; 
+    let originalViewBox = '0 0 921 921';
+
+    let currentZoomIndex = 0;
+    let zoomLevels = [2, 50, 100, 150, 200, 250, 300];
+    let holdBetweenViews = 20000; // default ms, can be overridden by input
+    let currentCenter = { x: 0, y: 0 };
 
     async function zoomToAnchors() {
       const svg = document.querySelector('svg');
@@ -141,50 +160,46 @@
 
       if (anchors.length === 0) return;
 
-      svg.style.transition = 'opacity 1s ease-out';
-      svg.style.opacity = '0';
+      if (currentZoomIndex === 0) {
+        const [minX, minY, width, height] = originalViewBox.split(' ').map(Number);
+        const maxX = minX + width;
+        const maxY = minY + height;
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+        const marginX = width * 0.2;
+        const marginY = height * 0.2;
+        const safeMinX = minX + marginX;
+        const safeMaxX = maxX - marginX;
+        const safeMinY = minY + marginY;
+        const safeMaxY = maxY - marginY;
 
-      const [minX, minY, width, height] = originalViewBox.split(' ').map(Number);
-      const maxX = minX + width;
-      const maxY = minY + height;
-      const marginX = width * 0.2;
-      const marginY = height * 0.2;
-      const safeMinX = minX + marginX;
-      const safeMaxX = maxX - marginX;
-      const safeMinY = minY + marginY;
-      const safeMaxY = maxY - marginY;
+        const randomAnchor = anchors[Math.floor(Math.random() * anchors.length)];
+        currentCenter.x = Math.max(safeMinX, Math.min(parseFloat(randomAnchor.style.left), safeMaxX));
+        currentCenter.y = Math.max(safeMinY, Math.min(parseFloat(randomAnchor.style.top), safeMaxY));
+      }
 
-      const randomAnchor = anchors[Math.floor(Math.random() * anchors.length)];
-      let x = parseFloat(randomAnchor.style.left);
-      let y = parseFloat(randomAnchor.style.top);
-      x = Math.max(safeMinX, Math.min(x, safeMaxX));
-      y = Math.max(safeMinY, Math.min(y, safeMaxY));
+      const zoom = zoomLevels[currentZoomIndex];
+      const halfZoom = zoom / 2;
+      const viewBoxX = currentCenter.x - halfZoom;
+      const viewBoxY = currentCenter.y - halfZoom;
 
-      const randomZoom = Math.pow(10, Math.random() * 2 + 0.7).toFixed(1);
+      const currentViewBox = (svg.getAttribute('viewBox') || originalViewBox).split(' ').map(Number);
+      const targetViewBox = [viewBoxX, viewBoxY, zoom, zoom];
 
-      const halfZoom = randomZoom / 2;
-      let viewBoxX = x - halfZoom;
-      let viewBoxY = y - halfZoom;
+      await new Promise(resolve => {
+        d3.select(svg)
+          .transition()
+          .duration(10000)
+          .ease(d3.easeCubicInOut)
+          .attrTween('viewBox', function() {
+            const i = d3.interpolateArray(currentViewBox, targetViewBox);
+            return t => i(t).join(' ');
+          })
+          .on('end', resolve);
+      });
 
-      if (viewBoxX < minX) viewBoxX = minX;
-      if (viewBoxY < minY) viewBoxY = minY;
-      if (viewBoxX + randomZoom > maxX) viewBoxX = maxX - randomZoom;
-      if (viewBoxY + randomZoom > maxY) viewBoxY = maxY - randomZoom;
+      await new Promise(r => setTimeout(r, holdBetweenViews));
 
-      svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${randomZoom} ${randomZoom}`);
-      svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${randomZoom} ${randomZoom}`);
-
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      svg.getBoundingClientRect();
-
-      await new Promise(resolve => requestAnimationFrame(resolve));
-
-      svg.style.transition = 'opacity 1.5s ease-in';
-      svg.style.opacity = '1';
-
-      await new Promise(resolve => setTimeout(resolve, 3500));
+      currentZoomIndex = (currentZoomIndex + 1) % zoomLevels.length;
     }
 
     let isFullscreen = false;
@@ -208,6 +223,9 @@
           console.log('Could not exit fullscreen:', e);
         }
 
+        d3.select(svg).interrupt();
+        currentZoomIndex = 0;
+
         if (zoomInterval) {
           clearInterval(zoomInterval);
           zoomInterval = null;
@@ -223,7 +241,9 @@
           Object.keys(originalStyle).forEach(prop => {
             svg.style[prop] = originalStyle[prop];
           });
+
           svg.setAttribute('viewBox', originalViewBox);
+
           svg.style.opacity = '1';
           await new Promise(resolve => setTimeout(resolve, 500));
         }
@@ -238,12 +258,14 @@
           padding: svg.style.padding,
           backgroundColor: svg.style.backgroundColor
         };
+        console.log(originalStyle);
         originalParent = svg.parentNode;
 
         fullscreenContainer = document.createElement('div');
         fullscreenContainer.className = 'fullscreen';
         document.body.appendChild(fullscreenContainer);
         fullscreenContainer.appendChild(svg);
+
         svg.style.width = '100%';
         svg.style.height = '100%';
         svg.style.display = 'block';
@@ -256,40 +278,144 @@
           await fullscreenContainer.msRequestFullscreen();
         }
 
+        const numScales = parseInt(document.getElementById('number-of-scales').value, 10) || 7;
+        const scaleInterval = parseInt(document.getElementById('time-between-scales').value, 10) || 20000;
+        holdBetweenViews = parseInt(document.getElementById('time-between-views').value, 10) || 20000;
+
+        if (numScales <= 1) {
+          zoomLevels = [2];
+        } else {
+          const step = (300 - 2) / (numScales - 1);
+          zoomLevels = Array.from({ length: numScales }, (_, i) => Math.round(2 + i * step));
+        }
+
         zoomToAnchors();
-        zoomInterval = setInterval(zoomToAnchors, 15000);
+        zoomInterval = setInterval(zoomToAnchors, scaleInterval+holdBetweenViews);
       }
 
       isFullscreen = !isFullscreen;
     }
 
+    let animationTimeout;
+    let currentZoom = 200;
+    let isAnimating = false;
+    
+    async function startZoomAnimation() {
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      const svg = d3.select('svg');
+      const width = +svg.attr('width');
+      const height = +svg.attr('height');
+      const centerX = width / 2;
+      const centerY = height / 2;
+      
+      // Function to set zoom level
+      function setZoom(level, duration = 2000) {
+        return new Promise(resolve => {
+          const scale = level / 2; // Convert zoom level to scale factor
+          const viewBox = [
+            centerX - (width / scale) / 2,
+            centerY - (height / scale) / 2,
+            width / scale,
+            height / scale
+          ].join(' ');
+          
+          svg.transition()
+            .duration(duration)
+            .attr('viewBox', viewBox)
+            .on('end', resolve);
+        });
+      }
+      
+      // Function to fade out
+      function fadeOut() {
+        return new Promise(resolve => {
+          svg.transition()
+            .duration(1000)
+            .style('opacity', 0)
+            .on('end', resolve);
+        });
+      }
+      
+      // Function to fade in
+      function fadeIn() {
+        return new Promise(resolve => {
+          svg.transition()
+            .duration(1000)
+            .style('opacity', 1)
+            .on('end', resolve);
+        });
+      }
+      
+      // Function to pan to a new position
+      function panTo(x, y, duration = 2000) {
+        return new Promise(resolve => {
+          const scale = 2 / 2; // Fixed scale for zoom level 2
+          const viewBox = [
+            x - (width / scale) / 2,
+            y - (height / scale) / 2,
+            width / scale,
+            height / scale
+          ].join(' ');
+          
+          svg.transition()
+            .duration(duration)
+            .attr('viewBox', viewBox)
+            .on('end', resolve);
+        });
+      }
+      
+      // Main animation sequence
+      (async () => {
+        try {
+          // Initial zoom to 200
+          await setZoom(200);
+          
+          // Zoom sequence from 200 down to 2
+          for (let zoom = 200; zoom >= 2; zoom -= 50) {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Pause at each level
+            await fadeOut();
+            await setZoom(zoom);
+            await fadeIn();
+          }
+          
+          // At zoom level 2, pan to a new position after a delay
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          await panTo(width * 0.25, height * 0.25); // Pan to top-left quadrant
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Zoom back out to 200
+          for (let zoom = 2; zoom <= 200; zoom += 50) {
+            await fadeOut();
+            await setZoom(zoom);
+            await fadeIn();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+          
+        } catch (error) {
+          console.error('Animation error:', error);
+        } finally {
+          isAnimating = false;
+        }
+      })();
+    }
+    
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'g' || event.key === 'G') {
+      if ((event.key === 'x' || event.key === 'X') && isFullscreen) {
         toggleFullscreen();
+      } else if (event.key === 'z' || event.key === 'Z') {
+        startZoomAnimation();
       }
     });
 
-    fetch('6.content.gz')
+    fetch('1.content.gz')
       .then(response => response.arrayBuffer())
       .then(data => {
         const decompressed = pako.ungzip(new Uint8Array(data), { to: 'string' });
         document.getElementById('output').innerHTML = decompressed;
         let svg = document.querySelector('svg');
-        // svg.attributes.viewBox.value = "200 300 400 450";
-        // svg.attributes.viewBox.value = "200 300 460 460";
-        originalViewBox = "200 300 460 460";
-        svg.setAttribute('viewBox', originalViewBox);
-        /* loop through a elements that are in #output and reposition */
-        const links = document.querySelectorAll('#output a');
-        links.forEach(link => {
-          let x = parseFloat(link.style.left);
-          let y = parseFloat(link.style.top);
-          x = (x - 200) * 2;
-          y = (y - 300) * 2;
-          // link.style.position = 'relative';
-          link.style.left = x + 'px';
-          link.style.top = y + 'px';
-        });
+        originalViewBox = svg.getAttribute('viewBox');
       })
       .catch(error => {
         console.error('Error fetching or decompressing the file:', error);

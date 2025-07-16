@@ -4,47 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curious Circuits | 0xd4e56</title>
+  <title>Curious Circuits | 0x34d85</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
-  <script src="d3.v7.min.js"></script>
   <style>
-    svg {
-      background-color: black;
-    }
-    
-    .svg-overlay {
-      display: none;
-    }
-
-    .fullscreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      background: black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    /* Style for when in fullscreen mode */
-    :fullscreen .fullscreen {
-      background: black;
-    }
-
-    /* Vendor prefixes for fullscreen */
-    :-webkit-full-screen .fullscreen {
-      background: black;
-    }
-
-    :-ms-fullscreen .fullscreen {
-      background: black;
-    }
-
-
     body {
       margin: 0;
       padding: 0;
@@ -101,42 +63,27 @@
 
 <body>
   <div id="output_container" style="position:absolute; top:0px; left:0px;">
-    <div id="output"></div>
+    <div id="output" style="position:relative; width:100%; height:100%;"></div>
   </div>
 
   <div class="more-container">
     <div class="modal">
       <p><a href="../">back to project page</a></p>
       <p><b>Curious Circuits</b></p>
-      <p>Token #1: 0xd4e56</p>
-      <p>Txs/calls represented ≥ 1,000,000</p>
-      <p>Approx. block range: <a href="https://etherscan.io/block/0" target="_blank">0</a> - <a
-          href="https://etherscan.io/block/400000" target="_blank">400,000</a></p>
-      <p>Palette: mixed, early sunrise</p>
-      <p>Tens of thousands of lines approximate millions of ledger actions, colors represent some clustering including
-        major action types (calls) and activity of some hubs. Mouseover to get some links for prominent addresses. This
+      <p>Token #8: 0x34d85</p>
+      <p>Txs/calls represented ≈ 150,000</p>
+      <p>Centered date: <a href="https://etherscan.io/txs?block=14688807" target="_blank">5/1/2022</a></p>
+      <p>Palette: manial glow</p>
+      <p>Tens of thousands of lines approximate over one hundred thousand ledger actions, colors represent some clustering including
+        major action types (calls) and activity of some hubs. A glow of excitement, maybe mania. 
+        Mouseover to get some links for prominent addresses. This
         is an experimental interface for collectors, it renders approximately for position of links, but the rendering
         is vector quality SVG, feel free to zoom in.</p>
-      <p>Gallery modes: transitions of views of the curious circuit
-        across scales, from individual nodes to cliques and communities. Click 'go' below
-        after confirming parameters. Press `x` to escape gallery mode. <br />
-        FPS:<br /><input style="width: 100px;" type="range" id="fps" value="30"
-          min="1" max="60" step="1"
-          oninput="document.getElementById('fps-value').textContent = this.value;">          
-        <span id="fps-value">30</span><br />
-        Speed:<br /><input style="width: 100px;" type="range" id="speed" value="0.005"
-        min="0.0001" max="0.01" step="0.0001"
-        oninput="document.getElementById('speed-value').textContent = this.value;">          
-      <span id="speed-value">0.005</span><br />        
-        <button onclick="toggleGallery()">cosmic zoom</button>
-      </p>
       <p style="color: #bbb;">Data and rendering are approximate but they are fully based on raw transaction data
         gathered from Blockchair under force-directed layout algorithm in ccNetViz and rendered, styled with p5.js by
         Takens. Circuitry algorithm uses jointed edge paths, algorithm by Takens.</p>
-      <button onclick="forceDownloadSVG('0xd4e56.svg')">Download SVG</button><br />
-      warnings: (i) SVG is very large file, (ii) SVG strips mouseover links, (iii) tested in Brave,
-      so render may be slightly different in other browsers, (iv) gallery mode transition may be
-      be more irregular when displaying thousands of the paths during animation.
+      <button onclick="forceDownloadSVG('0x34d85.svg')">Download SVG</button><br />
+      warnings:<br /> SVG is very large file<br />SVG strips mouseover links
     </div>
     <div class="dots">...</div>
   </div>
@@ -146,14 +93,25 @@
   <script src="p5.min.js"></script>
 
   <script>
-    let originalViewBox = '0 0 921 921';
-    fetch('1.content.gz')
+    fetch('8.content.gz')
       .then(response => response.arrayBuffer())
       .then(data => {
         const decompressed = pako.ungzip(new Uint8Array(data), { to: 'string' });
         document.getElementById('output').innerHTML = decompressed;
         let svg = document.querySelector('svg');
-        originalViewBox = svg.getAttribute('viewBox');
+        // svg.attributes.viewBox.value = "200 300 400 450";
+        svg.attributes.viewBox.value = "150 150 650 650";
+        /* loop through a elements that are in #output and reposition */ 
+        const links = document.querySelectorAll('#output a');
+        links.forEach(link => {
+          let x = parseFloat(link.style.left);
+          let y = parseFloat(link.style.top);
+          x = (x - 150) * (921/650);
+          y = (y - 150) * (921/650);
+          // link.style.position = 'relative';
+          link.style.left = x + 'px';
+          link.style.top = y + 'px';
+        });
       })
       .catch(error => {
         console.error('Error fetching or decompressing the file:', error);
@@ -182,7 +140,6 @@
     }
 
   </script>
-  <script src="gallery_functions.js"></script>
 </body>
 
 </html>

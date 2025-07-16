@@ -7,6 +7,41 @@
   <title>Curious Circuits | 0x00000</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
   <style>
+    svg {
+      transition: opacity 4s cubic-bezier(0.25, 0.1, 0.25, 1), 
+                  viewBox 4s cubic-bezier(0.22, 1, 0.36, 1);
+      width: 100%;
+      height: 100%;
+      background-color: black;
+    }
+    
+    .fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    /* Style for when in fullscreen mode */
+    :fullscreen .fullscreen {
+      background: black;
+    }
+    
+    /* Vendor prefixes for fullscreen */
+    :-webkit-full-screen .fullscreen {
+      background: black;
+    }
+    :-ms-fullscreen .fullscreen {
+      background: black;
+    }        
+
     body {
       margin: 0;
       padding: 0;
@@ -80,11 +115,15 @@
         and identities. Chainwrought pseudoanonymity. Mouseover to get some links for addresses. This
         is an experimental interface for collectors, it renders approximately for position of links, but the rendering
         is vector quality SVG, feel free to zoom in.</p>
-      <p style="color: #bbb;">Data and rendering are approximate but they are fully based on raw transaction data
+        <p>Gallery mode: keypress g to enter/exit gallery mode, 15s transitions of views of the curious circuit
+          across scales, from individual nodes to cliques and communities</p>
+        <p style="color: #bbb;">Data and rendering are approximate but they are fully based on raw transaction data
         gathered from Blockchair under force-directed layout algorithm in ccNetViz and rendered, styled with p5.js by
         Takens. Circuitry algorithm uses jointed edge paths, algorithm by Takens.</p>
       <button onclick="forceDownloadSVG('0x00000.svg')">Download SVG</button><br />
-      warnings:<br /> SVG is very large file<br />SVG strips mouseover links
+      warnings: (i) SVG is very large file, (ii) SVG strips mouseover links, (iii) tested in Brave, 
+      so render may be slightly different in other browsers, (iv) gallery mode transition may be
+      be more irregular when displaying thousands of the paths during animation.
     </div>
     <div class="dots">...</div>
   </div>
@@ -94,6 +133,175 @@
   <script src="p5.min.js"></script>
 
   <script>
+    let zoomInterval = null;
+    let originalViewBox = '150 150 650 650'; 
+    
+    async function zoomToAnchors() {
+      const svg = document.querySelector('svg');
+      const anchors = Array.from(document.querySelectorAll('#output a'));
+      
+      if (anchors.length === 0) return;
+      
+      // First stage: Fade out completely
+      svg.style.transition = 'opacity 1s ease-out';
+      svg.style.opacity = '0';
+      
+      // Wait for fade out to complete
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Parse the original viewBox
+      const [minX, minY, width, height] = originalViewBox.split(' ').map(Number);
+      const maxX = minX + width;
+      const maxY = minY + height;
+      
+      // Calculate safe area (20% from edges)
+      const marginX = width * 0.2;
+      const marginY = height * 0.2;
+      const safeMinX = minX + marginX;
+      const safeMaxX = maxX - marginX;
+      const safeMinY = minY + marginY;
+      const safeMaxY = maxY - marginY;
+      
+      // Select a random anchor
+      const randomAnchor = anchors[Math.floor(Math.random() * anchors.length)];
+      let x = parseFloat(randomAnchor.style.left);
+      let y = parseFloat(randomAnchor.style.top);
+      
+      // Constrain x and y to be within the safe area
+      x = Math.max(safeMinX, Math.min(x, safeMaxX));
+      y = Math.max(safeMinY, Math.min(y, safeMaxY));
+      
+      // Generate random zoom level
+      const randomZoom = Math.pow(10, Math.random() * 2 + 0.7).toFixed(1);
+      
+      // Calculate viewBox dimensions
+      const halfZoom = randomZoom / 2;
+      let viewBoxX = x - halfZoom;
+      let viewBoxY = y - halfZoom;
+      
+      // Adjust if we're too close to the edges
+      if (viewBoxX < minX) viewBoxX = minX;
+      if (viewBoxY < minY) viewBoxY = minY;
+      if (viewBoxX + randomZoom > maxX) viewBoxX = maxX - randomZoom;
+      if (viewBoxY + randomZoom > maxY) viewBoxY = maxY - randomZoom;
+      
+      // Update viewBox while hidden
+      svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${randomZoom} ${randomZoom}`);
+      
+      // Wait for the next frame to ensure the viewBox change is processed
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      
+      // Force a synchronous reflow to ensure the new view is rendered
+      svg.getBoundingClientRect();
+      
+      // Wait for the next frame to ensure rendering is complete
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      
+      // Fade back in with slower transition
+      svg.style.transition = 'opacity 1.5s ease-in';
+      svg.style.opacity = '1';
+      
+      // Wait for fade in to complete + viewing time
+      await new Promise(resolve => setTimeout(resolve, 3500));
+    }
+    
+    let isFullscreen = false;
+    let originalStyle = {};
+    let originalParent = null;
+    let fullscreenContainer = null;
+    
+    async function toggleFullscreen() {
+      const svg = document.querySelector('svg');
+      
+      if (isFullscreen) {
+        // Exit fullscreen
+        try {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) { /* Safari */
+            await document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) { /* IE11 */
+            await document.msExitFullscreen();
+          }
+        } catch (e) {
+          console.log('Could not exit fullscreen:', e);
+        }
+        
+        if (zoomInterval) {
+          clearInterval(zoomInterval);
+          zoomInterval = null;
+        }
+        
+        // Fade out
+        svg.style.opacity = '0.2';
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Restore original state
+        if (fullscreenContainer && originalParent) {
+          fullscreenContainer.remove();
+          originalParent.appendChild(svg);
+          
+          // Restore original styles
+          Object.keys(originalStyle).forEach(prop => {
+            svg.style[prop] = originalStyle[prop];
+          });
+          
+          // Restore original viewBox
+          svg.setAttribute('viewBox', originalViewBox);
+          
+          // Fade back in
+          svg.style.opacity = '1';
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      } else {
+        // Save original state
+        originalStyle = {
+          position: svg.style.position,
+          top: svg.style.top,
+          left: svg.style.left,
+          width: svg.style.width,
+          height: svg.style.height,
+          margin: svg.style.margin,
+          padding: svg.style.padding,
+          backgroundColor: svg.style.backgroundColor
+        };
+        originalParent = svg.parentNode;
+        
+        // Create fullscreen container
+        fullscreenContainer = document.createElement('div');
+        fullscreenContainer.className = 'fullscreen';
+        document.body.appendChild(fullscreenContainer);
+        fullscreenContainer.appendChild(svg);
+        
+        // Style for fullscreen
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        svg.style.display = 'block';
+        
+        // Request fullscreen
+        if (fullscreenContainer.requestFullscreen) {
+          await fullscreenContainer.requestFullscreen();
+        } else if (fullscreenContainer.webkitRequestFullscreen) { /* Safari */
+          await fullscreenContainer.webkitRequestFullscreen();
+        } else if (fullscreenContainer.msRequestFullscreen) { /* IE11 */
+          await fullscreenContainer.msRequestFullscreen();
+        }
+        
+        // Start auto-zooming
+        zoomToAnchors();
+        zoomInterval = setInterval(zoomToAnchors, 15000);
+      }
+      
+      isFullscreen = !isFullscreen;
+    }
+    
+    // Add keyboard event listener
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'g' || event.key === 'G') {
+        toggleFullscreen();
+      }
+    });
+                
     fetch('5.content.gz')
       .then(response => response.arrayBuffer())
       .then(data => {
@@ -101,7 +309,10 @@
         document.getElementById('output').innerHTML = decompressed;
         let svg = document.querySelector('svg');
         // svg.attributes.viewBox.value = "200 300 400 450";
-        svg.attributes.viewBox.value = "20 20 650 650";
+        // svg.attributes.viewBox.value = "20 20 650 650";
+        originalViewBox = "20 20 650 650";
+        svg.setAttribute('viewBox', originalViewBox);
+
         /* loop through a elements that are in #output and reposition */
         const links = document.querySelectorAll('#output a');
         links.forEach(link => {
