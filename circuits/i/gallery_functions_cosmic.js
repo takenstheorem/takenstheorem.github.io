@@ -116,7 +116,7 @@ function toggleGallery() {
         const cx = x0 + w0 / 2;
         const cy = y0 + h0 / 2;
 
-        const tx = cx - cx * scale;
+        const tx = cx - cx * scale - 100*(scale-1.75)*Math.cos((t-1.75)/2);
         const ty = cy - cy * scale;
         zoomGroup.setAttribute('transform', `translate(${tx},${ty}) scale(${scale})`);
 

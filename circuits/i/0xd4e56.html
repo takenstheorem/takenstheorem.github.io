@@ -117,25 +117,14 @@
         major action types (calls) and activity of some hubs. Mouseover to get some links for prominent addresses. This
         is an experimental interface for collectors, it renders approximately for position of links, but the rendering
         is vector quality SVG, feel free to zoom in.</p>
-      <p>Gallery modes: transitions of views of the curious circuit
-        across scales, from individual nodes to cliques and communities. Click 'go' below
-        after confirming parameters. Press `x` to escape gallery mode. <br />
-        FPS:<br /><input style="width: 100px;" type="range" id="fps" value="30"
-          min="1" max="60" step="1"
-          oninput="document.getElementById('fps-value').textContent = this.value;">          
-        <span id="fps-value">30</span><br />
-        Speed:<br /><input style="width: 100px;" type="range" id="speed" value="0.005"
-        min="0.0001" max="0.01" step="0.0001"
-        oninput="document.getElementById('speed-value').textContent = this.value;">          
-      <span id="speed-value">0.005</span><br />        
-        <button onclick="toggleGallery()">cosmic zoom</button>
-      </p>
-      <p style="color: #bbb;">Data and rendering are approximate but they are fully based on raw transaction data
+        <p id="gallery_options">
+        </p>
+        <p style="color: #bbb;">Data and rendering are approximate but they are fully based on raw transaction data
         gathered from Blockchair under force-directed layout algorithm in ccNetViz and rendered, styled with p5.js by
         Takens. Circuitry algorithm uses jointed edge paths, algorithm by Takens.</p>
       <button onclick="forceDownloadSVG('0xd4e56.svg')">Download SVG</button><br />
       warnings: (i) SVG is very large file, (ii) SVG strips mouseover links, (iii) tested in Brave,
-      so render may be slightly different in other browsers, (iv) gallery mode transition may be
+      so render may be slightly different in other browsers, (iv) full screen mode transition may be
       be more irregular when displaying thousands of the paths during animation.
     </div>
     <div class="dots">...</div>
@@ -182,7 +171,7 @@
     }
 
   </script>
-  <script src="gallery_functions.js"></script>
+  <script src="gallery_simple.js"></script>
 </body>
 
 </html>

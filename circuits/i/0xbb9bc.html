@@ -114,14 +114,14 @@
         major action types (calls) and activity of some hubs. Mouseover to get some links for prominent addresses. This
         is an experimental interface for collectors, it renders approximately for position of links, but the rendering
         is vector quality SVG, feel free to zoom in.</p>
-      <p>Gallery mode: keypress g to enter/exit gallery mode, 15s transitions of views of the curious circuit
-        across scales, from individual nodes to cliques and communities</p>
+      <p id="gallery_options">
+      </p>  
       <p style="color: #bbb;">Data and rendering are approximate but they are fully based on raw transaction data
         gathered from Blockchair under force-directed layout algorithm in ccNetViz and rendered, styled with p5.js by
         Takens. Circuitry algorithm uses jointed edge paths, algorithm by Takens.</p>
       <button onclick="forceDownloadSVG('0xbb9bc.svg')">Download SVG</button><br />
       warnings: (i) SVG is very large file, (ii) SVG strips mouseover links, (iii) tested in Brave,
-      so render may be slightly different in other browsers, (iv) gallery mode transition may be
+      so render may be slightly different in other browsers, (iv) full screen mode transition may be
       be more irregular when displaying thousands of the paths during animation.
     </div>
     <div class="dots">...</div>
@@ -132,142 +132,7 @@
   <script src="p5.min.js"></script>
 
   <script>
-    let zoomInterval = null;
     let originalViewBox = '0 0 921 921'; 
-
-    async function zoomToAnchors() {
-      const svg = document.querySelector('svg');
-      const anchors = Array.from(document.querySelectorAll('#output a'));
-
-      if (anchors.length === 0) return;
-
-      svg.style.transition = 'opacity 1s ease-out';
-      svg.style.opacity = '0';
-
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const [minX, minY, width, height] = originalViewBox.split(' ').map(Number);
-      const maxX = minX + width;
-      const maxY = minY + height;
-      const marginX = width * 0.2;
-      const marginY = height * 0.2;
-      const safeMinX = minX + marginX;
-      const safeMaxX = maxX - marginX;
-      const safeMinY = minY + marginY;
-      const safeMaxY = maxY - marginY;
-
-      const randomAnchor = anchors[Math.floor(Math.random() * anchors.length)];
-      let x = parseFloat(randomAnchor.style.left);
-      let y = parseFloat(randomAnchor.style.top);
-      x = Math.max(safeMinX, Math.min(x, safeMaxX));
-      y = Math.max(safeMinY, Math.min(y, safeMaxY));
-
-      const randomZoom = Math.pow(10, Math.random() * 2 + 0.7).toFixed(1);
-
-      const halfZoom = randomZoom / 2;
-      let viewBoxX = x - halfZoom;
-      let viewBoxY = y - halfZoom;
-
-      if (viewBoxX < minX) viewBoxX = minX;
-      if (viewBoxY < minY) viewBoxY = minY;
-      if (viewBoxX + randomZoom > maxX) viewBoxX = maxX - randomZoom;
-      if (viewBoxY + randomZoom > maxY) viewBoxY = maxY - randomZoom;
-
-      svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${randomZoom} ${randomZoom}`);
-      svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${randomZoom} ${randomZoom}`);
-
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      svg.getBoundingClientRect();
-
-      await new Promise(resolve => requestAnimationFrame(resolve));
-
-      svg.style.transition = 'opacity 1.5s ease-in';
-      svg.style.opacity = '1';
-
-      await new Promise(resolve => setTimeout(resolve, 3500));
-    }
-
-    let isFullscreen = false;
-    let originalStyle = {};
-    let originalParent = null;
-    let fullscreenContainer = null;
-
-    async function toggleFullscreen() {
-      const svg = document.querySelector('svg');
-
-      if (isFullscreen) {
-        try {
-          if (document.exitFullscreen) {
-            await document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) { /* Safari */
-            await document.webkitExitFullscreen();
-          } else if (document.msExitFullscreen) { /* IE11 */
-            await document.msExitFullscreen();
-          }
-        } catch (e) {
-          console.log('Could not exit fullscreen:', e);
-        }
-
-        if (zoomInterval) {
-          clearInterval(zoomInterval);
-          zoomInterval = null;
-        }
-
-        svg.style.opacity = '0.2';
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        if (fullscreenContainer && originalParent) {
-          fullscreenContainer.remove();
-          originalParent.appendChild(svg);
-
-          Object.keys(originalStyle).forEach(prop => {
-            svg.style[prop] = originalStyle[prop];
-          });
-          svg.setAttribute('viewBox', originalViewBox);
-          svg.style.opacity = '1';
-          await new Promise(resolve => setTimeout(resolve, 500));
-        }
-      } else {
-        originalStyle = {
-          position: svg.style.position,
-          top: svg.style.top,
-          left: svg.style.left,
-          width: svg.style.width,
-          height: svg.style.height,
-          margin: svg.style.margin,
-          padding: svg.style.padding,
-          backgroundColor: svg.style.backgroundColor
-        };
-        originalParent = svg.parentNode;
-
-        fullscreenContainer = document.createElement('div');
-        fullscreenContainer.className = 'fullscreen';
-        document.body.appendChild(fullscreenContainer);
-        fullscreenContainer.appendChild(svg);
-        svg.style.width = '100%';
-        svg.style.height = '100%';
-        svg.style.display = 'block';
-
-        if (fullscreenContainer.requestFullscreen) {
-          await fullscreenContainer.requestFullscreen();
-        } else if (fullscreenContainer.webkitRequestFullscreen) { /* Safari */
-          await fullscreenContainer.webkitRequestFullscreen();
-        } else if (fullscreenContainer.msRequestFullscreen) { /* IE11 */
-          await fullscreenContainer.msRequestFullscreen();
-        }
-
-        zoomToAnchors();
-        zoomInterval = setInterval(zoomToAnchors, 15000);
-      }
-
-      isFullscreen = !isFullscreen;
-    }
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'g' || event.key === 'G') {
-        toggleFullscreen();
-      }
-    });
 
     fetch('6.content.gz')
       .then(response => response.arrayBuffer())
@@ -318,6 +183,7 @@
     }
 
   </script>
+  <script src="gallery_simple.js"></script>
 </body>
 
 </html>
