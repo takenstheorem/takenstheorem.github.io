@@ -27,18 +27,18 @@ document.getElementById('gallery_options').innerHTML = `
     <br />
 
     <label for="transitionTime">transition time (ms):</label><br />    
-    <input type="range" id="transitionTime" min="5000" max="60000" step="100" value="10000">
+    <input type="range" id="transitionTime" min="5000" max="120000" step="100" value="10000">
     <span id="transitionTimeVal">10000</span>
     <br />
 
     <label for="speed">drift speed:</label><br />
-    <span id="speedVal">0.0001</span>
-    <input type="range" id="speed" min="0.00001" max=".001" step="0.00001" value="0.0001">
+    <span id="speedVal">0.00010</span>
+    <input type="range" id="speed" min="0.00001" max=".0005" step="0.00001" value="0.0001">
     <br />
 
     <label for="zoomRange">zoom range:</label><br />
-    closest <input type="range" id="zoomRangeMin" min="0" max="1" step="0.001" value="0.025"> <span id="zoomRangeMinVal">0.025</span><br />
-    farthest <input type="range" id="zoomRangeMax" min="0" max="1" step="0.001" value="0.2"> <span id="zoomRangeMaxVal">0.2</span><br />
+    closest <input type="range" id="zoomRangeMin" min="0.0001" max=".05" step="0.0001" value="0.025"> <span id="zoomRangeMinVal">0.0250</span><br />
+    farthest <input type="range" id="zoomRangeMax" min="0.05" max=".3" step="0.0001" value="0.2"> <span id="zoomRangeMaxVal">0.2000</span><br />
     <button onclick="animationActive = true; toggleFullscreen();">go</button>
     </div>
 `;
@@ -52,9 +52,9 @@ function updateValue(id, formatter = v => v) {
 }
 
 updateValue('transitionTime');
-updateValue('speed', v => parseFloat(v).toFixed(4));
-updateValue('zoomRangeMin', v => parseFloat(v).toFixed(3));
-updateValue('zoomRangeMax', v => parseFloat(v).toFixed(3));
+updateValue('speed', v => parseFloat(v).toFixed(5));
+updateValue('zoomRangeMin', v => parseFloat(v).toFixed(4));
+updateValue('zoomRangeMax', v => parseFloat(v).toFixed(4));
 updateValue('fps', v => parseFloat(v).toFixed(0));
 
 async function zoomToAnchors() {
@@ -160,6 +160,7 @@ async function toggleFullscreen() {
         }
 
         activeSvg.style.display = 'none';
+        activeSvg = false;
         await new Promise(resolve => setTimeout(resolve, 500));
 
         if (fullscreenContainer && originalParent) {
