@@ -17,7 +17,8 @@ function toggleGalleryOptions() {
 document.getElementById('gallery_options').innerHTML = `
     Full screen mode<sup>beta</sup> <span style="cursor: pointer;" onclick="toggleGalleryOptions()">...</span>
     <div id='options' style="display: none; padding: 10px; background-color: #555; border-radius: 6px;">
-    click 'go' to enter. Type 'x' to exit. This mode uses the raw SVG, the raw data, display in transitions from single nodes to cliques and communities. Because SVG is large, it may help to tune these parameters for your system. Note: Tested in Brave, render may be slightly different in other browsers.<br />
+    <b>v0.1 7/19/25</b><br />
+    Click 'go' to enter. Type 'x' to exit. This mode uses the raw SVG, the raw data, display in transitions from single nodes to cliques and communities. Because SVG is large, it may help to tune these parameters for your system. Note: Tested in Brave, render may be slightly different in other browsers.<br />
 
     <input type="checkbox" id="fadeIn" checked>fade in <br />    
 
@@ -75,8 +76,9 @@ async function zoomToAnchors() {
     newSvg.style.top = '0';
     newSvg.style.left = '0';
     newSvg.style.opacity = '0';
+    newSvg.style.willChange = 'transform, opacity';
     if (document.getElementById('fadeIn').checked) {
-        newSvg.style.transition = 'opacity 2s';
+        newSvg.style.transition = 'opacity 3s';
         requestAnimationFrame(() => {
             newSvg.style.opacity = '1';
         });
@@ -103,8 +105,22 @@ async function zoomToAnchors() {
 
     if (activeSvg) {
         activeSvg.style.opacity = '0';
+        // remove first svg child
+        setTimeout(() => {
+            fullscreenContainer.removeChild(fullscreenContainer.children[0]);
+        }, 4000);
     }
+    console.log(newSvg.style.opacity);
     activeSvg = newSvg;
+
+    // if (fullscreenContainer) {
+    //     console.log('Container children:', fullscreenContainer.children.length);
+    //     console.log('Container children details:', Array.from(fullscreenContainer.children).map(c => ({
+    //         tagName: c.tagName,
+    //         id: c.id,
+    //         class: c.className
+    //     })));
+    // }
 
     let progress = 0;
     const step = Number(document.getElementById('speed').value);
@@ -132,7 +148,6 @@ async function zoomToAnchors() {
         const viewBoxY = currentCenterY - currentZoom / 2;
         newSvg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${currentZoom} ${currentZoom}`);
 
-        console.log([elapsed, Number(document.getElementById('transitionTime').value)]);
         if (elapsed < Number(document.getElementById('transitionTime').value) && animationActive) {
             requestAnimationFrame(animate);
         } else {
@@ -158,12 +173,11 @@ async function toggleFullscreen() {
         } catch (e) {
             console.log('Could not exit fullscreen:', e);
         }
-
-        activeSvg.style.display = 'none';
-        activeSvg = false;
+        
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        if (fullscreenContainer && originalParent) {
+        if (fullscreenContainer) {
+            animationActive = false;
             fullscreenContainer.remove();
             originalParent.appendChild(currentSvg);
 
@@ -176,6 +190,12 @@ async function toggleFullscreen() {
             currentSvg.style.display = 'block';
             await new Promise(resolve => setTimeout(resolve, 500));
         }
+
+        activeSvg = null;
+        currentSvg = null;
+        originalParent = null;
+        fullscreenContaier = null;
+
     } else {
         currentSvg = document.querySelector('svg');
         originalStyle = {
@@ -188,7 +208,6 @@ async function toggleFullscreen() {
             padding: currentSvg.style.padding,
             backgroundColor: currentSvg.style.backgroundColor
         };
-        console.log(originalStyle);
         originalParent = currentSvg.parentNode;
 
         currentSvg.style.display = 'none';
