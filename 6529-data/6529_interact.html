@@ -63,7 +63,7 @@
 
 <body>
   <div id="output_container" style="position:absolute; top:0px; left:0px;">
-    <div id="output" style="position:relative; width:100%; height:100%;"></div>
+    <div id="output"></div>
   </div>
 
   <div class="more-container">
@@ -85,6 +85,8 @@
         Mouseover to get some links for prominent addresses. This
         is an experimental interface for collectors, it renders approximately for position of links, but the rendering
         is vector quality SVG, feel free to zoom in.</p>
+      <p id="gallery_options">
+      </p>
       <button onclick="forceDownloadSVG('6529_mesh.svg')">Download SVG</button><br />
       <p>Warnings:<br /> SVG is very large file. SVG strips mouseover links. Visual tested in Brave and may appear slightly different in other browsers due to the finer detail of the thousands of connection lines.</p>
     </div>
@@ -96,12 +98,14 @@
   <script src="p5.min.js"></script>
 
   <script>
+    let originalViewBox = '';
     fetch('6529_mesh.mhtml.gz')
       .then(response => response.arrayBuffer())
       .then(data => {
         const decompressed = pako.ungzip(new Uint8Array(data), { to: 'string' });
         document.getElementById('output').innerHTML = decompressed;
         let svg = document.querySelector('svg');
+        originalViewBox = svg.getAttribute('viewBox');
       })
       .catch(error => {
         console.error('Error fetching or decompressing the file:', error);
@@ -128,8 +132,10 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
+    
 
   </script>
+  <script src="gallery_simple.js"></script>
 </body>
 
 </html>
