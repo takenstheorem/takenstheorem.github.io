@@ -18,7 +18,7 @@ document.getElementById('gallery_options').innerHTML = `
     Full screen mode<sup>beta</sup> <span style="cursor: pointer;" onclick="toggleGalleryOptions()">...</span>
     <div id='options' style="display: none; padding: 10px; background-color: #555; border-radius: 6px;">
     <b>v0.1 7/19/25</b><br />
-    Click 'go' to enter. Type 'x' to exit. This mode uses the SVG, raw data, displayed in transitions. SVG is large, it may help to tune these parameters for your system. Note: Tested in Brave, render may be slightly different in other browsers.<br />
+    Click 'go' to enter. Type 'x' to exit. This mode uses the SVG, raw data, displayed in transitions. SVG is large, it may help to tune these parameters for your system. Note: Tested in Brave, render may be slightly different in other browsers. Gallery view does not yet map links in the zoom animations, so links to 6529 accounts and cards won't be visible.<br />
 
     <input type="checkbox" id="fadeIn" checked>fade in <br />    
 
