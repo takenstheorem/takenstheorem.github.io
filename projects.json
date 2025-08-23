@@ -1,5 +1,14 @@
 [
     {
+        "title": "Memetic Circuitry",
+        "image_url": "imgs/memesis.webp",
+        "image_alt": "Memetic Circuitry (6529 Meme Card)",
+        "description": "Meme card for 6529.io. Memetics is a collective. Collaboration between Takens Theorem & Vantekai. Visual comes with a playful interactive website to explore 6529 holder data.",
+        "date": "2025-08-04",
+        "tags": [{"issuance":"328"},{"note":"ERC-1155"}],
+        "url": "https://6529.io/the-memes/389?focus=live"
+    },
+    {
         "title": "Materials of Abundance",
         "image_url": "material-abundance/complete/volcano.jpg",
         "image_alt": "Materials of Abundance",
