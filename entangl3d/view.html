@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>entangl3d</title>
+    <script src="three.min.js"></script>
+    <script src="OrbitControls.js"></script>
+    <script>
+        if (!window.THREE || !THREE.OrbitControls) {
+            console.error('OrbitControls failed to load. Check network and CSP.');
+        }
+    </script>
+    <script src="pako.min.js"></script>
+    <style>
+        html,
+        body {
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+
+        body {
+            position: relative;
+            height: 100vh;
+        }
+
+        button {
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+
+        #sparkline-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 10010;
+            pointer-events: none;
+        }
+
+        #sparkline-container {
+            position: absolute;
+            bottom: 80px;
+            left: 10px;
+            z-index: 10010;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 100%;
+            height: 4px;
+            margin: 0;
+            background-color: #00ff44ff !important;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            transform-origin: left center;
+            transform: scaleX(0) translateY(-50%);
+            z-index: 10000;
+            animation: expand 4s linear infinite alternate;
+        }
+
+        @keyframes expand {
+            0% {
+                transform: scaleX(0) translateY(-50%);
+            }
+
+            100% {
+                transform: scaleX(1) translateY(-50%);
+            }
+        }
+
+        #sparkline {
+            background: #0000;
+            opacity: 0.75;
+            border: 1px solid #3330;
+            cursor: pointer;
+            z-index: 10010;
+        }
+
+        canvas {
+            position: absolute;
+            inset: 0;
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: auto;
+            z-index: 0;
+        }
+
+        #currentPage {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            border-radius: 5px;
+            padding: 5px;
+            background-color: white;
+            color: black;
+            font-size: 0.75em;
+        }
+
+        /* Gear button */
+        #gearBtn {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0);
+            color: #111;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10010;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        }
+
+        #gearBtn:hover {
+            background: #fff;
+        }
+
+        /* Modal/backdrop */
+        .backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            z-index: 10000;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(600px, 90vw);
+            max-height: 80vh;
+            background: #101216;
+            color: #eaecef;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 10001;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: #eaecef;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        /* Tooltip for hotspot hover */
+        #tooltip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(12px, 12px);
+            display: none;
+            max-width: min(420px, 70vw);
+            background: rgba(16, 18, 22, 0.92);
+            color: #eaecef;
+            padding: 10px 12px;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+            font-size: 12px;
+            line-height: 1.35;
+            z-index: 10020;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            white-space: normal;
+        }
+
+        #tooltip .addr {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        #tooltip .muted {
+            color: #9aa0a6;
+        }
+
+        #tooltip .row {
+            margin-top: 4px;
+        }
+
+        .badge {
+            background-color: #101216;
+            color: gray;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.5em;
+            font-weight: 300;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .ui-avoid {
+            pointer-events: auto;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="sparkline-controls" style="display: none;">
+        <button class="badge ui-avoid" id="set_tx" onclick="setSpark('transaction_count');">tx</button>
+        <button class="badge ui-avoid" id="set_fee" onclick="setSpark('fee_total_usd');">fee</button>
+        <button class="badge ui-avoid" id="set_val" onclick="setSpark('value_total_usd');">val</button>
+        <button class="badge ui-avoid" id="set_val" onclick="setSpark('internal_value_total_usd');">i-val</button>
+    </div>
+    <div id="sparkline-container" style="display: none;">
+        <canvas id="sparkline" width="150" height="40" style="width: 150px; height: 40px;"></canvas>
+    </div>
+
+    <button id="gearBtn" aria-label="Open settings" title="Options" style="display: none;">⚙️</button>
+
+    <div id="backdrop" class="backdrop ui-avoid"></div>
+    <div id="optionsModal" class="modal ui-avoid" role="dialog" aria-modal="true" aria-labelledby="optionsTitle">
+        <div class="modal-header">
+            <div id="optionsTitle">Options</div>
+            <button id="modalClose" class="close-btn" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+            <button style="cursor: pointer;color:black;font-size:12px;"
+                onclick="document.getElementById('blockNum').value = minBlock;document.getElementById('goBtn').click();drawSparkline();">start
+                block</button>
+            <button style="cursor: pointer;color:black;font-size:12px;"
+                onclick="document.getElementById('blockNum').value = maxBlock;document.getElementById('goBtn').click();drawSparkline();">end
+                block</button><br />
+            <br />
+            Jump to block:
+            <input type="text" id="blockNum" placeholder="Block number">
+            <button id="goBtn">Go</button><br /><br />
+            <input type="checkbox" id="sparklineLog" onclick="drawSparkline();"> Spark line log
+        </div>
+    </div>
+
+    <div id="tooltip" role="status" aria-live="polite"></div>
+
+    <script src="config.js"></script>
+    <script src="stats.js"></script>
+    <script src="visuals.js"></script>
+    <script src="draw.js"></script>
+    <script src="animate.js"></script>
+    <script>
+
+        const urlParams = new URLSearchParams(window.location.search);
+        source_file = urlParams.get('block') + "_rect.json.gz";
+        if (urlParams.get('format') === 'circ') {
+            source_file = source_file.split('_')[0] + '_circ.json.gz'
+        }
+
+        function update() {
+            clearRenderedLines();
+            clearRenderedLabels();
+            clickablePoints = [];
+
+            window.scene.children = window.scene.children.filter(child => {
+                return !(child instanceof THREE.Points ||
+                    child instanceof THREE.PointsMaterial ||
+                    child instanceof THREE.BufferGeometry);
+            });
+
+            blocksData = {};
+            fetch(source_file)
+                .then(response => response.arrayBuffer())
+                .then(buffer => pako.inflate(buffer, { to: 'string' }))
+                .then(data => JSON.parse(data))
+                .then(data => {
+                    data.forEach(tx => {
+                        if (!blocksData[tx.block]) {
+                            blocksData[tx.block] = [];
+                        }
+                        blocksData[tx.block].push(tx);
+                    });
+                    const blocks = Object.keys(blocksData).map(Number);
+                    document.getElementById('blockNum').value = Math.round(targetPage);
+                    document.getElementById('goBtn').click();
+                });
+        }
+
+        fetch(source_file)
+            .then(response => response.arrayBuffer())
+            .then(buffer => pako.inflate(buffer, { to: 'string' }))
+            .then(data => JSON.parse(data))
+            .then(data => {
+                data.forEach(tx => {
+                    if (!blocksData[tx.block]) {
+                        blocksData[tx.block] = [];
+                    }
+                    blocksData[tx.block].push(tx);
+                });
+
+                const blocks = Object.keys(blocksData).map(Number);
+                minBlock = Math.min(...blocks);
+                maxBlock = Math.max(...blocks);
+                currentPage = minBlock;
+                targetPage = minBlock;
+                currentZ = minBlock;
+                initScene();
+                fetch(source_file.replace('_rect.json.gz', '_blocks.json'))
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(block => blockSummaries[block.id] = block);
+                        window.selectedTransactionIndex = 0;
+                        drawSparkline(window.selectedTransactionIndex);
+                        document.getElementById('sparkline-controls').style.display = 'block';
+                        document.getElementById('sparkline-container').style.display = 'block';
+                        document.getElementById('gearBtn').style.display = 'block';
+                        document.getElementById('loader').style.display = 'none';
+                    });
+            });
+
+        function setPageInstant(newPage) {
+            const clamped = Math.max(minBlock, Math.min(maxBlock, Math.floor(Number(newPage))));
+            currentPage = clamped;
+            targetPage = clamped;
+            currentZ = clamped;
+            const span = document.getElementById('currentPage');
+            if (span) span.innerHTML = currentPage;
+            positionCameraForCurrentZ();
+            updateScene();
+        }
+
+        function onWindowResize() {
+            if (window.camera) {
+                window.camera.aspect = window.innerWidth / window.innerHeight;
+                window.camera.updateProjectionMatrix();
+                window.renderer.setSize(window.innerWidth, window.innerHeight);
+                if (window.controls) window.controls.update();
+            }
+        }
+
+        window.addEventListener('resize', onWindowResize, false);
+
+        document.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            const scrollSpeed = 0.1;
+            isScrolling = true;
+
+            if (event.deltaY > 0) {
+                targetPage = Math.min(maxBlock, targetPage + scrollSpeed);
+            } else {
+                targetPage = Math.max(minBlock, targetPage - scrollSpeed);
+            }
+
+            drawSparkline(Math.round(targetPage - minBlock));
+        }, { passive: false });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const gearBtn = document.getElementById('gearBtn');
+            const modal = document.getElementById('optionsModal');
+            const backdrop = document.getElementById('backdrop');
+            const modalClose = document.getElementById('modalClose');
+
+            function openModal() {
+                modal.style.display = 'block';
+                backdrop.style.display = 'block';
+            }
+            function closeModal() {
+                modal.style.display = 'none';
+                backdrop.style.display = 'none';
+            }
+
+            gearBtn.addEventListener('click', openModal);
+            modalClose.addEventListener('click', closeModal);
+            backdrop.addEventListener('click', closeModal);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            document.getElementById('goBtn').addEventListener('click', () => {
+                const raw = document.getElementById('blockNum').value;
+                const blockNum = Math.floor(Number(raw));
+                if (!Number.isFinite(blockNum)) return;
+                setPageInstant(blockNum);
+            });
+        });
+
+        let galleryInterval = null;
+        if (urlParams.get('gallery') === 'true') {
+            isScrolling = true;
+            galleryInterval = setInterval(() => {
+                document.dispatchEvent(new WheelEvent('wheel', {
+                    deltaY: 0.1,
+                    deltaMode: 0,
+                    view: window
+                }));
+            }, 50);
+        }
+
+    </script>
+    <script src="sparkline.js"></script>
+
+    <div id="currentPage" class="loader">&nbsp;</div>
+    <canvas id="canvas"></canvas>
+
+</body>
+
+</html>
