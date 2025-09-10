@@ -23,3 +23,4 @@ let isScrolling = false;
 let isDragging = false;
 let dragStartTime = 0;
 let sparklineLog = false;
+let scrollSpeed = .1;

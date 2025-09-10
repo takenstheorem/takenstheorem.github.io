@@ -147,11 +147,6 @@ function initScene() {
 
     function handleClick(event) {
 
-        if (galleryInterval) {
-            clearInterval(galleryInterval);
-            galleryInterval = null;
-        }
-
         if (event.target.closest('.ui-avoid,#sparkline')) {
             return;
         }
