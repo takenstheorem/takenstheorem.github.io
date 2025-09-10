@@ -92,18 +92,6 @@
             z-index: 0;
         }
 
-        #currentPage {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            border-radius: 5px;
-            padding: 5px;
-            background-color: white;
-            color: black;
-            font-size: 0.75em;
-        }
-
         /* Gear button */
         #gearBtn {
             position: fixed;
@@ -223,6 +211,23 @@
         .ui-avoid {
             pointer-events: auto;
             cursor: pointer;
+        }
+
+        #screenshot-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 20px;
+            line-height: 40px;
+            text-align: center;
+            z-index: 1000;
         }
     </style>
 </head>
@@ -344,8 +349,6 @@
             currentPage = clamped;
             targetPage = clamped;
             currentZ = clamped;
-            const span = document.getElementById('currentPage');
-            if (span) span.innerHTML = currentPage;
             positionCameraForCurrentZ();
             updateScene();
         }
@@ -420,8 +423,32 @@
     </script>
     <script src="sparkline.js"></script>
 
-    <div id="currentPage" class="loader">&nbsp;</div>
+    <div class="loader" id="loader">&nbsp;</div>
     <canvas id="canvas"></canvas>
+    <button id="screenshot-btn" title="Post entangl3d screenshot. Click then paste.">📸</button>
+    <script>
+        document.getElementById('screenshot-btn').addEventListener('click', async () => {
+            event.preventDefault();
+            try {
+                const dataURL = document.getElementById('canvas').toDataURL('image/png');
+
+                const blob = await (await fetch(dataURL)).blob();
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]);
+
+                const tweetText = encodeURIComponent("A curious time capsule from entangl3d by @takenstheorem. On-chain activity visualized as a slice of time: [describe what you see] #entangl3d.");
+                const twitterURL = `https://twitter.com/intent/tweet?text=${tweetText}`;
+                window.open(twitterURL, '_blank');
+
+                alert("Screenshot copied to clipboard. Paste it into the post.");
+
+            } catch (err) {
+                console.error("Screenshot failed:", err);
+                alert("Screenshot failed. Make sure your browser supports Clipboard API.");
+            }
+        });
+    </script>
 
 </body>
 

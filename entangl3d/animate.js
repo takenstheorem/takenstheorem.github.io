@@ -7,7 +7,7 @@ function initScene() {
         canvas: canvas,
         antialias: false,
         powerPreference: 'high-performance',
-        preserveDrawingBuffer: false
+        preserveDrawingBuffer: true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1));
@@ -156,7 +156,7 @@ function initScene() {
             return;
         }
 
-        event.preventDefault();
+        //event.preventDefault();
         event.stopPropagation();
         isScrolling = false;
         console.log('clicked');
