@@ -217,15 +217,15 @@
             position: fixed;
             top: 10px;
             right: 10px;
-            background: white;
+            background: #222;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            font-size: 20px;
-            line-height: 40px;
+            font-size: 10px;
+            line-height: 20px;
             text-align: center;
             z-index: 1000;
         }
@@ -437,7 +437,7 @@
                     new ClipboardItem({ 'image/png': blob })
                 ]);
 
-                const tweetText = encodeURIComponent("A curious time capsule from entangl3d by @takenstheorem. On-chain activity visualized as a slice of time: [describe what you see] #entangl3d.");
+                const tweetText = encodeURIComponent("A curious time capsule from #entangl3d by @takenstheorem. On-chain activity visualized as a slice of time: [your discovery].");
                 const twitterURL = `https://twitter.com/intent/tweet?text=${tweetText}`;
                 window.open(twitterURL, '_blank');
 
