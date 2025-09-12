@@ -108,6 +108,11 @@ function drawBlock(blockNumber, opacity = 1) {
             });
             renderedLabels.push(sprite);
             sprite.position.set(label.x, label.y + 10, -blockNumber * Z_STEP);
+            sprite.userData = {
+                type: 'person',
+                address: label.address,
+                url: `https://etherscan.io/address/${label.address}`
+            };            
             window.scene.add(sprite);
             clickablePoints.push(sprite);
         });

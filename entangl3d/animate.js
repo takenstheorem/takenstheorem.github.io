@@ -206,10 +206,18 @@ function initScene() {
                 window.open(url, '_blank');
                 return;
             }
+
+            // In the pointHits loop, replace the person check with:
+            const obj = hit.object;
+            if (obj.userData && obj.userData.type === 'person') {
+                const url = obj.userData.url;
+                window.open(url, '_blank');
+                return;
+            }
         }
 
         if (clickablePoints.length > 0) {
-            for (const hit of pointHits) {                
+            for (const hit of pointHits) {
                 const obj = hit.object;
                 if (obj.userData && obj.userData.type === 'transactions' && obj.userData.transactions) {
                     const position = obj.geometry.attributes.position;
