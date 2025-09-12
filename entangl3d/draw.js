@@ -12,6 +12,7 @@ function drawBlock(blockNumber, opacity = 1) {
     const currentPoints = new Map();
     const txSegments = [];
     const txData = [];
+    const personsLabels = [];
 
     blockTxs.forEach(tx => {
         if (tx.fromx !== undefined && tx.fromy !== undefined &&
@@ -44,7 +45,7 @@ function drawBlock(blockNumber, opacity = 1) {
                     hash: tx.hash
                 });
             }
-            
+
 
             if (source_file.split('_')[1] == 'circ.json.gz') {
                 positions.push(
@@ -73,8 +74,44 @@ function drawBlock(blockNumber, opacity = 1) {
                 col.r, col.g, col.b,
                 col.r, col.g, col.b,
                 col.r, col.g, col.b);
+
+            const toPerson = personsMap.get(tx.to.toLowerCase());
+            const fromPerson = personsMap.get(tx.from.toLowerCase());
+
+            if (toPerson) {
+                personsLabels.push({
+                    address: tx.to,
+                    x: tx.tox,
+                    y: tx.toy,
+                    name: toPerson.name
+                });
+            }
+
+            if (fromPerson && !personsLabels.some(l => l.address.toLowerCase() === tx.from.toLowerCase())) {
+                personsLabels.push({
+                    address: tx.from,
+                    x: tx.fromx,
+                    y: tx.fromy,
+                    name: fromPerson.name
+                });
+            }
         }
     });
+
+    if (showPersons) {
+        personsLabels.forEach(label => {
+            const sprite = createTextSprite(label.name, {
+                font: 'normal 24px Courier New',
+                fillStyle: '#ffffff',
+                padding: 8,
+                bg: 'rgba(0, 0, 0, 0)'
+            });
+            renderedLabels.push(sprite);
+            sprite.position.set(label.x, label.y + 10, -blockNumber * Z_STEP);
+            window.scene.add(sprite);
+            clickablePoints.push(sprite);
+        });
+    }
 
     if (contract_creates.length > 0) {
         const contract_geometry = new THREE.BufferGeometry();

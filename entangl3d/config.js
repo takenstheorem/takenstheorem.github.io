@@ -25,3 +25,6 @@ let dragStartTime = 0;
 let sparklineLog = false;
 let scrollSpeed = .1;
 let opacityFactor = 4;
+let persons = [];
+let personsMap = new Map();
+let showPersons = false;

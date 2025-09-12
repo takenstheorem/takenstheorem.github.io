@@ -320,11 +320,12 @@
             <br /><br />
             <input type="checkbox" id="sparklineLog" onclick="drawSparkline();"> Spark line log<br /><br />
             Opacity factor:
-            <input type="range" id="opacityFactor" min="1" max="10" step="1" value="5"
+            <input type="range" id="opacityFactor" min="1" max="20" step="1" value="5"
                 oninput="document.getElementById('opacityFactorValue').textContent = this.value;"
                 onchange="opacityFactor = Number(this.value);">
             <span id="opacityFactorValue">5</span>
             <br /><br />
+            <input type="checkbox" id="persons" onclick="showPersons = !showPersons;drawSparkline();"> Hint labels<br /><br />
             <p>by <a href="https://takenstheorem.github.io" target="_blank" style="color: #fff;">Takens Theorem</a></p>
         </div>
     </div>
@@ -405,6 +406,10 @@
                         document.getElementById('legendBtn').style.display = 'flex';
                         document.getElementById('loader').style.display = 'none';
                         document.getElementById('screenshot-btn').style.display = 'block';
+                        fetch('persons.json').then(response => response.json()).then(data => {
+                            persons = data;
+                            personsMap = new Map(persons.map(p => [p.address.toLowerCase(), p]));
+                        });
                     });
             });
 
