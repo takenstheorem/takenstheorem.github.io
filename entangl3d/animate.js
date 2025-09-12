@@ -207,7 +207,6 @@ function initScene() {
                 return;
             }
 
-            // In the pointHits loop, replace the person check with:
             const obj = hit.object;
             if (obj.userData && obj.userData.type === 'person') {
                 const url = obj.userData.url;
