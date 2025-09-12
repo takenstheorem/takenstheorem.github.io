@@ -147,14 +147,13 @@ function initScene() {
 
     function handleClick(event) {
 
-        if (event.target.closest('.ui-avoid,#sparkline')) {
+        if (event.target.closest('.ui-avoid,#sparkline,#screenshot-btn,#gearBtn,#homeBtn')) {
             return;
         }
 
         //event.preventDefault();
         event.stopPropagation();
         isScrolling = false;
-        console.log('clicked');
 
         updateMouseFromEvent(event);
         if (!window.camera || (isDragging && performance.now() - dragStartTime > 200)) {
@@ -270,7 +269,6 @@ function mousedDown(event) {
         galleryInterval = null;
     }
     isScrolling = false;
-    console.log('mousedDown');
 }
 
 function updateScene() {
@@ -287,7 +285,7 @@ function updateScene() {
     for (let blockNum = start; blockNum <= end; blockNum++) {
         const d = Math.abs(blockNum - currentZ);
         const t = Math.max(0, 1 - d / radius);
-        const opacity = Math.pow(t, 4);
+        const opacity = Math.pow(t, opacityFactor);
         if (opacity <= 0.05) continue;
 
         const objs = drawBlock(blockNum, opacity);

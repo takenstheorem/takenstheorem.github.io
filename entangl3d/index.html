@@ -37,7 +37,8 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: -15px;
+            margin-bottom: 15px;
         }
 
         .block {
@@ -67,16 +68,33 @@
 
     <div class="container">
         <div class="instructions">
-            <p>Ethereum is a <a href="https://www.paradigm.xyz/2020/08/ethereum-is-a-dark-forest" target="_blank">dark
-                    forest</a>. It
-                can reveal wanderings and whereabouts. Patterns on its ledger are the <a
+            <p>
+            <b>entangl3d</b> is a work-in-progress <a href="https://en.wikipedia.org/wiki/Visuospatial_function"
+                target="_blank">visuospatial</a> explorer designed for visualizing activity within <a
+                href="https://www.paradigm.xyz/2020/08/ethereum-is-a-dark-forest" target="_blank">The Dark
+                Forest</a>. It projects the ledger's blocks as slices of time, and wallets as the computational activity
+            happening on those blocks. You can scroll through these blocks, effectively moving through time &mdash; click
+            around and explore!
+            </p>
+            <p>
+                This website demonstrates entangl3d. The links below lead to snapshots of our Dark Forest, capturing
+                specific moments in time like little capsules. I envision this as a social experience, a
+                narrative-generation game where you uncover hidden stories. You could even think of it as a <a
+                    href="https://en.wikipedia.org/wiki/Walking_simulator">"walking simulator" game</a>. Wander
+                through these past patterns and ask yourself: what's curious here? Are there emerging trends, unusual
+                transactions, or vibrant communities? What does your exploration reveal?
+            </p>
+        </div>
+        <a id="more-info-btn" style="cursor: pointer;"
+            onclick="document.getElementById('more-info').style.display == 'block' ? document.getElementById('more-info').style.display = 'none' : document.getElementById('more-info').style.display = 'block';">...</a>
+        <div class="instructions" id="more-info" style="display: none;">
+            <p>Ethereum is a <a href="https://www.paradigm.xyz/2020/08/ethereum-is-a-dark-forest" target="_blank">Dark
+                    Forest</a>. It can reveal wanderings and whereabouts. Patterns on its ledger are the <a
                     href="https://en.wikipedia.org/wiki/Tracking_(hunting)" target="_blank">tattlings</a> of the
-                forest's paths
-                and displacements. A public forest, we can all wander with a block explorer as flashlight. A beam
-                focused
-                through tabulations and visuals. The structure yields narrative, at least in part: The whys of
-                these wanderings. A beam cast into the dark forest reports on a connected network: What lost history
-                does it reveal, and toward what unseen destination does it point?
+                forest's paths and displacements. A public forest, we can all wander with a block explorer as
+                flashlight. A beam focused through tabulations and visuals. The structure yields narrative, at least in
+                part: The whys of these wanderings. A beam cast into The Dark Forest reports on a connected network:
+                What lost history does it reveal, and toward what unseen destination does it point?
             </p>
             <p>
                 We sometimes <a href="https://flipsidecrypto.xyz/home/explorers" target="_blank">compete to find
@@ -97,24 +115,9 @@
                 <img src="sample.png" alt="entangl3d sample" style="width: 100%; height: auto;">
             </div>
         </div>
+    </div>
+    <div class="container">
         <div class="instructions">
-            <p>
-            <h2>entangl3d</h2>entangl3d is a work-in-progress <a
-                href="https://en.wikipedia.org/wiki/Visuospatial_function" target="_blank">visuospatial</a> explorer for
-            the dark forest. entangl3d projects blocks visually as a slice of
-            time, and wallets as computational activity on those blocks. You can scroll through blocks, as if moving
-            through time. Click around. Explore.
-            </p>
-            <p>This website demos entangl3d. The links below lead to snapshots of our dark forest. Particular points
-                in time, little capsules. I
-                offer a social activity, a kind of
-                narrative-generation game. We could playfully tease this explorer as <a
-                    href="https://en.wikipedia.org/wiki/Walking_simulator">a "walking simulator" game</a>. Wander
-                the capsules of past patterns. What is curious about them? Are
-                there patterns
-                or particulars? A moment, a curious transaction, a trend, a mania a hack a community? <em>What does your
-                    beam reveal?</em>
-            </p>
             <p>
             <h2>How to play?</h2> Click the capsules of time below and wander the visuospatial explorer. There are no
             instructions. Scroll, drag, click; poke around in the dark forest.<br /><br />If you find some intrigue,
@@ -125,11 +128,6 @@
             integrated narrative report of our findings. What we saw. There will be a
             participation trophy for those who post.
             </p>
-        </div>
-    </div>
-    <div class="container">
-        <div class="block-links">
-            <a class="block" href="legend.png">Legend</a>
         </div>
     </div>
     <div class="container">
@@ -160,12 +158,13 @@
             </p>
             <p>
                 entangl3d is inspired in part by the technical and conceptual ingredients of my creative project
-                "Curious Circuits." Thanks so very much to initial collectors on that project: 
-                <a href="https://https://x.com/blocknoob_" target="_blank">@blocknoob_</a>, 
-                <a href="https://x.com/bitbunkichi" target="_blank">@bitbunkichi</a>, 
-                <a href="https://cypherdao.org/" target="_blank">CypherDAO</a>, 
+                "Curious Circuits." Thanks so very much to initial collectors on that project:
+                <a href="https://https://x.com/blocknoob_" target="_blank">@blocknoob_</a>,
+                <a href="https://x.com/bitbunkichi" target="_blank">@bitbunkichi</a>,
+                <a href="https://cypherdao.org/" target="_blank">CypherDAO</a>,
                 <a href="https://x.com/ArtizenEth" target="_blank">@ArtizenEth</a>.
-                Visit its dedicated <a href="https://takenstheorem.github.io/circuits/" target="_blank">site right here</a>.
+                Visit its dedicated <a href="https://takenstheorem.github.io/circuits/" target="_blank">site right
+                    here</a>.
             </p>
         </div>
     </div>

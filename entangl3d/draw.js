@@ -43,8 +43,6 @@ function drawBlock(blockNumber, opacity = 1) {
                     y: tx.fromy,
                     hash: tx.hash
                 });
-                //tx.tox = 1e10;
-                console.log(contract_creates);
             }
             
 
