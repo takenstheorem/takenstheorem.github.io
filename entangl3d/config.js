@@ -28,3 +28,4 @@ let opacityFactor = 4;
 let persons = [];
 let personsMap = new Map();
 let showPersons = false;
+let colorful = false;

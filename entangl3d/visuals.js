@@ -48,3 +48,38 @@ function makeCircleTexture(size = 64) {
     tex.needsUpdate = true;
     return tex;
 }
+
+function getNeonColor(seed) {
+    function mulberry32(a) {
+      return function() {
+        var t = (a += 0x6D2B79F5);
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+  
+    const rand = mulberry32(seed);
+    const h = Math.floor(rand() * 360);
+    const s = 100;
+    const l = 60 + rand() * 20;
+    function hslToHex(h, s, l) {
+      s /= 100;
+      l /= 100;
+  
+      const k = n => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = n =>
+        Math.round(255 * (l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)))));
+  
+      return (
+        '#' +
+        [f(0), f(8), f(4)]
+          .map(x => x.toString(16).padStart(2, '0'))
+          .join('')
+      );
+    }
+  
+    return new THREE.Color(hslToHex(h, s, l));
+  }
+  

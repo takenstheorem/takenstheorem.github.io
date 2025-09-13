@@ -1,6 +1,14 @@
 function drawBlock(blockNumber, opacity = 1) {
+
     const blockTxs = blocksData[blockNumber] || [];
     if (blockTxs.length === 0) return [];
+
+    let regularColor;
+    if (colorful) {
+        regularColor = getNeonColor(blockNumber);
+    } else {
+        regularColor = 0x00ff00;
+    }
 
     const geometry = new THREE.BufferGeometry();
     const positions = [];
@@ -13,6 +21,46 @@ function drawBlock(blockNumber, opacity = 1) {
     const txSegments = [];
     const txData = [];
     const personsLabels = [];
+
+    const seenAddresses = new Set();
+    blockTxs.forEach(tx => {
+        if (tx.to) seenAddresses.add(tx.to.toLowerCase());
+        if (tx.from) seenAddresses.add(tx.from.toLowerCase());
+    });
+
+    blockTxs.forEach(tx => {
+        if (tx.fromx === undefined || tx.fromy === undefined ||
+            tx.tox === undefined || tx.toy === undefined) {
+            return; 
+        }
+
+        if (!personsLabels.some(l => l.address.toLowerCase() === tx.to.toLowerCase())) {
+            const person = personsMap.get(tx.to.toLowerCase());
+            if (person) {
+                personsLabels.push({
+                    address: tx.to,
+                    x: tx.tox,
+                    y: tx.toy,
+                    name: person.name
+                });
+                seenAddresses.add(tx.to.toLowerCase());
+            }
+        }
+
+        if (!personsLabels.some(l => l.address.toLowerCase() === tx.from.toLowerCase())) {
+            const person = personsMap.get(tx.from.toLowerCase());
+            if (person) {
+                personsLabels.push({
+                    address: tx.from,
+                    x: tx.fromx,
+                    y: tx.fromy,
+                    name: person.name
+                });
+                seenAddresses.add(tx.from.toLowerCase());
+            }
+        }
+    });
+
 
     blockTxs.forEach(tx => {
         if (tx.fromx !== undefined && tx.fromy !== undefined &&
@@ -37,7 +85,7 @@ function drawBlock(blockNumber, opacity = 1) {
                 txBump = ((Number('0x' + tx.hash.substr(0, 3)) + hashCounts[tx.hash]) % 128) / 20;
             }
 
-            if (tx.tox == tx.fromx && tx.toy == tx.fromy && (tx.func == "60606040" || tx.func == "60806040")) {
+            if (tx.tox == tx.fromx && tx.toy == tx.fromy && (tx.func == "60606040" || tx.func == "60806040" || tx.func == "5b620186")) {
                 contract_creates.push(tx.fromx + 10, tx.fromy + 10, 0);
                 contractCreateData.push({
                     x: tx.fromx,
@@ -45,7 +93,6 @@ function drawBlock(blockNumber, opacity = 1) {
                     hash: tx.hash
                 });
             }
-
 
             if (source_file.split('_')[1] == 'circ.json.gz') {
                 positions.push(
@@ -69,32 +116,32 @@ function drawBlock(blockNumber, opacity = 1) {
                     );
                 }
             }
-            const col = new THREE.Color(tx.fail == 1 ? 0xff0000 : 0x00ff00);
+            const col = new THREE.Color(tx.fail == 1 ? 0xff0000 : regularColor);
             colors.push(col.r, col.g, col.b,
                 col.r, col.g, col.b,
                 col.r, col.g, col.b,
                 col.r, col.g, col.b);
 
-            const toPerson = personsMap.get(tx.to.toLowerCase());
-            const fromPerson = personsMap.get(tx.from.toLowerCase());
+            // const toPerson = personsMap.get(tx.to.toLowerCase());
+            // const fromPerson = personsMap.get(tx.from.toLowerCase());
 
-            if (toPerson) {
-                personsLabels.push({
-                    address: tx.to,
-                    x: tx.tox,
-                    y: tx.toy,
-                    name: toPerson.name
-                });
-            }
+            // if (toPerson) {
+            //     personsLabels.push({
+            //         address: tx.to,
+            //         x: tx.tox,
+            //         y: tx.toy,
+            //         name: toPerson.name
+            //     });
+            // }
 
-            if (fromPerson && !personsLabels.some(l => l.address.toLowerCase() === tx.from.toLowerCase())) {
-                personsLabels.push({
-                    address: tx.from,
-                    x: tx.fromx,
-                    y: tx.fromy,
-                    name: fromPerson.name
-                });
-            }
+            // if (fromPerson && !personsLabels.some(l => l.address.toLowerCase() === tx.from.toLowerCase())) {
+            //     personsLabels.push({
+            //         address: tx.from,
+            //         x: tx.fromx,
+            //         y: tx.fromy,
+            //         name: fromPerson.name
+            //     });
+            // }
         }
     });
 
@@ -107,12 +154,12 @@ function drawBlock(blockNumber, opacity = 1) {
                 bg: 'rgba(0, 0, 0, 0)'
             });
             renderedLabels.push(sprite);
-            sprite.position.set(label.x, label.y + 10, -blockNumber * Z_STEP);
+            sprite.position.set(label.x, label.y + 15, -blockNumber * Z_STEP);
             sprite.userData = {
                 type: 'person',
                 address: label.address,
                 url: `https://etherscan.io/address/${label.address}`
-            };            
+            };
             window.scene.add(sprite);
             clickablePoints.push(sprite);
         });
