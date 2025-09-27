@@ -259,10 +259,27 @@
             cursor: pointer;
         }
 
-        #screenshot-btn {
+        #png-screenshot-btn {
             position: fixed;
             top: 10px;
             right: 10px;
+            background: #222;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 10px;
+            line-height: 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        #svg-screenshot-btn {
+            position: fixed;
+            top: 10px;
+            right: 50px;
             background: #222;
             border: none;
             border-radius: 50%;
@@ -325,7 +342,8 @@
                 onchange="opacityFactor = Number(this.value);">
             <span id="opacityFactorValue">5</span>
             <br /><br />
-            <input type="checkbox" id="persons" onclick="showPersons = !showPersons;drawSparkline();"> Hint labels<br /><br />
+            <input type="checkbox" id="persons" onclick="showPersons = !showPersons;drawSparkline();"> Hint
+            labels<br /><br />
             <input type="checkbox" id="colorful" onclick="colorful = !colorful;drawSparkline();"> Colorful<br /><br />
             <p>by <a href="https://takenstheorem.github.io" target="_blank" style="color: #fff;">Takens Theorem</a></p>
         </div>
@@ -406,7 +424,8 @@
                         document.getElementById('homeBtn').style.display = 'flex';
                         document.getElementById('legendBtn').style.display = 'flex';
                         document.getElementById('loader').style.display = 'none';
-                        document.getElementById('screenshot-btn').style.display = 'block';
+                        document.getElementById('png-screenshot-btn').style.display = 'block';
+                        document.getElementById('svg-screenshot-btn').style.display = 'block';
                         fetch('persons.json').then(response => response.json()).then(data => {
                             persons = data;
                             personsMap = new Map(persons.map(p => [p.address.toLowerCase(), p]));
@@ -526,9 +545,12 @@
 
     <div class="loader" id="loader">&nbsp;</div>
     <canvas id="canvas"></canvas>
-    <button id="screenshot-btn" title="Post entangl3d screenshot. Click then paste." style="display: none;">📸</button>
+    <button id="png-screenshot-btn" title="Copy entangl3d screenshot to clipboard."
+        style="display: none;color:white;">PNG</button>
+    <button id="svg-screenshot-btn" title="Copy entangl3d screenshot to clipboard."
+        style="display: none;color:white;">SVG</button>
     <script>
-        document.getElementById('screenshot-btn').addEventListener('click', async () => {
+        document.getElementById('png-screenshot-btn').addEventListener('click', async () => {
             event.preventDefault();
             try {
                 const dataURL = document.getElementById('canvas').toDataURL('image/png');
@@ -538,15 +560,50 @@
                     new ClipboardItem({ 'image/png': blob })
                 ]);
 
-                const tweetText = encodeURIComponent("A curious time capsule from #entangl3d by @takenstheorem. On-chain activity visualized as a slice of time: [your discovery].");
-                const twitterURL = `https://twitter.com/intent/tweet?text=${tweetText}`;
-                window.open(twitterURL, '_blank');
-
-                alert("Screenshot copied to clipboard. Paste it into the post.");
+                // const tweetText = encodeURIComponent("A curious time capsule from #entangl3d by @takenstheorem. On-chain activity visualized as a slice of time: [your discovery].");
+                // const twitterURL = `https://twitter.com/intent/tweet?text=${tweetText}`;
+                // window.open(twitterURL, '_blank');
+                alert("PNG screenshot copied to clipboard.");
 
             } catch (err) {
                 console.error("Screenshot failed:", err);
                 alert("Screenshot failed. Make sure your browser supports Clipboard API.");
+            }
+        });
+
+        document.getElementById('svg-screenshot-btn').addEventListener('click', async () => {
+            event.preventDefault();
+            try {
+                const canvas = document.getElementById('canvas');
+                // Create SVG data URL
+                const svgData = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
+                <foreignObject width="100%" height="100%">
+                    <div xmlns="http://www.w3.org/1999/xhtml">
+                        <img src="${canvas.toDataURL('image/png')}" width="${canvas.width}" height="${canvas.height}" />
+                    </div>
+                </foreignObject>
+            </svg>`;
+
+                // Create blob from SVG
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+
+                // Copy to clipboard
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        'image/svg+xml': svgBlob,
+                        'text/plain': new Blob([svgData], { type: 'text/plain' })
+                    })
+                ]);
+
+                // const tweetText = encodeURIComponent("A curious time capsule from #entangl3d by @takenstheorem. On-chain activity visualized as a slice of time: [your discovery].");
+                // const twitterURL = `https://twitter.com/intent/tweet?text=${tweetText}`;
+                // window.open(twitterURL, '_blank');
+                alert("SVG copied to clipboard. You can now paste it into your tweet.");
+
+            } catch (err) {
+                console.error("SVG copy failed:", err);
+                alert("SVG copy failed. Make sure your browser supports Clipboard API.");
             }
         });
     </script>

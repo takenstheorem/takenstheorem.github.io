@@ -160,7 +160,7 @@
   <section class="hero">
     <h1>Takens Theorem</h1>
     <span style="font-size: 0.8em; color: #ccc;">
-      Data. Display. Discourse. 
+      Data. Display. Discourse.
       <a target="_blank" href="https://twitter.com/takenstheorem" style="text-decoration:none;color:white;">
         X
       </a>
@@ -191,14 +191,18 @@
 
   <section class="hero">
     <h2>Visual Projects</h2>
-    <div style="font-size: 0.8em; color: #ccc; text-align: left;" >
-      To support me 🙏, check out primaries available. 
-      
-      (1) I sometimes list primaries on <a href="https://opensea.io/0xA88E4a192f3ff5e46dcC96EFefB38dfEC7bb250C/listings" target="_blank">OpenSea</a>.
+    <div style="font-size: 0.8em; color: #ccc; text-align: left;">
+      To support me 🙏, check out primaries available.
 
-      (2) Several available in my MATERIALS OF ABUNDANCE project on <a href="https://objkt.com/collections/KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy" target="_blank">objkt.com</a>.
+      (1) I sometimes list primaries on <a href="https://opensea.io/0xA88E4a192f3ff5e46dcC96EFefB38dfEC7bb250C/listings"
+        target="_blank">OpenSea</a>.
 
-      (3) 1/1 piece "Unum" on-chain Tezos piece as part of the collaborative <a href="https://objkt.com/tokens/KT1LvFzYTgcgFR1auMMyVhHuvMYEmkddo3Lq/27" target="_blank">ZeroContract Artist Studio | Art's not Dead</a>. Fully on-chain, fusing materials from other artists. Bids welcomed.
+      (2) Several available in my MATERIALS OF ABUNDANCE project on <a
+        href="https://objkt.com/collections/KT1TdaF7yUws1b5XosvNtoDPci98UKpmbDoy" target="_blank">objkt.com</a>.
+
+      (3) 1/1 piece "Unum" on-chain Tezos piece as part of the collaborative <a
+        href="https://objkt.com/tokens/KT1LvFzYTgcgFR1auMMyVhHuvMYEmkddo3Lq/27" target="_blank">ZeroContract Artist
+        Studio | Art's not Dead</a>. Fully on-chain, fusing materials from other artists. Bids welcomed.
     </div>
   </section>
 
@@ -206,9 +210,32 @@
   </section>
 
   <section class="hero">
+    <h2>Performances</h2>
+    <div style="font-size: 0.8em; color: #ccc; text-align: left;">
+      <a href="https://medium.com/@takenstheorem/aesthetic-commodities-through-a-collective-filter-105adfad2dfb" target="_blank">See here</a> for a relevant post: "Lately, I've become tempted to operate outside these constraints despite their correlation with cryptoart. I became further inspired in this direction by the experiential qualities of on-chain destruction and recovery, fiddling on another artist's ideas by expanding them into new tools, and by grafting a computational experience on top of someone else's mint."          
+    </div>    
+  </section>
+
+  <section id="performances" class="gallery">
+  </section>
+
+  <section class="hero">
     <h2>Selected Writings
-      <span style="font-size: 0.65em; color: #ccc;">(<a href="https://takenstheorem.medium.com/" target="_blank">more</a>)</span>
+      <span style="font-size: 0.65em; color: #ccc;">(<a href="https://takenstheorem.medium.com/"
+          target="_blank">more</a>)</span>
     </h2>
+    <div style="font-size: 0.8em; color: #ccc; text-align: left;">
+      Writing and visualization have been featured in <a
+        href="https://opensea.io/blog/articles/predicting-ens-domain-value" target="_blank">OpenSea blog</a>, <a
+        href="https://www.coindesk.com/policy/2021/09/17/ethereums-design-choices-are-inherently-political/"
+        target="_blank">Coindesk</a>, <a href="https://nftnow.com/features/nft-drops-are-broken-heres-how-we-fix-them/"
+        target="_blank">NFT Now</a>, and <a href="https://medium.com/etherscan-blog/souls-of-immortal-nfts-de212a840de5"
+        target="_blank">Etherscan blog</a> and more. I've conducted <a
+        href="https://takenstheorem.medium.com/new-case-study-in-how-on-chain-applications-can-skew-important-coin-metrics-72b51589a314"
+        target="_blank">curious little data adventures</a>, and also wrote
+      as Etherscan's <a href="https://info.etherscan.com/newsletter/b51.html" target="_blank">guest blog writer</a> from
+      2022-2024.
+    </div>
   </section>
 
   <section id="writings" class="gallery">
@@ -241,7 +268,7 @@
             data.forEach((article, index) => {
               const panel = document.createElement('div');
               panel.classList.add('panel');
-              
+
               const img = document.createElement('img');
               img.src = article.image_url;
               img.alt = article.image_alt;
@@ -290,7 +317,7 @@
                       } else if (tagValue === 'tezos') {
                         badgeChar = 'ꜩ';
                       } else if (tagValue === 'on-chain') {
-                        badgeChar = '⛓'; 
+                        badgeChar = '⛓';
                       } else if (tagValue === 'interactive') {
                         badgeChar = '💾'; /* save icon */
                       } else if (tagValue === '1/1s') {
@@ -304,7 +331,7 @@
                       }
                       break;
                     default:
-                      badgeChar = tagName.charAt(0).toUpperCase(); 
+                      badgeChar = tagName.charAt(0).toUpperCase();
                   }
 
                   const badge = document.createElement('span');
@@ -313,7 +340,7 @@
                   if (tagName === 'issuance') {
                     tooltipText = `issuance: ${tagValue}`;
                   }
-                  badge.title = tooltipText;  
+                  badge.title = tooltipText;
 
                   badgeContainer.appendChild(badge);
                 });
@@ -343,6 +370,7 @@
       populateDiv('writings', true);
       populateDiv('projects', false);
       populateDiv('featured', true);
+      populateDiv('performances', true);
 
     });
 

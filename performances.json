@@ -1,0 +1,42 @@
+[
+    {
+        "title": "entangl3d",
+        "image_url": "entangl3d/sample.png",
+        "image_alt": "Interface for entangl3d",
+        "description": "A visuospatial explorer for exploring activity within The Dark Forest.",
+        "date": "2025-09-15",
+        "url": "https://takenstheorem.github.io/entangl3d/"
+    },
+    {
+        "title": "Collective Filter",
+        "image_url": "assorted_imgs/filterheader.jpg",
+        "image_alt": "Interface for Collective Filter",
+        "description": "Surveying relationships between cryptoart and performance art and introducing a data performance that involves creators and collectors as awkward product recommendations.",
+        "date": "2024-11-27",
+        "url": "https://takenstheorem.github.io/collective-filter/"
+    },
+    {
+        "title": "Rothko Recovery",
+        "image_url": "assorted_imgs/scratch.jpg",
+        "image_alt": "Mysteries of recovery",
+        "description": "...an amazing NFT project on Ethereum called “Rothko on Pennies” by Yigit Duman and the events surrounding it — including my own participation.",
+        "date": "2024-10-07",
+        "url": "https://medium.com/etherscan-blog/creating-destroying-and-restoring-on-chain-artwork-d6f1d031a2d5"
+    },
+    {
+        "title": "On-Chain Garden",
+        "image_url": "assorted_imgs/monas.jpg",
+        "image_alt": "The hole, growing.",
+        "description": "A little contract 'hack' for an on-chain experiment 'Rabbit Hole' by Monas. The contract overcomes an on-chain game constraint that lets a community of seeders to a contract 'garden' grow their holdings together.",
+        "date": "2024-10-13",
+        "url": "https://x.com/takenstheorem/status/1845659106218254640"
+    },
+    {
+        "title": "Recursive Gutenberg",
+        "image_url": "assorted_imgs/deafbeef2.gif",
+        "image_alt": "Automatic typesetter",
+        "description": "0xDEAFBEEF's 'Moveable Type,' systems & symbols alter culture & consciousness; in the spirit of the cultural ratchet, a second-layer symbols compounding symbols.",
+        "date": "2024-10-17",
+        "url": "https://x.com/takenstheorem/status/1846758953415590249"
+    }
+]
