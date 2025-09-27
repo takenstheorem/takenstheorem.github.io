@@ -38,5 +38,13 @@
         "description": "0xDEAFBEEF's 'Moveable Type,' systems & symbols alter culture & consciousness; in the spirit of the cultural ratchet, a second-layer symbols compounding symbols.",
         "date": "2024-10-17",
         "url": "https://x.com/takenstheorem/status/1846758953415590249"
+    },
+    {
+        "title": "Table View of 0xchain.art",
+        "image_url": "assorted_imgs/onchain.jpg",
+        "image_alt": "Avastars on-chain",
+        "description": "Preserving an on-chain dataset of 0xchain.art with permanent-ish ENS site.",
+        "date": "2023-08-18",
+        "url": "http://onchains.takenstheorem.eth.limo/"
     }
 ]
