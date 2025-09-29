@@ -1,6 +1,6 @@
 {
   "name": "rh #TOKEN_ID",
-  "description": "Closer. It seems to be breathing. Closer. There's something inside.",
+  "description": "Closer. There's something inside.",
   "attributes": [
     {"trait_type":"Size","value":"1000"},
     {"trait_type":"Nothing","value":"True"},
