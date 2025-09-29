@@ -1,5 +1,5 @@
 {
-  "name": "rh #TOKEN_ID",
+  "name": "rh #1016",
   "description": "Closer. There's something inside.",
   "attributes": [
     {"trait_type":"Size","value":"1000"},
