@@ -147,7 +147,7 @@ function initScene() {
 
     function handleClick(event) {
 
-        if (event.target.closest('.ui-avoid,#sparkline,#screenshot-btn,#gearBtn,#homeBtn')) {
+        if (event.target.closest('.ui-avoid,#sparkline,#png-screenshot-btn,#svg-screenshot-btn,#gearBtn,#homeBtn')) {
             return;
         }
 
