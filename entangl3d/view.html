@@ -425,7 +425,7 @@
                         document.getElementById('legendBtn').style.display = 'flex';
                         document.getElementById('loader').style.display = 'none';
                         document.getElementById('png-screenshot-btn').style.display = 'block';
-                        document.getElementById('svg-screenshot-btn').style.display = 'block';
+                        // document.getElementById('svg-screenshot-btn').style.display = 'block';
                         fetch('persons.json').then(response => response.json()).then(data => {
                             persons = data;
                             personsMap = new Map(persons.map(p => [p.address.toLowerCase(), p]));
