@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>layer_two by Takens Theorem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@alch/alchemy-web3@latest/dist/alchemyWeb3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wide {
+            grid-column: span 2;
+        }
+
+        .very-wide {
+            grid-column: 1 / -1;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .bio {
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .panel img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .panel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .panel:hover .panel-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-content h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .panel-content p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .article-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .text-date {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+        }
+
+        .panel:hover .article-date {
+            opacity: 1;
+        }
+
+        #featured_txt {
+            line-height: 1.5;
+        }
+
+        .project_badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 0.65em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="hero">
+        <h1>layer_two</h1>
+        <p>Collector Site</p>
+        <span style="font-size: 0.8em; color: #ccc;">
+            <a href="../" style="text-decoration:none;color:white;">
+                Takens <span>🏠</span>
+            </a>
+            |
+            <a target="_blank" href="https://opensea.io/collection/layer-two-by-takens-theorem"
+                style="text-decoration:none;color:white;">
+                layer_two on OpenSea
+            </a>
+        </span>
+    </section>
+
+
+    <div class="gallery wide">
+        <div class="very-wide">
+            ❤️ Created from the_coin.<br /><br />
+            ⭐️ Mint new visualizations weekly.<br /> <br />
+            ⛓ layer_two calls the_coin token's on-chain data to create new visualizations, little tapestries more
+            complex and curious. layer_two tokens are also 100% on-chain, an expression of expanding, diversifying
+            computational possibilities, recursively building on top of each other, fusing into new forms. Full details
+            about layer_two are
+            on <a href="https://takenstheorem.medium.com/emerging-from-the-base-layer-d67515774a28" target="_blank">the
+                Medium post</a>.
+        </div>
+    </div>
+
+    <section class="hero">
+        <div style="width: 100%; margin: 0 auto; display: block;">
+            <img src="project_imgs/layer_two_2.jpeg" style="max-width: 1000px; margin: 0 auto; display: block;" />
+        </div>
+    </section>
+
+    <div style="text-align: center; margin: 10px 0;">
+        <span onclick="javascript:populateDiv('layer_two');"
+            style="cursor:pointer; margin: 0 auto; display: block;">&#8635;</span>
+    </div>
+
+    <section class="gallery" id="layer_two">
+    </section>
+
+    <div class="gallery wide">
+        <div class="very-wide">
+
+            <h2>Test here before you mint</h2>
+            The interface below calls the layer_two contract on Ethereum, and lets you test out your layer_two (L2)
+            visual
+            before minting a token. Owners can create an "L2" token every week or so (210,000/5 = 42,000 Ethereum
+            blocks)
+            for the cost of gas only. (This interface and the layer_two project were developed and tested for OpenSea
+            and
+            Google Chrome. See other notes, terms and conditions below.)
+
+            <h3>Instructions:</h3>
+            <ul>
+                <li>Choose one of the_coin token IDs that you own in the dropdown below</li>
+                <li>Click hash(); and the layer_two (random) nonce and visual should update</li>
+                <li>Click hash(); until you find a rendering you like (suggestion: save your nonce in a text file and
+                    copy
+                    it back
+                    into the "manual" entry box below and hash again &mdash; that way you can confirm that the exact nonce you
+                    have
+                    produces
+                    the visual you desire)</li>
+                <li>Enter your chosen token ID and corresponding nonce into the <a href="https://etherscan.io/address/0xe2364f1792c397255451ba84b942c3f903806af0#writeContract" target="_blank">mintL2Token(...)</a> function on Etherscan
+                </li>
+            </ul>
+
+            the_coin token: <select id="baseTokenId"></select> (baseTokenId)<br /><br />
+
+            <span id="nextMintTxt"></span> <span onclick="javascript:refreshNextMint();" ;
+                style="cursor:pointer;">&#8635;</span><br /><br />
+
+            nonce: <span id="l2nonce"></span> <input type=text id="l2nonceTxt"
+                placeholder="Enter nonce manually" /><br /><br />
+
+            <button id="hash" onclick="javascript:hash();" style="font-weight:bold;">hash();</button>
+            <button onclick="javascrpt:setWidth('50%');">50%</button>
+            <button onclick="javascrpt:setWidth('100%');">100%</button>
+
+            <br /><br />
+
+            <div id="error"></div>
+
+            <div style="width:100%;text-align:center;">
+                <img id="l2"
+                    style="display:none; width:100%; margin: 0 auto; box-shadow: 0 5px 9px 0 rgba(0,0,0,0.3), 0 5px 25px 0 rgba(0,0,0,.3);"
+                    src="" />
+            </div>
+        </div>
+    </div>
+
+
+    <div class="gallery wide">
+        <div class="very-wide">
+            <strong>More information</strong><span>:</span>
+            <ul>
+                <li><a href="https://takenstheorem.medium.com/emerging-from-the-base-layer-d67515774a28"
+                        target="_blank">Medium post</a>&nbsp;(full details)</li>
+                <li><a href="https://etherscan.io/address/0xe2364f1792c397255451ba84b942c3f903806af0"
+                        target="_blank">layer_two contract</a>&nbsp;✅ 0xE2364...806aF0</li>
+                <li><a href="https://opensea.io/collection/layer-two-by-takens-theorem" target="_blank">layer_two
+                        OpenSea
+                        collection</a></li>
+                <li><a href="https://opensea.io/collection/the-coin-by-takens-theorem" target="_blank">the_coin OpenSea
+                        collection</a></li>
+            </ul><br><strong>Important note</strong>: The preview interface here is an experimental application, and
+            because it relies upon an external node to summon data from the chain, it may not persist. Use at your own
+            risk,
+            and see the&nbsp;<a href="https://takenstheorem.medium.com/emerging-from-the-base-layer-d67515774a28"
+                target="_blank">Medium post</a>&nbsp;on layer_two for tips on how to use Etherscan instead of this
+            tool.<br><br><strong>Terms &amp; conditions</strong>:&nbsp;Experimental, use at your own risk. Each token
+            provided as-is and as-available without any and all warranty. By using this contract you accept sole
+            responsibility for any and all transactions involving layer_two. Tokens may appear different across
+            browsers,
+            and may not be formatted correctly on all exchanges. No assurances of any kind given. Like any project of
+            this
+            nature, there may be unforeseen errors or issues that are discovered during the course of deployment and
+            use.
+            These are important caveats, but I hope you like it.
+        </div>
+    </div>
+
+
+    <script>
+
+        var baseTokenId = document.getElementById("baseTokenId");
+        var nonce = Math.floor(Math.random() * 1000000000);
+
+        const abi = '[{"inputs": [],"stateMutability": "nonpayable","type": "constructor"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "owner","type": "address"},{"indexed": true,"internalType": "address","name": "approved","type": "address"},{"indexed": true,"internalType": "uint256","name": "tokenId","type": "uint256"}],"name": "Approval","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "owner","type": "address"},{"indexed": true,"internalType": "address","name": "operator","type": "address"},{"indexed": false,"internalType": "bool","name": "approved","type": "bool"}],"name": "ApprovalForAll","type": "event"},{"inputs": [{"internalType": "address","name": "to","type": "address"},{"internalType": "uint256","name": "tokenId","type": "uint256"}],"name": "approve","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "uint256","name": "baseTokenId","type": "uint256"},{"internalType": "uint256","name": "nonce","type": "uint256"}],"name": "mintL2Token","outputs": [],"stateMutability": "nonpayable","type": "function"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "previousOwner","type": "address"},{"indexed": true,"internalType": "address","name": "newOwner","type": "address"}],"name": "OwnershipTransferred","type": "event"},{"inputs": [],"name": "renounceOwnership","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "from","type": "address"},{"internalType": "address","name": "to","type": "address"},{"internalType": "uint256","name": "tokenId","type": "uint256"}],"name": "safeTransferFrom","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "from","type": "address"},{"internalType": "address","name": "to","type": "address"},{"internalType": "uint256","name": "tokenId","type": "uint256"},{"internalType": "bytes","name": "_data","type": "bytes"}],"name": "safeTransferFrom","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "operator","type": "address"},{"internalType": "bool","name": "approved","type": "bool"}],"name": "setApprovalForAll","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "string","name": "val","type": "string"}],"name": "setStr","outputs": [],"stateMutability": "nonpayable","type": "function"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "from","type": "address"},{"indexed": true,"internalType": "address","name": "to","type": "address"},{"indexed": true,"internalType": "uint256","name": "tokenId","type": "uint256"}],"name": "Transfer","type": "event"},{"inputs": [{"internalType": "address","name": "from","type": "address"},{"internalType": "address","name": "to","type": "address"},{"internalType": "uint256","name": "tokenId","type": "uint256"}],"name": "transferFrom","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "newOwner","type": "address"}],"name": "transferOwnership","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "owner","type": "address"}],"name": "balanceOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "tokenId","type": "uint256"}],"name": "getApproved","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "owner","type": "address"},{"internalType": "address","name": "operator","type": "address"}],"name": "isApprovedForAll","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "name","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "baseTokenId","type": "uint256"}],"name": "nextMinting","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "owner","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "tokenId","type": "uint256"}],"name": "ownerOf","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "baseTokenId","type": "uint256"},{"internalType": "uint256","name": "nonce","type": "uint256"}],"name": "previewL2","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "bytes4","name": "interfaceId","type": "bytes4"}],"name": "supportsInterface","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "symbol","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "tokenId","type": "uint256"}],"name": "tokenURI","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"}]';
+        const w3 = AlchemyWeb3.createAlchemyWeb3("https://eth-mainnet.alchemyapi.io/v2/tP22aP3IvV7K9nbbepaFV6ayJ-UmXz1-")
+        var restyler = new w3.eth.Contract(JSON.parse(abi), "0xE2364f1792C397255451Ba84b942c3F903806aF0");
+
+        function bg(col) {
+            if (col == 'dark') {
+                document.body.style.backgroundColor = 'black';
+            } else {
+                document.body.style.backgroundColor = 'white';
+            }
+        }
+
+        for (i = 1; i < 85; i++) {
+            var opt = document.createElement('option');
+            opt.value = i;
+            opt.innerHTML = "#" + i;
+            baseTokenId.appendChild(opt);
+        }
+        refreshNextMint();
+
+        function refreshNextMint() {
+            restyler.methods.nextMinting(baseTokenId.value).call().then(updateNext);
+        }
+
+        baseTokenId.onchange = function () {
+            refreshNextMint();
+            hash();
+        }
+
+        function updateNext(s) {
+            info = s.split(',');
+            if (info[0] == 'READY') {
+                msg = "#" + baseTokenId.value + ": ready to mint a layer_two.";
+            } else {
+                msg = "#" + baseTokenId.value + ": wait " + info[1] + " blocks (~" + Math.round(100 * info[1] * 13 / 60 / 60 / 24) / 100 + " days)";
+            }
+            document.getElementById("nextMintTxt").innerHTML = msg;
+        }
+
+        function setWidth(w) {
+            document.getElementById("l2").style.width = w;
+        }
+
+        function hash() {
+            document.getElementById("hash").disabled = true;
+            nonce = Math.floor(Math.random() * 10000000000);
+            if (document.getElementById('l2nonceTxt').value != '') {
+                nonce = document.getElementById('l2nonceTxt').value;
+            }
+            restyler.methods.previewL2(baseTokenId.value, nonce).call().then(showImg);
+        }
+
+        function showImg(s) {
+            document.getElementById("l2").src = "data:image/svg+xml;base64," + btoa(s);
+            document.getElementById("l2").style.display = 'block';
+            document.getElementById("l2nonce").innerHTML = nonce;
+            setTimeout(function () {
+                document.getElementById("hash").disabled = false;
+            }, 1250)
+        }
+
+        // hash();
+
+        function populateDiv(id, toBlank = false) {
+            console.log(id);
+            // wipe out div
+            document.getElementById(id).innerHTML = '';
+
+            fetch(id + '.json')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById(id);
+
+                    // select 12 random layer_twos
+                    const shuffled = data.sort(() => 0.5 - Math.random());
+                    const selected = shuffled.slice(0, 12);
+
+                    selected.forEach((l2Token, index) => {
+                        l2Token = JSON.parse(l2Token.replace('data:text/plain,', ''));
+
+                        const panel = document.createElement('div');
+                        panel.classList.add('panel');
+
+                        const cleanDescription = l2Token.description
+                            .replace(/\\n/g, '. ')     // Handle newlines first
+                            .replace(/\-/g, '')        // Remove dashes
+                            .replace(/\.\s*\./g, '.')  // Clean up multiple periods
+                            .replace(/\s+/g, ' ')      // Clean up spaces
+                            .replace(/0x[a-fA-F0-9]+/g, match => match.substring(0, 8) + '...')  // Addresses last
+                            .trim();
+
+                        const img = document.createElement('img');
+                        img.src = "data:image/svg+xml;base64," + btoa(l2Token.image);
+                        img.alt = cleanDescription;
+                        panel.appendChild(img);
+
+                        const aLink = document.createElement('a');
+                        aLink.href = "https://opensea.io/item/ethereum/0xe2364f1792c397255451ba84b942c3f903806af0/" +
+                            l2Token.name.split('#')[1].split(' ')[0];
+                        aLink.target = '_blank';
+
+                        const panelContent = document.createElement('div');
+                        panelContent.classList.add('panel-content');
+
+                        const h3 = document.createElement('h3');
+                        h3.textContent = l2Token.name;
+                        panelContent.appendChild(h3);
+
+                        const p = document.createElement('p');
+                        p.textContent = cleanDescription;
+                        panelContent.appendChild(p);
+
+                        const dateLabel = document.createElement('div');
+                        dateLabel.classList.add('article-date');
+
+                        const badgeContainer = document.createElement('div');
+                        badgeContainer.style.position = 'absolute';
+                        badgeContainer.style.top = '2px';
+                        badgeContainer.style.right = '2px';
+
+                        panel.appendChild(badgeContainer);
+
+                        dateLabel.textContent = l2Token.attributes[0].value;
+
+                        panel.appendChild(dateLabel);
+                        aLink.appendChild(panelContent);
+                        panel.appendChild(aLink);
+                        container.appendChild(panel);
+                    });
+                });
+        }
+
+        window.onload = function () {
+            // document.querySelector("#wsite-content > div > div > div > div > div > div:nth-child(4)").style.display = "none";
+            populateDiv("layer_two");
+        }
+
+    </script>
+
+</body>
+
+</html>
