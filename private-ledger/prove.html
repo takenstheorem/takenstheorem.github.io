@@ -14,9 +14,19 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding-top: 420px;
+            padding-top: 320px;
             padding-left: 20px;
             padding-right: 20px;
+        }
+
+        a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         #secretInput {
@@ -72,13 +82,13 @@
             position: fixed;
             top: 20px;
             left: 70px;
-            width: 40px;
+            width: auto;
             height: 40px;
             background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
             cursor: pointer;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 20;
@@ -213,8 +223,8 @@
     <a href="index.html"><button class="home-btn" title="Home">
             🏠
         </button></a>
-    <button class="generate-proof-btn" onclick="startProof()" title="Generate Proof">
-        ⚡
+    <button id="lightningBtn" class="generate-proof-btn" onclick="startProof()" title="Generate Proof">
+         ⚡ prove knowledge
     </button>
 
     <div class="swatch" id="preview_swatch">public key / visual encoding (preview)</div>
@@ -229,10 +239,12 @@
     <canvas id="soul"></canvas>
 
     <div class="container">
-        <br><br>
         <div id="commitmentOutput" class="actionDiv">
             <div style="gap: 10px; margin-bottom: 10px;">
-                <p><b>Step 1:</b> Use Y and T to obtain a challenge from the verifier contract using
+                <p><b>Step 1:</b> The public ledger computes over galactically large numbers.
+                    Such integers are the raw materials of cryptography. 
+                    Our secrets are hidden among them.
+                    Use Y and T to obtain a challenge from the verifier contract using
                     <code>challengeProver(Y, T)</code>. Click the button below to call the contract and set the challenge. 
                     The challenge will appear below along with a new button called "Step 2: Prove Knowledge."
                     (Try not to refresh the website during this process, or you'll have to start the challenge
@@ -251,7 +263,7 @@
                         style="padding: 6px 12px; cursor: pointer; font-size: .9em; background-color: #3a3a3a; color: #ffffff; border: 1px solid #555; border-radius: 4px;">Retrieve Commitment</button>-->
                 </p>
                 <p><input type="text" id="challengeInput" placeholder="Challenge value should appear here"
-                        style="width: 100%; padding: 10px; font-family: monospace; background-color: #2d2d2d; color: #e0e0e0; border: 1px solid #444; border-radius: 4px; box-sizing: border-box;">
+                        style="width: 100%; padding: 10px; font-family: monospace; background-color: #2d2d2d; color: #e0e0e0; border: 1px solid #444; border-radius: 4px; box-sizing: border-box;" readonly>
                 </p>
                 <p><button id="proveKnowledgeBtn" onclick="proveKnowledge()"
                         style="display: none; margin-top: 10px; padding: 6px 12px; cursor: pointer; font-size: .9em; background-color: #3a3a3a; color: #ffffff; border: 1px solid #555; border-radius: 4px;">Step 2: Prove
@@ -266,6 +278,12 @@
                 confirmed, a link to OnChainChecker will appear that will show the updated piece and an analysis 
                 of its on-chain status.
             </div>
+            <div style="margin-top: 10px; color: #a0a0a0; font-size: 0.8em;">
+                <p>Public key Y: <span id="final_Y"></span></p>
+                <p>Commitment T: <span id="final_T"></span></p>
+                <p>Response s: <span id="final_s"></span></p>
+                <p>Challenge c: <span id="final_c"></span></p>
+            </div>
             <div style="gap: 10px; margin-bottom: 10px;">
                 <button id="writeProofBtn"
                     style="padding: 6px 12px; cursor: pointer; font-size: .9em; background-color: #3a3a3a; color: #ffffff; border: 1px solid #555; border-radius: 4px;">Write
@@ -279,16 +297,13 @@
                     <a href="https://onchainchecker.xyz/collection/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1"
                         target="_blank" style="color: #fff;">click here</a> to view the updated piece.
                 </span>
+                <br />State of <a href="https://onchainchecker.xyz/fullscreen/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1/animation" target="_blank">onchain visual encoding</a>: <br />
+                <iframe id="onchainCheckerIframe" src="https://onchainchecker.xyz/fullscreen/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1/animation"
+                    style="display: block; width: 100%; height: 600px; border: none;"></iframe>
             </div>
             <textarea id="proofTextarea"
-                style="width: 100%; min-height: 100px; padding: 10px; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; background-color: #2d2d2d; color: #e0e0e0; border: 1px solid #444; border-radius: 4px;"
+                style="display:none; width: 100%; min-height: 100px; padding: 10px; font-family: monospace; white-space: pre-wrap; word-wrap: break-word; background-color: #2d2d2d; color: #e0e0e0; border: 1px solid #444; border-radius: 4px;"
                 readonly></textarea>
-            <div style="margin-top: 10px; color: #a0a0a0; font-size: 0.8em;">
-                <p>Public key Y: <span id="final_Y"></span></p>
-                <p>Commitment T: <span id="final_T"></span></p>
-                <p>Response s: <span id="final_s"></span></p>
-                <p>Challenge c: <span id="final_c"></span></p>
-            </div>
         </div>
     </div>
     <script>
@@ -310,6 +325,7 @@
         const p = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffffn;
         const g = 5n;
         const order = (p - 1n) / 2n;
+        let onchainY = 0;
 
         function modExp(base, exponent, mod) {
             let result = 1n;
@@ -648,8 +664,15 @@
                             const x = (await sha256BigInt(data)) % order;
                             const Y = modExp(g, x, p);
                             updateVisualFromY(Y);
-                            document.getElementById('yValue').textContent = Y.toString();
-                            document.getElementById('preview_swatch').style.display = 'block';
+                            // document.getElementById('yValue').textContent = Y.toString();
+                            // document.getElementById('preview_swatch').style.display = 'block';
+                            if (Y == onchainY) {
+                                document.getElementById('lightningBtn').style.display = 'flex';
+                                document.getElementById('yValue').textContent = '✅ ' + Y.toString();
+                            } else {
+                                document.getElementById('lightningBtn').style.display = 'none';
+                                document.getElementById('yValue').textContent = Y.toString();
+                            }
                         } catch (error) {
                             console.error('Error computing Y:', error);
                             document.getElementById('yValue').textContent = 'Error';
@@ -686,6 +709,10 @@
             document.getElementById('connect_addr').textContent = signer.address.slice(0, 12) + '...';
             document.getElementById('connect_addr').style.cursor = 'default';
             document.getElementById('connect_addr').removeEventListener('click', connect);
+
+            const contract = new ethers.Contract(verifierAddress, verifierAbi, signer);
+            onchainY = await contract.currentY();
+            console.log(onchainY);
             return { provider, signer };
         }
         async function sendCommitment(Y, T) {
@@ -697,6 +724,7 @@
             console.log(c);
             document.getElementById('challengeInput').value = c.c;
             document.getElementById('retrievingChallengeMsg').style.display = 'none';
+            document.getElementById('sendCommitmentBtn').style.display = 'none';
             document.getElementById('proveKnowledgeBtn').style.display = 'block';
         }
         async function getCurrentCommitment() {
@@ -719,6 +747,7 @@
             console.log(tx);
             document.getElementById('sendingProofMsg').style.display = 'none';
             document.getElementById('proofSentMsg').style.display = 'block';
+            document.getElementById('writeProofBtn').style.display = 'none';
         }
     </script>
 
