@@ -277,7 +277,7 @@
                     style="display: none; color: #fff; font-weight: bold; margin-left: 10px; white-space: nowrap;">
                     Proof complete. 
                     <a href="https://onchainchecker.xyz/collection/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1"
-                        target="_blank" style="color: #fff;">click here</a> to view the updated piece
+                        target="_blank" style="color: #fff;">click here</a> to view the updated piece.
                 </span>
             </div>
             <textarea id="proofTextarea"
@@ -630,6 +630,7 @@
             currentYParams = features.slice(0, 12);
             document.getElementById('commitmentOutput').style.display = 'none';
             document.getElementById('proofOutput').style.display = 'none';
+            document.getElementById('proofSentMsg').style.display = 'none';
 
             console.log('Updated Y params from Y=' + yValue + ':', currentYParams.map(f => f.toFixed(3)));
         }
