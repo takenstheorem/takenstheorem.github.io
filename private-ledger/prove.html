@@ -14,9 +14,10 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding-top: 320px;
+            padding-top: 250px;
             padding-left: 20px;
             padding-right: 20px;
+            z-index: 100;
         }
 
         a {
@@ -215,6 +216,8 @@
             margin-left: 40px;
             margin-right: 40px;
             max-width: 1120px;
+            z-index: 1000;
+            position: relative;
         }
     </style>
 </head>
@@ -292,12 +295,12 @@
                     style="display: none; color: #00aaff; font-weight: bold; margin-left: 10px; white-space: nowrap; animation: blink 2s ease-in-out infinite;">sending
                     proof...</span>
                 <span id="proofSentMsg"
-                    style="display: none; color: #fff; font-weight: bold; margin-left: 10px; white-space: nowrap;">
+                    style="display: none; color: #fff; margin-left: 10px; white-space: nowrap;">
                     Proof complete. 
                     <a href="https://onchainchecker.xyz/collection/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1"
                         target="_blank" style="color: #fff;">click here</a> to view the updated piece.
                 </span>
-                <br />State of <a href="https://onchainchecker.xyz/fullscreen/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1/animation" target="_blank">onchain visual encoding</a>: <br />
+                <br /><br />State of <a href="https://onchainchecker.xyz/fullscreen/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1/animation" target="_blank">onchain visual encoding</a>: <br />
                 <iframe id="onchainCheckerIframe" src="https://onchainchecker.xyz/fullscreen/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1/animation"
                     style="display: block; width: 100%; height: 600px; border: none;"></iframe>
             </div>
@@ -326,6 +329,8 @@
         const g = 5n;
         const order = (p - 1n) / 2n;
         let onchainY = 0;
+        let ownerAddress = "";
+        let connectedAddress = "";
 
         function modExp(base, exponent, mod) {
             let result = 1n;
@@ -673,11 +678,15 @@
                                 document.getElementById('lightningBtn').style.display = 'none';
                                 document.getElementById('yValue').textContent = Y.toString();
                             }
+                            if (ownerAddress == connectedAddress) {
+                                document.getElementById('lightningBtn').style.display = 'flex';
+                            }
                         } catch (error) {
                             console.error('Error computing Y:', error);
                             document.getElementById('yValue').textContent = 'Error';
                         }
                     } else {
+                        document.getElementById('lightningBtn').style.display = 'none';
                         document.getElementById('yValue').textContent = '';
                     }
                 }, 100);
@@ -696,7 +705,6 @@
         let provider = null;
         let signer = null;
         const verifierAddress = "0xDC62072976b9C7769ce6058d22eAD251D079Dc95";
-        const nftAddress = "";
         const verifierAbi = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }], "name": "OwnableInvalidOwner", "type": "error" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "OwnableUnauthorizedAccount", "type": "error" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "Ys", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "Y", "type": "uint256" }, { "internalType": "uint256", "name": "T", "type": "uint256" }], "name": "challengeProver", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "challenges", "outputs": [{ "internalType": "uint256", "name": "Y", "type": "uint256" }, { "internalType": "uint256", "name": "T", "type": "uint256" }, { "internalType": "uint256", "name": "c", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "currentY", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "g", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "Y", "type": "uint256" }], "name": "getProofs", "outputs": [{ "components": [{ "internalType": "address", "name": "contributor", "type": "address" }, { "internalType": "uint256", "name": "Y", "type": "uint256" }, { "internalType": "uint256", "name": "T", "type": "uint256" }, { "internalType": "uint256", "name": "s", "type": "uint256" }, { "internalType": "uint256", "name": "c", "type": "uint256" }], "internalType": "structSchnorr256.Proof[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "base", "type": "uint256" }, { "internalType": "uint256", "name": "exponent", "type": "uint256" }, { "internalType": "uint256", "name": "modulus", "type": "uint256" }], "name": "modexp", "outputs": [{ "internalType": "uint256", "name": "result", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "nftOwner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "p", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "priorProofs", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }, { "internalType": "uint256", "name": "", "type": "uint256" }], "name": "proofs", "outputs": [{ "internalType": "address", "name": "contributor", "type": "address" }, { "internalType": "uint256", "name": "Y", "type": "uint256" }, { "internalType": "uint256", "name": "T", "type": "uint256" }, { "internalType": "uint256", "name": "s", "type": "uint256" }, { "internalType": "uint256", "name": "c", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "Y", "type": "uint256" }, { "internalType": "uint256", "name": "T", "type": "uint256" }, { "internalType": "uint256", "name": "s", "type": "uint256" }, { "internalType": "uint256", "name": "c", "type": "uint256" }], "name": "verifyCheck", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "Y", "type": "uint256" }, { "internalType": "uint256", "name": "T", "type": "uint256" }, { "internalType": "uint256", "name": "s", "type": "uint256" }], "name": "verifyStore", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }];
         async function connect() {
             if (window.ethereum == null) {
@@ -712,7 +720,9 @@
 
             const contract = new ethers.Contract(verifierAddress, verifierAbi, signer);
             onchainY = await contract.currentY();
-            console.log(onchainY);
+            ownerAddress = await contract.nftOwner();
+            connectedAddress = signer.address;
+            console.log([ownerAddress, onchainY]);
             return { provider, signer };
         }
         async function sendCommitment(Y, T) {
