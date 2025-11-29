@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Ledger by Takens Theorem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #4fc3f7;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #fff;
+            margin-bottom: 60px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 60px;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .tech-stack {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .tech-item {
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .tech-item strong {
+            color: #fff;
+        }
+
+        .asset-container {
+            width: 100vw;
+            height: 500px;
+            margin: 60px 0;
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+        }
+
+        .asset-frame {
+            width: 100%;
+            height: 100%;
+            border: 0px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background-color: #000;
+        }
+
+        .majestic {
+            font-size: 1.5em;
+            font-style: italic;
+            font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+            color: #fff;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            line-height: 1.8;
+            background-color: rgba(225, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid rgba(255, 255, 255, 0.1);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Private Ledger</h1>
+        <div class="subtitle">by Takens Theorem</div>
+
+        <div class="asset-container">
+            <iframe src="asset.html" class="asset-frame" frameborder="0"></iframe>
+        </div>
+
+        <div class="section">
+            <h2>Two Ledgers</h2>
+
+            <p>
+                When transactions occur on chain, they are etched into a public ledger. Each transaction represents a
+                commitment to a state change
+                using galactically large integers. Cold compute.
+            </p>
+
+            <p>But there is another ledger, one that maps onto the chain but is kept separate, secret. This "private
+                ledger" marks the human intentions behind transactions. Collecting NFTs exemplifies this dynamic. A
+                private
+                ledger captures the subjective meaning and emotional resonance that cannot so easily be encoded in code,
+                existing in the space between intention and implementation. It's in mind.
+            </p>
+
+            <ul>
+                <li><em>Why</em> did a collector collect?</li>
+                <li>What did a collector <em>feel</em> about the work?</li>
+                <li>What did they <em>experience</em>?</li>
+                <li>Does their <em>impression</em> differ from the creator's?</li>
+            </ul>
+
+            <p>
+                When a person interacts with the chain, the world contains these traces of intention, in memory and
+                emotion. And so despite its cold compute, the public ledger indexes countless such intimate secrets.
+                Every gentle click on a hardware wallet happens alongside hidden ideas and emotions that remain only in
+                the minds of those involved -- their private ledger.
+            </p>
+
+            <p class="majestic">
+                <em>Private Ledger</em> lets its collector prove a meaning without revealing it.
+            </p>
+
+            <p>
+                "Private Ledger" by <a href="../takens-theorem.html">Takens Theorem</a> interrogates this divide between
+                public and private. It invites its collector to formulate a zero-knowledge proof which is then written
+                to the public ledger, proving that a particular meaning exists. The
+                collector can then alter a visual representation based on this proof, and anyone on the chain including
+                Takens can confirm it (should the collector choose to share this hidden meaning with others).
+            </p>
+
+            <p>
+                Private Ledger is a 1/1 on-chain piece. It has two parts: (i) a cryptographic commitment and (ii) a dynamic
+                visual representation of that proof.
+            </p>
+            <ul>
+                <li><strong>Cryptographic commitment</strong>, a permanent record that the message exists. It is a giant
+                    integer over which the public ledger computes proof of a specific message's existence.</li>
+                <li><strong>Dynamic visual encoding</strong>, an evolving image that maps directly onto the proof's
+                    values,
+                    expressing the more fluid biological essence of the collector's intention. It resides on chain,
+                    mapped to the message but not revealing the message itself.</li>
+            </ul>
+
+        </div>
+
+        <!--<div class="section">
+            <h2 style="margin-bottom: 20px; cursor: pointer; border-bottom: 1px solid #ccc; padding-bottom: 5px;"
+                onclick="document.getElementById('instructions').style.display = document.getElementById('instructions').style.display === 'none' ? 'block' : 'none';">
+                How-to for collector &darr;</h2>
+
+            <div id="instructions" style="display:none;">
+                <p>
+                    Anyone can generate a proof from any wallet, but only the collector's wallet can change the visual.
+                </p>
+
+                <h3>Generate a Proof</h3>
+                <ul>
+                    <li>The collector types a meaning.</li>
+                    <li>Clicks "Create Private Ledger" and then "Generate Proof" (⚡).</li>
+                    <li>Schnorr signatures produce a zero-knowledge proof that the collector knows the content without
+                        revealing it.</li>
+                    <li>The commitment is recorded on-chain; a dynamic visual is rendered from the proof's integers.
+                    </li>
+                </ul>
+
+                <p class="majestic">
+                    On the chain, the collector reveals a visual that embodies their intimate meaning. Others see only
+                    that such a meaning exists and is known by collector and, if they choose to reveal it, the creator
+                    and others.
+                </p>
+
+                <p>
+                    <em>Private Ledger</em> turns cryptographic commitment into a living, expressive record that keeps
+                    personal insight hidden while still proving its presence to the world.
+                </p>
+
+
+                <div class="tech-stack">
+                    <div class="tech-item"><strong>Cryptography:</strong> Schnorr signatures with Fiat-Shamir heuristic
+                    </div>
+                    <div class="tech-item"><strong>Smart Contract:</strong> Solidity verification contract on Ethereum
+                    </div>
+                    <div class="tech-item"><strong>Visualization:</strong> WebGL/GLSL fragment shaders generating
+                        dynamic
+                        "intent"</div>
+                    <div class="tech-item"><strong>Security:</strong> Non-interactive zero-knowledge proofs</div>
+                </div>
+
+                <div class="nav-buttons">
+                    <a href="prove.html" class="nav-button">Create Private Ledger</a>
+                    <a href="assets/asset.html" class="nav-button">View Asset</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>-->
+</body>
+
+</html>
