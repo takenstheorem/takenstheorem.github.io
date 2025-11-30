@@ -205,13 +205,22 @@
 
         <div class="section">
             <p style="margin-bottom: 20px;">
-                <a href="https://superrare.com/curation/exhibitions/intimate-systems" target="_blank">Intimate Systems</a>, December 2025 on SuperRare<br />
-                <a href="https://superrare.com/artwork/eth/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1" target="_blank">Private Ledger</a> on SuperRare<br />
-                <a href="https://onchainchecker.xyz/collection/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1" target="_blank">OnChainChecker analysis</a> of Private Ledger
+                <a href="https://superrare.com/curation/exhibitions/intimate-systems" target="_blank">Intimate
+                    Systems</a>, December 2025 on SuperRare<br />
+                <a href="https://superrare.com/artwork/eth/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1"
+                    target="_blank">Private Ledger</a> on SuperRare<br />
+                <a href="https://onchainchecker.xyz/collection/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1"
+                    target="_blank">OnChainChecker analysis</a> of Private Ledger<br />
+                Intimate Semiotics <a href="https://etherscan.io/address/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B"
+                    target="_blank">ERC-721</a> housing Private Ledger<br />
+                Private Ledger <a href="https://etherscan.io/address/0xdc62072976b9c7769ce6058d22ead251d079dc95"
+                    target="_blank">verifier contract</a><br />
+                Private Ledger <a href="https://etherscan.io/address/0x612194e587b3f05ff9b756ec3f18245a073b505d"
+                    target="_blank">renderer contract</a>
             </p>
             <p style="margin-bottom: 20px; cursor: pointer; border-bottom: 1px solid #ccc; padding-bottom: 5px;"
                 onclick="document.getElementById('caveats').style.display = document.getElementById('caveats').style.display === 'none' ? 'block' : 'none';">
-                Important notes and caveats <button>show</button></p>
+                Important notes and ⚠️ caveats <button>show</button></p>
 
             <div id="caveats" style="display:none;">
                 <p>Private Ledger is an art project. An experiment. It cannot be considered a sound cryptographic system
@@ -305,14 +314,25 @@
 
                     </div>
                     <div class="answer">
-                        <strong>Takens Theorem:</strong> For Private Ledger, I used a beautiful ZK trick that exploits discrete log as
-                        they call it - no fancy circuits which can be expensive for proofs - just modular exponentiation of
+                        <strong>Takens Theorem:</strong> For Private Ledger, I used a beautiful ZK trick that exploits
+                        discrete log as
+                        they call it - no fancy circuits which can be expensive for proofs - just modular exponentiation
+                        of
                         giant integers. Which isn't free but pretty cheap.
 
-                        <br /><br />I read a variety of <a href="https://medium.com/@loveshharchandani/zero-knowledge-proofs-with-sigma-protocols-91e94858a1fb" target="_blank">explainers</a> for this specific approach to ZK proofs and built Private Ledger to illustrate a simple version of it (it's called the Sigma protocol with Schnorr identification). There are all kinds of details in ZK math, it's incredible - you can prove the soundness of a method for example, certainty that an attacker could not break it. However I'm not a cryptographer, so any collector or viewer of the piece should be aware that this is a very simple version of the algorithm and should not be used for any real-world applications. We'll see if anyone cracks it! 
+                        <br /><br />I read a variety of <a
+                            href="https://medium.com/@loveshharchandani/zero-knowledge-proofs-with-sigma-protocols-91e94858a1fb"
+                            target="_blank">explainers</a> for this specific approach to ZK proofs and built Private
+                        Ledger to illustrate a simple version of it (it's called the Sigma protocol with Schnorr
+                        identification). There are all kinds of details in ZK math, it's incredible - you can prove the
+                        soundness of a method for example, certainty that an attacker could not break it. However I'm
+                        not a cryptographer, so any collector or viewer of the piece should be aware that this is a very
+                        simple version of the algorithm and should not be used for any real-world applications. We'll
+                        see if anyone cracks it!
                     </div>
                     <div class="answer">
-                        <strong>jonooo:</strong> Haha fair point! I think, all the more interesting for the lore: kintsugi.                        
+                        <strong>jonooo:</strong> Haha fair point! I think, all the more interesting for the lore:
+                        kintsugi.
                     </div>
 
                 </div>
@@ -549,6 +569,11 @@
                 </div>
             </div>
         </div>
+
+        <div class="nav-buttons">
+            <a href="prove.html" class="nav-button">Interact with Private Ledger</a>
+        </div>
+
 
         <!--<div class="section">
             <h2 style="margin-bottom: 20px; cursor: pointer; border-bottom: 1px solid #ccc; padding-bottom: 5px;"
