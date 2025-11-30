@@ -678,7 +678,7 @@
                                 document.getElementById('lightningBtn').style.display = 'none';
                                 document.getElementById('yValue').textContent = Y.toString();
                             }
-                            if (ownerAddress == connectedAddress) {
+                            if (ownerAddress == connectedAddress && connectedAddress != "") {
                                 document.getElementById('lightningBtn').style.display = 'flex';
                             }
                         } catch (error) {
