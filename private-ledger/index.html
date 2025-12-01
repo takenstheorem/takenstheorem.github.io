@@ -145,6 +145,402 @@
         <div class="section">
             <h2>Two Ledgers</h2>
 
+
+            <div class="section">
+                <p style="margin-bottom: 20px; cursor: pointer; border-bottom: 1px solid #ccc; padding-bottom: 5px;"
+                    onclick="document.getElementById('chat').style.display = document.getElementById('chat').style.display === 'none' ? 'block' : 'none';">
+                    Explainer: Takens Theorem with jonooo of SuperRare <button>show</button></p>
+
+                <div id="chat" style="display:none;">
+                    <style>
+                        .interview-section {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 10px;
+                        }
+
+                        .question {
+                            background-color: #2d2d2d;
+                            margin-top: 50px;
+                            padding: 10px;
+                            border-radius: 4px;
+                            margin-bottom: 10px;
+                        }
+
+                        .answer {
+                            background-color: #2d2d2d;
+                            padding: 10px;
+                            border-radius: 4px;
+                            margin-bottom: 10px;
+                        }
+                    </style>
+                    <div class="interview-section">
+                        <div><a href="https://x.com/im_jonooo" target="_blank">jonooo</a> and I had a chat late one
+                            night
+                            before Intimate Systems released. The conversation seemed well suited as an explainer
+                            itself,
+                            illustrating the piece and how it works, because jonooo interacted with the contract and
+                            participated as a "prover." I've adapted the questions and responses with permission below,
+                            sharing the very visuals we shared along the way (keeping our secrets secret, of course).
+                        </div>
+                        <div class="question">
+                            <strong>jonooo:</strong> I was just looking at your piece! Can you tell me about it?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Sure! Here's some material from the site, which I'll share
+                            in
+                            more detail soon. "Private Ledger" explores a divide between public and private. It invites
+                            its
+                            collector to formulate a zero-knowledge (ZK) proof which is then written to the public
+                            ledger,
+                            proving that a particular meaning exists. The collector can then alter a visual
+                            representation
+                            based on this proof, and anyone on the chain including I could confirm knowledge of it (if
+                            the
+                            collector chooses to share this hidden meaning with others).
+
+                            <br><br>The public ledger indexes countless intimate secrets like this. Every gentle click
+                            on a
+                            hardware wallet could happen alongside hidden ideas and emotions that remain only in the
+                            minds
+                            of those involved - their "private ledger." The visual itself depicts this tension, a
+                            structure
+                            at the center accumulating with each proof, but the idea itself encoded in a kind of
+                            organic,
+                            undulating visual behind it.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> I love this! I know there are murmurs around zk proofs, I know 113
+                            has
+                            talked about
+                            it a good bit.
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Yeah, there're the amazing <a
+                                href="https://unitlondon.com/nfts/zero-glimpse-sunflower-one/">innovations by
+                                Mathcastles</a>, they call them "information-asymmetric artworks," very nice, it's
+                            certainly
+                            inspired by related ideas about intimate secrets. There's also Paul Seidler's <em><a
+                                    href="https://realabstraction.plsdlr.net/" target="_blank">Real Abstraction</a></em>
+                            from last year's <a href="https://paragraph.com/@touchgrass/world-computer-sculpture-garden"
+                                target="_blank">World Computer Sculpture Garden</a>, again building on the concept of
+                            information asymmetry among those observing the ledger - intimate secrets that the chain can
+                            hold. "Private Ledger" is inspired by these kinds of ideas, they are technical of course but
+                            they extend very intimate shared concepts and ideas sometimes private, obscured inside only
+                            one
+                            or just a few minds.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> Nice! Yeah, good these works are accessible from that perpsective
+                            even
+                            if they are computationally intensive, or maybe they're not?
+
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> For Private Ledger, I used a beautiful ZK trick that
+                            exploits
+                            discrete log as
+                            they call it - no fancy circuits which can be expensive for proofs - just modular
+                            exponentiation
+                            of
+                            giant integers. Which isn't free but pretty cheap.
+
+                            <br /><br />I read a variety of <a
+                                href="https://medium.com/@loveshharchandani/zero-knowledge-proofs-with-sigma-protocols-91e94858a1fb"
+                                target="_blank">explainers</a> for this specific approach to ZK proofs and built Private
+                            Ledger to illustrate a simple version of it (it's called the Sigma protocol with Schnorr
+                            identification). There are all kinds of details in ZK math, it's incredible - you can prove
+                            the
+                            soundness of a method for example, certainty that an attacker could not break it. However
+                            I'm
+                            not a cryptographer, so any collector or viewer of the piece should be aware that this is a
+                            very
+                            simple version of the algorithm and should not be used for any real-world applications.
+                            We'll
+                            see if anyone cracks it!
+                        </div>
+                        <div class="answer">
+                            <strong>jonooo:</strong> Haha fair point! I think, all the more interesting for the lore:
+                            kintsugi.
+                        </div>
+
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> It's an area I'm particularly interested in, but admittedly not
+                            super
+                            well versed. I think it's beautiful and approaches the theme in a very accurate way while
+                            introducing new elements like zk. Can you tell me more about the visual side?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Yes the on-chain animation is basically WebGL and uses a
+                            3-wave
+                            trigonometric signed distance field
+                            function that produces these undulations... this form was inspired by your notes from the <a
+                                href="https://superrare.com/curation/exhibitions/intimate-systems"
+                                target="_blank">artist
+                                brief</a>:
+                            <br><br><em>"Think layering, abstraction, controlled motion, or systems that reveal traces
+                                of
+                                human intent. The goal is not to illustrate emotion, but to allow emotion or resonance
+                                to
+                                emerge through structure, rhythm, or behavior."</em>
+                            <br><br>The collector chooses a message that determines these dynamics. You can think of the
+                            visual as encoding their hidden message into it, the visual is chosen and expresses it. Then
+                            when the collector proves that their message exists on chain, the piece updates to that
+                            knowledge.
+
+                            <br><br>The collector can choose to share that meaning with others, who can prove knowledge
+                            of
+                            it - without revealing it on chain at all, it will add to that scaffold at the center. The
+                            chain
+                            proves the presence of the collector's intention.
+
+                            <br><br>I used trig functions, waves of sine and cosine functions shaped by the
+                            cryptographic
+                            proof, to express biological rhythms because the private ledger is an organic one.
+
+                            <br><br>Would you like to participate and add to my piece, as I'm the current owner?
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> Beautiful! Absolutely I'd love to try it out! There's a level of
+                            reflection too with the collector even choosing what to say - intimate from both exterior
+                            and
+                            interior spaces.
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Yes, the dynamic can change quite a bit, across some
+                            palettes,
+                            dynamics, etc. So there is some semantic encoding that is possible - if the idea implies a
+                            frantic semiosis they can set the visual encoding to match the meaning.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            jonooo prepares interface with hidden meaning <span
+                                style="background: #000; color: #000; padding: 0 0px;">██████████</span></em>
+                        </div>
+                        <img src="jonooo_imgs/proof1.jpg" alt="Proof UI" style="max-width: 100%; height: auto;">
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> The process is: (i) type in the secret meaning (must match
+                            exactly) and check recovering the same visual, (ii) step 1: click the lightning bolt to
+                            prepare
+                            a commitment and challenge (first step to showing you have the knowledge), then (iii) step
+                            2:
+                            finalize the proof and the piece should update.
+                        </div>
+                        <img src="jonooo_imgs/proof2.webp" alt="Proof UI"
+                            style="max-width: 100%; height: auto; margin-top: 20px;">
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> Heheheheh. That's me.
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Wow, it worked.
+                            You're in the metadata now and the 4th social "layer" on the piece.
+                            That phrase is in both our minds, proven on chain.
+                            I love giant integers.
+                        </div>
+                        <img src="jonooo_imgs/proof3.webp" alt="Proof UI"
+                            style="max-width: 100%; height: auto; margin-top: 20px;">
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> Wow, can I screenshot this and <a
+                                href="https://x.com/im_jonooo/status/1994585729813602718" target="_blank">share</a>?
+                            Thank you so much for involving me in this process!
+                        </div>
+                        <video src="jonooo_imgs/mindblown.mp4" autoplay loop muted
+                            style="max-width: 100%; height: auto; margin-top: 20px;"></video>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Sure please do! Thank you! All feedback welcomed. Thanks
+                            for
+                            taking it for a spin!
+                        </div>
+                        <img src="jonooo_imgs/proof6.webp" alt="Proof UI"
+                            style="max-width: 100%; height: auto; margin-top: 20px;">
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> How do you see that aspect happening in terms of proving the
+                            knowledge?
+                            What is that experience meant to be like?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> The contract implements an interactive zero-knowledge
+                            proof.
+                            You have to take two steps, two transactions. The proof contract basically gives the
+                            collector
+                            (or other prover, like you) a challenge that numerically means, "Okay if you know how to get
+                            that huge number from a secret, then integrate this challenge and come back with a valid
+                            signature of that knowledge." Then the second transaction will write that proof to the
+                            chain.
+
+                            <br><br>The idea is that anyone who can see on the public ledger how this contract works
+                            should
+                            be confident that you and I have the same specific idea in our minds yet would have no idea
+                            what
+                            that idea is - only that we've proven mutual knowledge of it on chain.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> Does it change with each shared knowledge proof? As well as with
+                            other
+                            people
+                            creating their own proofs?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Your role here could be called a "friend prover." I gave
+                            you
+                            the secret, and you proved knowledge. The piece then expands the scaffold in the center. I
+                            was
+                            tempted to have the piece be more unstable over time, but preferred the expression here that
+                            a
+                            specific idea is now passing through many wallets... many individuals... the idea encoded by
+                            the
+                            collector uniquely.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> As the owner of the piece, can you create multiple messages? Can
+                            anyone?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> The collector can create a new meaning anytime they want,
+                            but
+                            it resets the scaffold (the geometric structure that represents the shared knowledge). The
+                            collector can switch meanings back and forth too... as current owner, I can alter the
+                            visual, a
+                            new idea, then have some proofs, but then go back to the prior message, etc. Always
+                            updatable
+                            into the semantics the collector wants. I decided to make it as 1/1 as possible.
+
+                            <br><br>Would you like to try a new meaning and be its first prover?
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            Takens sets new hidden meaning and jonooo prepares interface with <span
+                                style="background: #000; color: #000; padding: 0 0px;">██████████</span></em>
+                        </div>
+                        <img src="jonooo_imgs/proof4.jpg" alt="Proof UI" style="max-width: 100%; height: auto;">
+                        <img src="jonooo_imgs/proof5.webp" alt="Proof UI"
+                            style="max-width: 100%; height: auto; margin-top: 20px;">
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> You'll be the first prover, the first square at the center.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> So only the owner can control this?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Yeah exactly. I decided to make it as 1/1 as possible. The
+                            collector I share this piece with has control over the asset (the usual caveats, I should
+                            add,
+                            such as unforeseen bugs or implementation issues with the proof system!). This is the
+                            intention.
+                            Though of course we could expand this into a whole suite of such tokens with distinct
+                            meanings
+                            etc. In this case, the single collector, one human mind, originates these intimate ideas.
+                            They
+                            can propagate the ideas to others, who then become provers in their own right. The collector
+                            can
+                            always choose to keep it private or share it widely.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> That's interesting. Is there a limit to how much text you can use
+                            in
+                            the secret?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Not really. Might be limited by your browser. It hashes the
+                            text, so you could have a huge meaning. That becomes concomitantly harder to remember of
+                            course.
+                            All these little details about mind and matter, cold compute and public/private ledgers.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> If the owner forgets the meaning... no more proofs will be
+                            possible.
+                            Like forgetting a password. Feature or bug?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Definitely a feature. The private ledger is biological. It
+                            decays in reality (literally). Memories fade. If the collector forgets the current meaning,
+                            they
+                            would have to update the piece with a new one.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> Very meaningful to do this show and have all of these one on one
+                            conversations
+                            about the work. Feeling inspired.
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> There are little features that were intended, and could be
+                            expanded upon. For example, the contract stores an array of prior proofs so it's possible to
+                            recover prior pieces. Can see the history of intimate ideas. (Without knowing what they are
+                            of
+                            course, just their visual and extent of shared knowledge.) The sculpture contract I'm going
+                            to
+                            build will use this. A history of secret ideas.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> What's the sculpture contract?
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> We will be releasing this later in the week, an homage to
+                            the
+                            <a href="https://worldcomputersculpture.garden/" target="_blank">World Computer Sculpture
+                                Garden</a> from 0xfff and others last year. It will be fun to implement - I'm going to
+                            expose the array for use as gestures, etc.
+                        </div>
+                    </div>
+
+                    <div class="interview-section">
+                        <div class="question">
+                            <strong>jonooo:</strong> So many fun ways to use this!
+                        </div>
+                        <div class="answer">
+                            <strong>Takens Theorem:</strong> Your prompt was wonderful. Challenging in a great way. I'm
+                            excited to see what people build with it!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <p>
                 When transactions occur on chain, they are etched into a public ledger. Each transaction represents a
                 commitment to a state change
@@ -235,341 +631,6 @@
                 </p>
             </div>
 
-        </div>
-
-        <div class="section">
-            <p style="margin-bottom: 20px; cursor: pointer; border-bottom: 1px solid #ccc; padding-bottom: 5px;"
-                onclick="document.getElementById('chat').style.display = document.getElementById('chat').style.display === 'none' ? 'block' : 'none';">
-                Explainer: Takens Theorem with jonooo of SuperRare <button>show</button></p>
-
-            <div id="chat" style="display:none;">
-                <style>
-                    .interview-section {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 10px;
-                    }
-
-                    .question {
-                        background-color: #2d2d2d;
-                        margin-top: 50px;
-                        padding: 10px;
-                        border-radius: 4px;
-                        margin-bottom: 10px;
-                    }
-
-                    .answer {
-                        background-color: #2d2d2d;
-                        padding: 10px;
-                        border-radius: 4px;
-                        margin-bottom: 10px;
-                    }
-                </style>
-                <div class="interview-section">
-                    <div><a href="https://x.com/im_jonooo" target="_blank">jonooo</a> and I had a chat late one night
-                        before Intimate Systems released. The conversation seemed well suited as an explainer itself,
-                        illustrating the piece and how it works, because jonooo interacted with the contract and
-                        participated as a "prover." I've adapted the questions and responses with permission below,
-                        sharing the very visuals we shared along the way (keeping our secrets secret, of course).</div>
-                    <div class="question">
-                        <strong>jonooo:</strong> I was just looking at your piece! Can you tell me about it?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Sure! Here's some material from the site, which I'll share in
-                        more detail soon. "Private Ledger" explores a divide between public and private. It invites its
-                        collector to formulate a zero-knowledge (ZK) proof which is then written to the public ledger,
-                        proving that a particular meaning exists. The collector can then alter a visual representation
-                        based on this proof, and anyone on the chain including I could confirm knowledge of it (if the
-                        collector chooses to share this hidden meaning with others).
-
-                        <br><br>The public ledger indexes countless intimate secrets like this. Every gentle click on a
-                        hardware wallet could happen alongside hidden ideas and emotions that remain only in the minds
-                        of those involved - their "private ledger." The visual itself depicts this tension, a structure
-                        at the center accumulating with each proof, but the idea itself encoded in a kind of organic,
-                        undulating visual behind it.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> I love this! I know there are murmurs around zk proofs, I know 113 has
-                        talked about
-                        it a good bit.
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Yeah, there're the amazing <a
-                            href="https://unitlondon.com/nfts/zero-glimpse-sunflower-one/">innovations by
-                            Mathcastles</a>, they call them "information-asymmetric artworks," very nice, it's certainly
-                        inspired by related ideas about intimate secrets. There's also Paul Seidler's <em><a
-                                href="https://realabstraction.plsdlr.net/" target="_blank">Real Abstraction</a></em>
-                        from last year's <a href="https://paragraph.com/@touchgrass/world-computer-sculpture-garden"
-                            target="_blank">World Computer Sculpture Garden</a>, again building on the concept of
-                        information asymmetry among those observing the ledger - intimate secrets that the chain can
-                        hold. "Private Ledger" is inspired by these kinds of ideas, they are technical of course but
-                        they extend very intimate shared concepts and ideas sometimes private, obscured inside only one
-                        or just a few minds.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> Nice! Yeah, good these works are accessible from that perpsective even
-                        if they are computationally intensive, or maybe they're not?
-
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> For Private Ledger, I used a beautiful ZK trick that exploits
-                        discrete log as
-                        they call it - no fancy circuits which can be expensive for proofs - just modular exponentiation
-                        of
-                        giant integers. Which isn't free but pretty cheap.
-
-                        <br /><br />I read a variety of <a
-                            href="https://medium.com/@loveshharchandani/zero-knowledge-proofs-with-sigma-protocols-91e94858a1fb"
-                            target="_blank">explainers</a> for this specific approach to ZK proofs and built Private
-                        Ledger to illustrate a simple version of it (it's called the Sigma protocol with Schnorr
-                        identification). There are all kinds of details in ZK math, it's incredible - you can prove the
-                        soundness of a method for example, certainty that an attacker could not break it. However I'm
-                        not a cryptographer, so any collector or viewer of the piece should be aware that this is a very
-                        simple version of the algorithm and should not be used for any real-world applications. We'll
-                        see if anyone cracks it!
-                    </div>
-                    <div class="answer">
-                        <strong>jonooo:</strong> Haha fair point! I think, all the more interesting for the lore:
-                        kintsugi.
-                    </div>
-
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> It's an area I'm particularly interested in, but admittedly not super
-                        well versed. I think it's beautiful and approaches the theme in a very accurate way while
-                        introducing new elements like zk. Can you tell me more about the visual side?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Yes the on-chain animation is basically WebGL and uses a 3-wave
-                        trigonometric signed distance field
-                        function that produces these undulations... this form was inspired by your notes from the <a
-                            href="https://superrare.com/curation/exhibitions/intimate-systems" target="_blank">artist
-                            brief</a>:
-                        <br><br><em>"Think layering, abstraction, controlled motion, or systems that reveal traces of
-                            human intent. The goal is not to illustrate emotion, but to allow emotion or resonance to
-                            emerge through structure, rhythm, or behavior."</em>
-                        <br><br>The collector chooses a message that determines these dynamics. You can think of the
-                        visual as encoding their hidden message into it, the visual is chosen and expresses it. Then
-                        when the collector proves that their message exists on chain, the piece updates to that
-                        knowledge.
-
-                        <br><br>The collector can choose to share that meaning with others, who can prove knowledge of
-                        it - without revealing it on chain at all, it will add to that scaffold at the center. The chain
-                        proves the presence of the collector's intention.
-
-                        <br><br>I used trig functions, waves of sine and cosine functions shaped by the cryptographic
-                        proof, to express biological rhythms because the private ledger is an organic one.
-
-                        <br><br>Would you like to participate and add to my piece, as I'm the current owner?
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> Beautiful! Absolutely I'd love to try it out! There's a level of
-                        reflection too with the collector even choosing what to say - intimate from both exterior and
-                        interior spaces.
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Yes, the dynamic can change quite a bit, across some palettes,
-                        dynamics, etc. So there is some semantic encoding that is possible - if the idea implies a
-                        frantic semiosis they can set the visual encoding to match the meaning.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        jonooo prepares interface with hidden meaning <span
-                            style="background: #000; color: #000; padding: 0 0px;">██████████</span></em>
-                    </div>
-                    <img src="jonooo_imgs/proof1.jpg" alt="Proof UI" style="max-width: 100%; height: auto;">
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> The process is: (i) type in the secret meaning (must match
-                        exactly) and check recovering the same visual, (ii) step 1: click the lightning bolt to prepare
-                        a commitment and challenge (first step to showing you have the knowledge), then (iii) step 2:
-                        finalize the proof and the piece should update.
-                    </div>
-                    <img src="jonooo_imgs/proof2.webp" alt="Proof UI"
-                        style="max-width: 100%; height: auto; margin-top: 20px;">
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> Heheheheh. That's me.
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Wow, it worked.
-                        You're in the metadata now and the 4th social "layer" on the piece.
-                        That phrase is in both our minds, proven on chain.
-                        I love giant integers.
-                    </div>
-                    <img src="jonooo_imgs/proof3.webp" alt="Proof UI"
-                        style="max-width: 100%; height: auto; margin-top: 20px;">
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> Wow, can I screenshot this and <a
-                            href="https://x.com/im_jonooo/status/1994585729813602718" target="_blank">share</a>?
-                        Thank you so much for involving me in this process!
-                    </div>
-                    <video src="jonooo_imgs/mindblown.mp4" autoplay loop muted
-                        style="max-width: 100%; height: auto; margin-top: 20px;"></video>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Sure please do! Thank you! All feedback welcomed. Thanks for
-                        taking it for a spin!
-                    </div>
-                    <img src="jonooo_imgs/proof6.webp" alt="Proof UI"
-                        style="max-width: 100%; height: auto; margin-top: 20px;">
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> How do you see that aspect happening in terms of proving the knowledge?
-                        What is that experience meant to be like?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> The contract implements an interactive zero-knowledge proof.
-                        You have to take two steps, two transactions. The proof contract basically gives the collector
-                        (or other prover, like you) a challenge that numerically means, "Okay if you know how to get
-                        that huge number from a secret, then integrate this challenge and come back with a valid
-                        signature of that knowledge." Then the second transaction will write that proof to the chain.
-
-                        <br><br>The idea is that anyone who can see on the public ledger how this contract works should
-                        be confident that you and I have the same specific idea in our minds yet would have no idea what
-                        that idea is - only that we've proven mutual knowledge of it on chain.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> Does it change with each shared knowledge proof? As well as with
-                        other
-                        people
-                        creating their own proofs?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Your role here could be called a "friend prover." I gave you
-                        the secret, and you proved knowledge. The piece then expands the scaffold in the center. I was
-                        tempted to have the piece be more unstable over time, but preferred the expression here that a
-                        specific idea is now passing through many wallets... many individuals... the idea encoded by the
-                        collector uniquely.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> As the owner of the piece, can you create multiple messages? Can
-                        anyone?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> The collector can create a new meaning anytime they want, but
-                        it resets the scaffold (the geometric structure that represents the shared knowledge). The
-                        collector can switch meanings back and forth too... as current owner, I can alter the visual, a
-                        new idea, then have some proofs, but then go back to the prior message, etc. Always updatable
-                        into the semantics the collector wants. I decided to make it as 1/1 as possible.
-
-                        <br><br>Would you like to try a new meaning and be its first prover?
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        Takens sets new hidden meaning and jonooo prepares interface with <span
-                            style="background: #000; color: #000; padding: 0 0px;">██████████</span></em>
-                    </div>
-                    <img src="jonooo_imgs/proof4.jpg" alt="Proof UI" style="max-width: 100%; height: auto;">
-                    <img src="jonooo_imgs/proof5.webp" alt="Proof UI"
-                        style="max-width: 100%; height: auto; margin-top: 20px;">
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> You'll be the first prover, the first square at the center.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> So only the owner can control this?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Yeah exactly. I decided to make it as 1/1 as possible. The
-                        collector I share this piece with has control over the asset (the usual caveats, I should add,
-                        such as unforeseen bugs or implementation issues with the proof system!). This is the intention.
-                        Though of course we could expand this into a whole suite of such tokens with distinct meanings
-                        etc. In this case, the single collector, one human mind, originates these intimate ideas. They
-                        can propagate the ideas to others, who then become provers in their own right. The collector can
-                        always choose to keep it private or share it widely.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> That's interesting. Is there a limit to how much text you can use in
-                        the secret?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Not really. Might be limited by your browser. It hashes the
-                        text, so you could have a huge meaning. That becomes concomitantly harder to remember of course.
-                        All these little details about mind and matter, cold compute and public/private ledgers.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> If the owner forgets the meaning... no more proofs will be possible.
-                        Like forgetting a password. Feature or bug?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Definitely a feature. The private ledger is biological. It
-                        decays in reality (literally). Memories fade. If the collector forgets the current meaning, they
-                        would have to update the piece with a new one.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> Very meaningful to do this show and have all of these one on one
-                        conversations
-                        about the work. Feeling inspired.
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> There are little features that were intended, and could be
-                        expanded upon. For example, the contract stores an array of prior proofs so it's possible to
-                        recover prior pieces. Can see the history of intimate ideas. (Without knowing what they are of
-                        course, just their visual and extent of shared knowledge.) The sculpture contract I'm going to
-                        build will use this. A history of secret ideas.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> What's the sculpture contract?
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> We will be releasing this later in the week, an homage to the
-                        <a href="https://worldcomputersculpture.garden/" target="_blank">World Computer Sculpture
-                            Garden</a> from 0xfff and others last year. It will be fun to implement - I'm going to
-                        expose the array for use as gestures, etc.
-                    </div>
-                </div>
-
-                <div class="interview-section">
-                    <div class="question">
-                        <strong>jonooo:</strong> So many fun ways to use this!
-                    </div>
-                    <div class="answer">
-                        <strong>Takens Theorem:</strong> Your prompt was wonderful. Challenging in a great way. I'm
-                        excited to see what people build with it!
-                    </div>
-                </div>
-            </div>
         </div>
 
 
