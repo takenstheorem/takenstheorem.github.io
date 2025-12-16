@@ -1,0 +1,298 @@
+<html>
+
+<head>
+    <title>Takens Theorem | Curious Circuits | Post</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            background-color: #000;
+            color: #fff;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        .hero {
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #bbb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wide {
+            grid-column: span 2;
+        }
+
+        .very-wide {
+            grid-column: 1 / -1;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .bio {
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .panel img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .panel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .panel:hover .panel-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel-content h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .panel-content p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .article-date {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .text-date {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+            font-size: 0.8em;
+            color: #333;
+            z-index: 1;
+        }
+
+        .panel:hover .article-date {
+            opacity: 1;
+        }
+
+        #featured_txt {
+            line-height: 1.5;
+        }
+
+        .project_badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            margin: 2px;
+            font-size: 0.65em;
+        }
+
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 40px 0;
+            gap: 20px;
+        }
+
+        .image-container {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .image-container img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .image-gallery {
+                justify-content: center;
+            }
+
+            .image-container {
+                flex: 0 0 calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .image-container {
+                flex: 0 0 100%;
+            }
+        }
+
+        .image-container-no-radius {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .image-container-no-radius img {
+            width: 100%;
+            max-width: 1000px;
+            height: auto;
+            aspect-ratio: 1;
+            border-radius: 0;
+            object-fit: cover;
+            margin: 0 auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bio">
+        <h2 style="text-align:center;">Blockchains embed us as components on a mass circuit.</h2>
+        <img src="1_sm.jpg" style="width:100%;"><br />
+        <p>Digital ledgers are multiscale information. Geospatial. Celestial. On ledgers, too, we are points on a vast
+            circuit. Zoom in, you see structure. Zoom out, texture at a different scale.</p>
+        <p>
+            Geospatial and celestial systems interact through physical laws. Digital ledgers, by contrast, compute.
+            What you see at scale is like a vast computing system, a mass circuit. Once you transact, you are a point, a
+            switch, a transistor. Once in relief, the ledger forces us to think in these terms.
+        </p>
+        <div class="image-gallery">
+            <div class="image-container">
+                <img src="hubble.jpg" alt="Hubble image">
+            </div>
+            <div class="image-container">
+                <img src="uk.jpg" alt="UK image">
+            </div>
+            <div class="image-container">
+                <img src="6_sm.jpg" alt="Circuits image">
+            </div>
+        </div>
+        <p>12 1/1s. "Curious Circuits" represents thousands of transactions simply as angled lines, colors, markers.
+            Addresses are (x,y) positions. But once projected in aggregate, these transactions form something that
+            blends
+            our intuitions of organic evolution and cold circuitry across vast systems.
+        </p>
+        <p>
+            Three series. First, "Series 1" visualizes the circuitry of the first million blocks on Ethereum. Drawing
+            from raw transaction data, lines and colors and markers indicate the clustering, growing activity.
+        </p>
+        <p>The second series shows pointed moments of the maturing sociotechnical space. Obfuscation. Hacks. Hope.
+            Mania.
+        </p>
+        <p>Final 4 1/1s "Curious Circuits" now complete.
+            This final series shows expansion of the circuit: layer into layer, into new places, but still
+            stitched into a single but more complex growing circuit. Blue, L2. Green, L1.
+        </p>
+        <p>
+            Crops intentional, it yields a tension. The system scales, grows. It cannot be contained in frame. We focus.
+        </p>
+        <div class="image-gallery">
+            <div class="image-container-no-radius">
+                <img src="9_sm.jpg" alt="Hubble image">
+            </div>
+            <div class="image-container-no-radius">
+                <img src="12_sm.jpg" alt="UK image">
+            </div>
+        </div>        
+        <p>
+            Pieces include a 7,500 x 7,500 JPEG ~15MB, full media on Arweave. First collectors receive an interactive
+            interface allowing the owner to explore the early ecosystem's circuitry.
+        </p>
+        <p>
+            The interface grants access to links to focal addresses, an SVG download of the circuitry, and an animation
+            mode that allows the viewer to explore the circuitry in a more dynamic way.
+        </p>
+        <p>
+            More detail on the collector's site <a href="./">here</a>.
+        </p>
+        <p>
+            Pieces reserved for prior collectors of the other series including
+            <a href="https://twitter.com/blocknoob_">blocknoob</a>
+
+            <a href="https://twitter.com/punk1376">DΞMar.eth</a>
+
+            <a href="https://twitter.com/CypherDAO">CypherDAO</a>
+
+            <a href="https://twitter.com/ArtizenEth">John of ARQ</a>
+
+            and
+
+            <a href="https://twitter.com/bitbunkichi">0xbunkichi .⌐◨-◨</a>.
+        </p>
+        <p>
+            Thank you everyone. FIN.
+        </p>
+
+
+    </div>
+
+</body>
+
+</html>
