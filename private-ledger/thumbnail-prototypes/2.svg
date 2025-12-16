@@ -4,12 +4,12 @@
   <style>
     @keyframes radarWave{0%{transform:scale(0);opacity:1;}70%{opacity:0.6;}100%{transform:scale(1);opacity:0;}}.wave{transform-origin:50%50%;transform-box:fill-box;transform:scale(0);opacity:0;animation:radarWave 2.5s linear infinite;animation-fill-mode:both;}
   </style>
-  <g fill="none" stroke="#00ff99" stroke-width="20">
+  <g fill="none" stroke="#7c2cab" stroke-width="20">
     <circle cx="250" cy="250" r="240" class="wave" />    
   </g>
   <g fill="none" stroke="#ffffff" stroke-width="2">
     <rect x="230" y="230" width="40" height="40" />
     <rect x="220" y="220" width="60" height="60" />
   </g>
-  <text x="250" y="50" text-anchor="middle" font-family="courier, monospace" font-size="18" fill="#00ff99"><tspan class="Yl">Y</tspan><tspan class="Yv" fill="#ffffff"> 26326161626259335132544245353342...</tspan></text>
+  <text x="250" y="50" text-anchor="middle" font-family="courier, monospace" font-size="18" fill="#7c2cab"><tspan class="Yl">Y</tspan><tspan class="Yv" fill="#ffffff"> 26326161626259335132544245353342...</tspan></text>
 </svg>
