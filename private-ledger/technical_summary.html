@@ -1,0 +1,396 @@
+<html>
+
+<head>
+    <title>Private Ledger / Technical Summary</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+        body {
+            max-width: 800px;
+            margin: 3em auto;
+            padding: 0 1.5em;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            margin-top: 0px;
+            color: #fff;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.1em;
+        }
+
+        p {
+            margin-bottom: 1.2em;
+        }
+
+        .MathJax {
+            color: #e0e0e0 !important;
+        }
+
+        .MathJax_CHTML {
+            color: #e0e0e0 !important;
+        }
+
+        mjx-container {
+            color: #e0e0e0 !important;
+        }
+
+        mjx-container[jax="CHTML"] {
+            color: #e0e0e0 !important;
+        }
+
+        mjx-container[jax="CHTML"][display="true"] {
+            margin: 1.5em 0 !important;
+        }
+
+        mjx-container[jax="CHTML"][display="false"] {
+            margin: 0 0.2em !important;
+        }
+
+        a {
+            color: #5ae4ff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #4fc3f7;
+            text-decoration: underline;
+        }
+
+        .highlight {
+            text-decoration: underline;
+            text-decoration-color: #4440;
+            text-decoration-thickness: 3px;
+        }
+
+        .quote {
+            background-color: #000;
+            color: #fff;
+            font-style: italic;
+            padding: 1.5em 1.5em 1em;
+            border-radius: 4px;
+            border: 0px solid #444;
+            font-size: 1.25em;
+            border-left: 1px solid #444;
+            padding-left: 1em;
+        }
+
+        .quote small {
+            display: block;
+            text-align: left;
+            margin-top: 0.75em;
+            font-size: 0.85em;
+            opacity: 0.85;
+            max-width: 50%;
+            margin-left: auto;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 0px;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="subtitle">Private Ledger by Takens Theorem</div>
+    <h1>Brief Technical Summary</h1>
+    <p class="quote">
+        "Without knowing anything about this passageway, it is oddly disorienting to know, with some certainty, <b>that
+            there is one</b>."
+        <br />
+        <small>— From an <a href="https://takenstheorem.weebly.com/blog-root/two-caves" target="_blank">old blog
+                post</a> about a <a href="https://pages.cs.wisc.edu/~mkowalcz/628.pdf" target="_blank">classic
+                allegory</a> explaining zero-knowledge to the uninitiated</small>
+    </p>
+
+
+    <div style="width:100%;height:0;padding-bottom:56%;position:relative;">
+        <iframe src="asset.html" style="width:100%;height:100%;position:absolute;left:0;top:0;border:none;"
+            frameborder="0"></iframe>
+    </div>
+
+    <h2>Preamble</h2>
+    <p class="quote">
+        "Zero knowledge (ZK) proofs unlock truly esoteric art for the networked era ... An artwork can carry a secret,
+        let people prove they know it, and visibly change through those proofs while the secret stays hidden."
+        <br />
+        <small>— <a href="https://x.com/CypherDAO/status/1997457990924865748" target="_blank">CypherDAO</a>,
+            12/6/2025</small>
+    </p>
+    <p>
+        Private Ledger is an NFT project. It implements a zero-knowledge system for its collector to encode a hidden
+        message, share this message with whom they like, and etch proofs of knowing it -- without revealing the message
+        itself. The project juxtaposes public cryptographic truth with the intimately hidden intentions of human users.
+    <p>
+        There is a profound expressiveness in blockchain and its underlying math. Zero-knowledge (ZK) in particular
+        mesmerizes many. We are drawn to its <a
+            href="https://www.amazon.com/Foundations-Cryptography-Basic-Tools-Vol/dp/0521791723"
+            target="_blank">abstract formulations</a> of foundations and more <a
+            href="https://github.com/LeastAuthority/moonmath-manual" target="_blank">applied summaries</a> of the math,
+        inevitable viewing of some <a
+            href="https://www.youtube.com/watch?v=g2k6OW0mjPM&list=PLJG_6rr-Z2sbfYVyzezzuTKhsgDfyG6X7"
+            target="_blank">Boneh videos</a>, historical <a href="https://takenstheorem.weebly.com/blog-root/two-caves"
+            target="_blank">conceptual explanations</a>, <a
+            href="https://medium.com/@VitalikButerin/quadratic-arithmetic-programs-from-zero-to-hero-f6d558cea649"
+            target="_blank">classically</a> <a
+            href="https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch08_signatures.adoc"
+            target="_blank">lucid</a> <a
+            href="https://medium.com/@loveshharchandani/zero-knowledge-proofs-with-sigma-protocols-91e94858a1fb"
+            target="_blank">illustrations</a>, beautiful use of the concept in <a
+            href="https://unitlondon.com/nfts/zero-glimpse-sunflower-one/" target="_blank">art</a> and more.
+    </p>
+    <p>(In my case too, I have to thank some expert collectors for advice and pointers. I will not name them
+        specifically unless they give me permission to do so, but if you are reading this, thank you, too.)</p>
+    <p>
+        I've been much edified, but cannot declare expert status. I'm not a cryptographer. For Private Ledger, I used a
+        ZK-system that I felt I could understand and implement: a Schnorr-inspired \((\Sigma-\)) <a
+            href="https://blog.zksecurity.xyz/posts/sigma/" target="_blank">protocol</a> that relies on the
+        computational hardness of the discrete logarithm problem.
+    </p>
+    <p>
+        Below, I offer a general overview of this approach in Private Ledger.
+    </p>
+
+    <p>
+        Thanks very much to prior collectors, especially <a href="https://x.com/CypherDAO" target="_blank">CypherDAO</a>
+        for collecting this first token of the series and for <a
+            href="https://etherscan.io/tx/0x5baadbc9fd52f12aadcab53d013953f07c68ce7bae7714874646e140e1650026"
+            target="_blank">engaging it</a> so directly and thoroughly. Below is a brief overview of how I fused a ZK
+        system with an interactive on-chain mechanism for its collector to express a private message and prove knowledge
+        of it.</p>
+
+    <p class="quote">
+        "...information-asymmetric artworks through zero-knowledge proofs. Imagine: unknowable drawings. Unknowable
+        linework. Unknowable paintings. Fully kept secret from the public via cryptography. Where an artist can then
+        also use zk-proofs to reveal mathematically verifiable claims about aspects of the underlying drawing."
+        <br />
+        <small>— <a href="https://unitlondon.com/nfts/zero-glimpse-sunflower-one/" target="_blank">Mathcastles</a>,
+            2022</small>
+    </p>
+
+    <h2>Overview</h2>
+    <p>
+        Private Ledger is <a href="https://x.com/CypherDAO/status/1995983259222901039" target="_blank">described</a> by
+        its collector as a "self-contained system where intimate meaning shapes public
+        form through cryptographic truth." It is token #1 in a series of <a
+            href="https://unitlondon.com/nfts/zero-glimpse-sunflower-one/" target="_blank">information-asymmetric</a>
+        creations called Intimate Semiotics. Private Ledger was part of the <a
+            href="https://superrare.com/curation/exhibitions/intimate-systems" target="_blank">Intimate Systems
+            exhibition</a> on SuperRare.</p>
+
+    <p>A summary of Private Ledger can be found in this wonderful <a
+            href="https://x.com/CypherDAO/status/1995983259222901039" target="_blank">thread on X</a> by collector <a
+            href="https://x.com/CypherDAO" target="_blank">CypherDAO</a>. Here is Private Ledger's current state, and
+        you can also peruse its direct on-chain rendering at <a
+            href="https://onchainchecker.xyz/collection/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1"
+            target="_blank">OnChainChecker</a>:</p>
+
+    <iframe src="https://onchainchecker.xyz/fullscreen/ethereum/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1/animation"
+        width="100%" height="800px" style="border: none;"></iframe>
+
+    <p>This visual representation is defined by a secret. The owner of Private Ledger chooses this secret message. This
+        message is encoded into a public key \(Y\) as follows:
+        $$
+        \begin{aligned}
+        x &= \text{SHA-256}(\text{secret message}) \\
+        Y &= g^x \bmod p
+        \end{aligned}
+        $$
+        Here, \(g^x \mod p\) is a <a href="https://en.wikipedia.org/wiki/Discrete_logarithm" target="_blank">discrete
+            logarithm</a> using a giant prime field (Private Ledger uses <a
+            href="https://std.neuromancer.sk/nist/P-256/" target="_blank">secp256r1</a>).
+        The public key deterministically shapes a visual encoding, the "color field." Proofs of knowledge can be
+        superimposed upon that field as an expanding scaffold. Each of these square layers signals a successful proof of
+        knowledge of the private key. The
+        owner of Private Ledger can prove knowledge of the secret themselves, and update the piece on the public ledger.
+        The owner can also let others prove knowledge of the secret message. Addresses of all these knowers are added to
+        the piece's metadata.
+    </p>
+    <p>
+        So the visual manifestation of Private Ledger has two parts: the animated color field, the secret in visual
+        form, and the proof of knowledge of the secret message as a scaffold: proofs of shared knowledge.
+    </p>
+
+    <h2>Color Field</h2>
+    <p>
+        The "color field" is a visual encoding of the secret message's public key. The secret message is converted into
+        a
+        private key \(x\) using SHA-256, and the public key is computed as \(Y = g^x \bmod p\). The public key is then
+        used to
+        define the color field: a curiously organic, undulating shape generated with a <a
+            href="https://en.wikipedia.org/wiki/Fragment_shader" target="_blank">fragment shader</a> in GLSL. The
+        shader maps digits of the public key \(Y\) into a
+        time-varying program. The digits of \(Y\) are max-scaled into parameters
+        \(Y_k\), which act as weights on a set of trigonometric functions driven by time \(t\).
+    </p>
+
+    <p>
+        The color field's functions and parameters were chosen iteratively by hand. This iterative process yielded a
+        complex definition. As a result, the color field is not easily predicted from the public key \(Y\). In a sense
+        it "hashes" the public form of the message itself. This was deliberate.
+    </p>
+    <p>
+        The color field's radius \(R(t, Y)\) is defined by angular waves using \(\theta\) implied by pixel position
+        \((x,y)\) and
+        time \(t\). These are modulated by a different two-digit pair of the public key. Each wave function was given
+        the form
+        \(f_k(a\theta + bt) \cdot (c + dY_k)\). This varies the complexity and form of the color field's radius, which
+        uses a
+        summation of \(k = 1, 2,\) and \(3\) waves. \(Y_k\) is the \(k\)-th two-digit pair of \(Y\) (from its string
+        representation). Private Ledger uses three
+        waves, encoded with \((a, b, c, d)\) as:
+
+        $$
+        \begin{aligned}
+        (a, b, c, d)_k &=_{df} (3, 2, 0.2, 0.4)_1; f_1 = sin \\
+        &=_{df} (5, -1.5, 0.3, 0.3)_2; f_2 = cos \\
+        &=_{df} (7, 3, 0.4, 0.2)_3; f_3 = sin \\
+        \end{aligned}
+        $$
+
+        I tuned these parameters to generate a variety of fields under different test messages. To render the field
+        itself across time, a signed distance field (SDF) is computed. The SDF uses a simple offset
+        with distance \(d\) from the wave center for each point (\(x,y\)) in the color field:
+
+        $$
+        \operatorname{SDF}(d, t, Y) = d - R(t, Y).
+        $$
+
+        Points with \(\operatorname{SDF} < 0\) lie inside the animated region, and their intensity increases as
+            \(\operatorname{SDF}\) becomes more negative. Color is set by computing functions over time and Y </p>
+
+            <p>
+                $$
+                \begin{aligned}
+                C(t, Y) &= \bigl(R(t, Y),\, G(t, Y),\, B(t, Y)\bigr), \\
+                \end{aligned}
+                $$
+                where each color dimension uses a simple linear function of further digits of the public key.
+                An averaged parameter is used to choose a coarse palette, and the color functions provide fine
+                time-varying modulation within that palette.
+            </p>
+
+            <p>All of these underlying functions are stored on chain as data:text/html with JS and GLSL. Private
+                Ledger's <a
+                    href="https://takenstheorem.github.io/private-ledger/#:~:text=the%20message%20itself.-,Resources%2C%20Reads,-Intimate%20Systems%2C%20December">rendering
+                    contracts</a> inject
+                public key \(Y\) into the shader. <span class="highlight">I iteratively refined these underlying
+                    functions and their
+                    parameters by hand. As a result, the program flow in GLSL is complicated and so the color field is
+                    difficult to predict
+                    even from the public key \(Y\) (though deterministic from \(Y).\)</span>
+            </p>
+            <p>Using these functions and parameters the piece has particular dynamic structural and color
+                qualities emerging from the public key \(Y\). The color field is a sort of dynamic hash of the message
+                set by
+                the collector.
+            </p>
+
+
+
+
+            <h2>Interactive Schnorr Proof</h2>
+
+            <p>
+                Superimposed on the color field is a scaffold representing proofs of knowledge of the secret message.
+                The
+                scaffold is a series of expanding layers, each layer a proof of knowledge of the secret message. This is
+                not expressive, it is truth: Each layer represents an explicit proof of the secret message etched onto
+                the public ledger.
+            </p>
+
+            <p>
+                The protocol uses a one-round interactive <a href="https://en.wikipedia.org/wiki/Schnorr_signature"
+                    target="_blank">Schnorr-inspired</a> proof to demonstrate knowledge of a secret
+                \(x\) derived from a message, without revealing \(x\) itself (this kind of proof is usually described as
+                having three phases under the \(\Sigma\)-protocol framework, but I call it "one" because it requires only a single
+                intermediate contract call to obtain a challenge from the verifier contract). </p>
+
+            <p>The public key is \(Y = g^x \bmod p\). The prover generates a random nonce \(r\), computes a commitment
+                \(T = g^r \bmod p\), and then requests a challenge \(c = H(Y, T)\) from the verifier contract.
+                Only after receiving \(c\) does the prover compute and submit the response
+                \(s = (r + c \cdot x) \bmod q\) (where \(q\) is defined as \((p-1)/2\)).
+            </p>
+    <p>
+        The verifier contract checks the equality:
+        $$
+        g^s \stackrel{?}{=} T \cdot Y^c \pmod p.
+        $$
+        If the equality holds, the prover must know the secret \(x\).
+    </p>
+
+    <h3>Why is this ZK?</h3>
+
+    <p class="quote">
+        "The common belief that ... [the discrete log problem and related techniques] ... are
+        one-way is based on the failure of researchers to come up with probablistic
+        polynomial-time algorithms for factoring and discrete logarithms. (It is debatable whether
+        this record of failure should be traced back a couple of centuries or "only" a few
+        decades.)"
+        <br />
+        <small>— <a href="https://www.amazon.com/Foundations-Cryptography-Basic-Tools-Vol/dp/0521791723"
+                target="_blank">Goldreich</a>, 2001/2006, p. 90</small>
+    </p>
+
+
+    <p>Zero-knowledge (ZK) is a beautiful concept. It has been given rich formal specification in diverse but
+        mathematically specific implementations. At root, ZK is an abstract concept defined as a set of
+        conditions: completeness, soundness, and zero-knowledge. Though I am not a cryptographer, I tried to
+        implement ZK with Schnorr as closely as possible under the hood.</p>
+
+    <p>
+        <strong>Completeness:</strong> If the prover is honest,
+        \[
+        g^s = g^{r + c x} = g^r \cdot (g^x)^c = T \cdot Y^c \pmod p,
+        \]
+        so verification should succeed.
+    </p>
+    <p>
+        <strong>Soundness:</strong> An adversary who can produce a valid
+        \((T, s)\) for a given \(Y\) and challenge \(c = H(Y, T)\) must know the
+        corresponding secret \(x\); otherwise the equality \(g^s = T \cdot Y^c\) would
+        imply a solution to the discrete logarithm problem in the subgroup generated by \(g\).
+    </p>
+    <p>
+        <strong>Zero-knowledge:</strong> The transcript \((T, s)\) reveals no information about
+        \(x\) because the nonce \(r\) is uniformly random and independent of \(x\);
+        the challenge \(c\) is derived from the public values \((Y, T)\) via a hash,
+        and the response \(s = r + c \cdot x\) is indistinguishable from a fresh random
+        element in the group without knowledge of \(x\).
+    </p>
+
+    <p>The verifier contract has a few measures to avoid replay attacks and ensure the prover is not cheating.
+        For example, the verifier does not permit the same commitment to be used more than once (it checks a
+        hash of the proof parameters for prior use). (As a reminder, please see caveats on the <a href="index.html">main
+            page</a> about the overall scheme, as it is a creative project, not something
+        designed to conceal critical information.)</p>
+
+<h2>Intimate System</h2>
+
+<p>Private Ledger is a system built out of intention. The color field emanates from a message set by human hand. The scaffold is a proof of knowledge of that message. Although the message's meaning is obscured through the undulating color field, the proofs are mathematically true but no less intimate: Each proof expresses knowledge, a certainty in the obscure.</p>
+
+<a href="index.html">Back to main page</a>
+
+</body>
+
+</html>

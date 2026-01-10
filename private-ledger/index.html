@@ -604,6 +604,7 @@
 
         <div class="section">
             <p style="margin-bottom: 20px;">
+                <a href="technical_summary.html">Extra technical summary</a> for the collector<br />
                 <a href="https://superrare.com/curation/exhibitions/intimate-systems" target="_blank">Intimate
                     Systems</a>, December 2025 on SuperRare<br />
                 <a href="https://superrare.com/artwork/eth/0x9f1866E72Cf7C7F14CBd481e099CB4EAe919274B/1"
@@ -617,21 +618,30 @@
                     target="_blank">proxy contract</a><br />
                 Private Ledger <a href="https://etherscan.io/address/0xdc62072976b9c7769ce6058d22ead251d079dc95"
                     target="_blank">verifier contract</a><br />
-                Private Ledger <a href="https://etherscan.io/address/0x612194e587b3f05ff9b756ec3f18245a073b505d"
-                    target="_blank">renderer contract 1 (GLSL)</a><br />
-                Private Ledger <a href="https://etherscan.io/address/0x9D7c71534B4901129DaDB05e4B23913003901603"
-                    target="_blank">renderer contract 2 (with dynamic thumbnail)</a><br />
-                Private Ledger <a href="https://etherscan.io/address/0xB7076EA8E368dBC67E245A8804cAAFe25F93cd68"
-                    target="_blank">thumbnail renderer (SVG)</a><br />
-                Private Ledger on-chain prover (coming soon)                    
             </p>
+            <div style="margin-top:-20px;padding:0px;font-size:1.1em;">
+                Private Ledger renderers:
+                <ul style="margin-top:0px;margin-bottom:0px;">
+                    <li><a href="https://etherscan.io/address/0x612194e587b3f05ff9b756ec3f18245a073b505d"
+                            target="_blank">renderer 1 (GLSL)</a></li>
+                    <li><a href="https://etherscan.io/address/0x9D7c71534B4901129DaDB05e4B23913003901603"
+                            target="_blank">renderer 2 (with dynamic thumbnail)</a></li>
+                    <li><a href="https://etherscan.io/address/0xB7076EA8E368dBC67E245A8804cAAFe25F93cd68"
+                            target="_blank">thumbnail renderer (SVG)</a></li>
+                </ul>
+                Private Ledger <a
+                    href="https://etherscan.io/address/0x6031dfb1c14cd5bf61141fb31f1e7ca9facbc9d4#readContract#F1"
+                    target="_blank">on-chain prover tool</a><br />
+                <small>&nbsp;&nbsp;(for use with verifier contract's write functions)</small><br />
+                <a href="abis.txt" target="_blank">ABIs</a> for all above contracts
+            </div>
             <p style="margin-bottom: 20px; cursor: pointer; border-bottom: 1px solid #ccc; padding-bottom: 5px;"
                 onclick="document.getElementById('caveats').style.display = document.getElementById('caveats').style.display === 'none' ? 'block' : 'none';">
                 Important notes and ⚠️ caveats <button>show</button></p>
 
             <div id="caveats" style="display:none;">
                 <p>Private Ledger is an art project. An experiment. It cannot be considered a sound cryptographic system
-                    for the purposes
+                    for the purpose
                     of any important real-world information or private data. It is not a secure system and should not be
                     used for any sensitive information. It may have unexpected bugs or vulnerabilities. Indeed, that is
                     part of the expressive fun considered in the chat with jonooo shown above.
