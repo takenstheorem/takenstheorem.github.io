@@ -1,5 +1,23 @@
 [
     {
+        "title": "Private Ledger",
+        "image_url": "html,private-ledger/asset.html",
+        "image_alt": "Private Ledger",
+        "description": "Zero-knowledge system for its collector to encode a hidden message. The project juxtaposes public cryptographic truth with the intimately hidden intentions of human users. For SuperRare's Intimate Systems exhibition.",
+        "date": "2025-12-01",
+        "tags": [{"issuance":"1"},{"note":"on-chain"}],
+        "url": "https://takenstheorem.github.io/private-ledger"
+    },    
+    {
+        "title": "Unum",
+        "image_url": "project_imgs/unum.jpeg",
+        "image_alt": "Unum",
+        "description": "A million pixels, an image, reconstituted with artists as data.",
+        "date": "2025-07-23",
+        "tags": [{"issuance":"1"},{"note":"tezos"},{"note":"on-chain"}],
+        "url": "https://objkt.com/tokens/KT1LvFzYTgcgFR1auMMyVhHuvMYEmkddo3Lq/27"
+    },        
+    {
         "title": "Memetic Circuitry",
         "image_url": "imgs/memesis.webp",
         "image_alt": "Memetic Circuitry (6529 Meme Card)",
@@ -19,7 +37,7 @@
     },
     {
         "title": "Attentional Dynamics",
-        "image_url": "project_imgs/attentional_dynamics.png",
+        "image_url": "html,dam-submission/version_2.mp4",
         "image_alt": "Attentional Dynamics, DAM Submission",
         "description": "This was just a draft at the time exploring the history of NFTs on Ethereum. Submitted to the DAM GENESIS Collection. I submit this animation as-is: It derives directly from those feelings then, feelings probably shared by many at the time.",
         "date": "2025-06-01",

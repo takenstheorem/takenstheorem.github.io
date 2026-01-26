@@ -90,6 +90,13 @@
       display: block;
     }
 
+    .panel iframe {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      display: block;
+    }
+
     .panel-content {
       position: absolute;
       bottom: 0;
@@ -221,6 +228,8 @@
         Studio | Art's not Dead</a>. Fully on-chain, fusing materials from other artists. Bids welcomed.
 
       (4) I have special series of 4 tokens from <a href="https://takenstheorem.weebly.com/layer_two.html" target="_blank">layer_two</a> shared on this OS gallery <a href="https://opensea.io/gallery/0xa88e4a192f3ff5e46dcc96efefb38dfec7bb250c/06c66792bd6e4f0f81731f957590137e" target="_blank">here</a>. Offers welcomed on the whole set.
+
+      (5) Version 2 of "Attentional Dynamics" is available on <a href="https://takenstheorem.github.io/dam-submission" target="_blank">here</a>. Offers welcomed.
     </div>
   </section>
 
@@ -287,10 +296,31 @@
               const panel = document.createElement('div');
               panel.classList.add('panel');
 
-              const img = document.createElement('img');
-              img.src = article.image_url;
-              img.alt = article.image_alt;
-              panel.appendChild(img);
+              if (article.image_url.substring(0,4) == 'html') {
+                if (article.image_url.substring(article.image_url.length - 3) == 'mp4') {
+                  const video = document.createElement('video');
+                  video.src = article.image_url.substr(5);                  
+                  video.controls = true;
+                  video.autoplay = true;
+                  video.muted = true; 
+                  video.loop = true;  
+                  video.playsInline = true;
+                  video.style.width = '100%';
+                  panel.appendChild(video);
+                } else {
+                  const img = document.createElement('iframe');
+                  img.src = article.image_url.substr(5);
+                  panel.appendChild(img);
+                  img.style.width = '100%';
+                  img.style.height = '350px';
+                  img.style.border = 'none';
+                }
+              } else {
+                const img = document.createElement('img');
+                img.src = article.image_url;
+                img.alt = article.image_alt;
+                panel.appendChild(img);
+              }
 
               const aLink = document.createElement('a');
               aLink.href = article.url;
