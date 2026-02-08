@@ -259,6 +259,16 @@
       font-size: 13px;
     }
 
+    .modal-more {
+      display: inline-block;
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      margin-right: 14px;
+    }
+
     .modal-close {
       margin-top: 6px;
       background: transparent;
@@ -398,6 +408,7 @@
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <h3 id="modalTitle"></h3>
       <p id="modalBody"></p>
+      <a class="modal-more" id="modalMore" target="_blank" rel="noreferrer">More</a>
       <button class="modal-close" id="modalClose">Close</button>
     </div>
   </div>
@@ -413,7 +424,8 @@
         label: "Project 01",
         title: "Archival Nodes",
         subtitle: "Archival nodes of the first experiment machine.",
-        description: "Archival nodes of the first experiment machine. A living index of early proposals and their echo.",
+        description: "Archival Nodes of the First Experiment Machine is a workbench. A layout of on-chain proposals, details culled from The DAO's original proposals, all on chain, presented en masse, tattered but hopeful, for all to see.\n\nIt uses Art Blocks on-chain p5.js asset to create an interactive visual experience. A workstation. Crumpled ideas, assembled in one place.\n\nTokens recapitulate a history. Ideas encoded in proposals and actualized by collective assent.",
+        moreUrl: "https://github.com/takenstheorem/perpetual/tree/main/01-archival-nodes",
         tokens: [1],
         gridClass: "project-one"
       },
@@ -422,7 +434,8 @@
         label: "Project 02",
         title: "compose[d]",
         subtitle: "Directed cultural evolution, an echo of its place.",
-        description: "Directed cultural evolution, an echo of its place. A quartet of moments folded into a single release.",
+        description: "This function thus randomly outputs a rhopalic “poem,” a structural style famous from Oulipo. The rhopalisms are playful. They often start without structure and take on strange meaning. They, too, are cumulative. The function composes trillions of these poems. Each output recapitulates this history using data from an on-chain project that illustrates this evolutionary pattern...",
+        moreUrl: "https://github.com/takenstheorem/perpetual/tree/main/02-compose%5Bd%5D",
         tokens: [167, 168, 169, 170],
         gridClass: "project-two"
       },
@@ -431,7 +444,8 @@
         label: "Project 03",
         title: "filtered",
         subtitle: "Filtered readings from this minute of a perpetual machine.",
-        description: "Filtered readings from this minute of a perpetual machine. A shifting lattice of views refreshed on demand.",
+        description: "\"Filtered\" is a little illustration of this. Each token is a raw bitmap generated on the contract. The token operates over the most recent minute of computation in Ethereum's block hashes. These block hashes are seemingly random. They're actually, and by necessity, deterministically connected. They link the entire history of the ledger we use. The apparent randomness of block hashes can be given structure from the \"laws\" coded on the \"Filtered\" rendering contract.\n\nFrom randomness, pattern. Local interactions. Gradients. Cellular structure. Flows.",
+        moreUrl: "https://github.com/takenstheorem/perpetual/tree/main/03-filtered",
         tokens: Array.from({ length: 16 }, (_, i) => 192 + i),
         gridClass: "project-three",
         refreshable: true
@@ -448,6 +462,7 @@
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
     const modalClose = document.getElementById('modalClose');
+    const modalMore = document.getElementById('modalMore');
 
     let contract = null;
 
@@ -459,6 +474,14 @@
       if (!modal || !modalTitle || !modalBody) return;
       modalTitle.textContent = project.title;
       modalBody.textContent = project.description || project.subtitle || '';
+      if (modalMore) {
+        if (project.moreUrl) {
+          modalMore.href = project.moreUrl;
+          modalMore.style.display = 'inline-block';
+        } else {
+          modalMore.style.display = 'none';
+        }
+      }
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
     }
