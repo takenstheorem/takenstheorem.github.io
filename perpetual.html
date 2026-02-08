@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perpetual releases</title>
+  <style>
+    :root {
+      --bg: #090909;
+      --text: #f5f5f5;
+      --muted: #b3b3b3;
+      --arrow-bg: #2a2a2a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
+      scroll-behavior: smooth;
+    }
+
+    #scroll {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+    }
+
+    .cover {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+      padding: 36px 6vw 56px 6vw;
+      position: relative;
+      background: var(--bg);
+    }
+
+    .cover.hero {
+      place-items: center;
+      text-align: center;
+      grid-template-rows: auto auto auto;
+    }
+
+    h1 {
+      margin: 0 0 14px 0;
+      font-size: 30px;
+      letter-spacing: 0.06em;
+      text-transform: none;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 700px;
+      margin: 0 auto 12px auto;
+    }
+
+    .connect {
+      background: transparent;
+      color: var(--text);
+      padding: 12px 22px;
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 8px;
+    }
+
+    a {
+      color: var(--text);
+    }
+
+    .cover-header {
+      max-width: 820px;
+    }
+
+    .cover-header .label {
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .cover-header h2 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 0.08em;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .help {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      color: var(--text);
+      background: transparent;
+      font-size: 12px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .refresh {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+    }
+
+    .cover-header p {
+      margin: 8px 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .token-range {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      align-content: stretch;
+      justify-content: stretch;
+      height: 100%;
+      grid-auto-rows: 1fr;
+    }
+
+    .grid.project-one {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+    }
+
+    .grid.project-two {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+    }
+
+    .grid.project-three {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+    }
+
+    .card {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 6px;
+      height: 100%;
+    }
+
+    .card .caption {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+
+    .media {
+      background: #0f0f10;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .media iframe,
+    .media img {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .loader {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: var(--text);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .scroll-arrow {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--arrow-bg);
+      color: var(--text);
+      width: 46px;
+      height: 46px;
+      cursor: pointer;
+      font-size: 20px;
+      border-radius: 999px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 100;
+    }
+
+    .modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #0f0f10;
+      color: var(--text);
+      padding: 22px;
+      max-width: 520px;
+      width: calc(100% - 48px);
+      text-align: left;
+    }
+
+    .modal-card h3 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+      letter-spacing: 0.06em;
+    }
+
+    .modal-card p {
+      margin: 0 0 12px 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 13px;
+    }
+
+    .modal-close {
+      margin-top: 6px;
+      background: transparent;
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .scroll-arrow.pulse {
+      animation: arrowPulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes arrowPulse {
+      0% { transform: translateX(-50%) scale(1); opacity: 0.7; }
+      50% { transform: translateX(-50%) scale(1.12); opacity: 1; }
+      100% { transform: translateX(-50%) scale(1); opacity: 0.7; }
+    }
+
+    .error {
+      color: #ff8d8d;
+      font-size: 12px;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .hero-art {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .hero-art svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .progress-track {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 76px;
+      width: min(360px, 70vw);
+      height: 2px;
+      background: rgba(255,255,255,0.15);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .progress-track.active {
+      opacity: 1;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: var(--text);
+      transition: width 0.2s ease;
+    }
+
+
+    @media (max-width: 900px) {
+      .grid.project-three {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(8, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid.project-two {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+      }
+      .grid.project-three {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(16, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-track" id="progressTrack">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div id="scroll">
+    <section class="cover hero" id="hero">
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 1400 600" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="roadGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#f2f2f2"/>
+              <stop offset="60%" stop-color="#666666"/>
+              <stop offset="100%" stop-color="#222222"/>
+            </linearGradient>
+          </defs>
+          <rect width="1400" height="600" fill="none"/>
+          <path d="M80 520 C220 520 320 520 420 500 C560 470 640 420 700 360 C780 270 900 230 1020 210 C1140 190 1240 170 1320 140"
+                fill="none" stroke="url(#roadGrad)" stroke-width="2.2" stroke-linecap="round" />
+          <image
+            href="man.png"
+            x="1276"
+            y="104"
+            width="24"
+            height="62"
+            opacity="0.85"
+          />
+        </svg>
+      </div>
+      <div>
+        <h1><em>Perpetual</em> Releases</h1>
+        <div class="hint">
+          “Creator and collectors are now interwoven into a little machine. And unlike its patrons, that little machine lives forever.”
+        </div>
+        <div class="hint">Welcome to the <em>Perpetual</em> token preview page.</div>
+        <div class="hint">
+          For project motivation and backstory, visit the original
+          <a href="https://perpetual.takens.eth.limo/" target="_blank" rel="noreferrer"><em>Perpetual</em> site</a>
+          released December 2023.
+        </div>
+        <div class="hint">
+          For release details, minting instructions, and archival notes, see
+          <a href="https://github.com/takenstheorem/perpetual" target="_blank" rel="noreferrer"><em>Perpetual</em>’s GitHub repo</a>.
+        </div>
+        <div class="hint">Connect to load on-chain previews.</div>
+        <button class="connect" id="connectBtn">Connect</button>
+        <div id="status" class="hint"></div>
+      </div>
+      <button class="scroll-arrow" id="toProject1">↓</button>
+    </section>
+  </div>
+  <div class="modal" id="projectModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle"></h3>
+      <p id="modalBody"></p>
+      <button class="modal-close" id="modalClose">Close</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script>
+    const CONTRACT_ADDRESS = "0xbbcfcc50a2885495ab789e06bab7d8f85d2f73ce";
+    const ABI = ["function tokenURI(uint256 tokenId) view returns (string)"];
+
+    const PROJECTS = [
+      {
+        key: "archival",
+        label: "Project 01",
+        title: "Archival Nodes",
+        subtitle: "Archival nodes of the first experiment machine.",
+        description: "Archival nodes of the first experiment machine. A living index of early proposals and their echo.",
+        tokens: [1],
+        gridClass: "project-one"
+      },
+      {
+        key: "compose",
+        label: "Project 02",
+        title: "compose[d]",
+        subtitle: "Directed cultural evolution, an echo of its place.",
+        description: "Directed cultural evolution, an echo of its place. A quartet of moments folded into a single release.",
+        tokens: [167, 168, 169, 170],
+        gridClass: "project-two"
+      },
+      {
+        key: "filtered",
+        label: "Project 03",
+        title: "filtered",
+        subtitle: "Filtered readings from this minute of a perpetual machine.",
+        description: "Filtered readings from this minute of a perpetual machine. A shifting lattice of views refreshed on demand.",
+        tokens: Array.from({ length: 16 }, (_, i) => 192 + i),
+        gridClass: "project-three",
+        refreshable: true
+      }
+    ];
+
+    const scroll = document.getElementById('scroll');
+    const connectBtn = document.getElementById('connectBtn');
+    const statusEl = document.getElementById('status');
+    const toProject1 = document.getElementById('toProject1');
+    const progressTrack = document.getElementById('progressTrack');
+    const progressBar = document.getElementById('progressBar');
+    const modal = document.getElementById('projectModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
+
+    let contract = null;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function openModal(project) {
+      if (!modal || !modalTitle || !modalBody) return;
+      modalTitle.textContent = project.title;
+      modalBody.textContent = project.description || project.subtitle || '';
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function setProgress(current, total) {
+      if (!progressBar || !progressTrack) return;
+      if (total <= 0) return;
+      progressTrack.classList.add('active');
+      const pct = Math.min(100, Math.max(0, (current / total) * 100));
+      progressBar.style.width = pct + '%';
+      if (current >= total) {
+        setTimeout(() => {
+          progressTrack.classList.remove('active');
+          progressBar.style.width = '0%';
+          if (toProject1) toProject1.classList.add('pulse');
+        }, 500);
+      }
+    }
+
+
+    toProject1.addEventListener('click', () => {
+      const first = document.getElementById('cover-archival');
+      if (first) first.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    function isDataUri(uri) {
+      return typeof uri === 'string' && uri.startsWith('data:');
+    }
+
+    function decodeDataUri(uri) {
+      const comma = uri.indexOf(',');
+      if (comma === -1) return { mime: 'text/plain', data: '' };
+      const meta = uri.slice(5, comma);
+      const dataPart = uri.slice(comma + 1);
+      const isBase64 = /;base64/i.test(meta);
+      const mime = meta.split(';')[0] || 'text/plain';
+      const data = isBase64 ? atob(dataPart) : decodeURIComponent(dataPart);
+      return { mime, data };
+    }
+
+    function normalizeUri(uri) {
+      if (!uri) return '';
+      if (uri.startsWith('ipfs://')) {
+        return 'https://ipfs.io/ipfs/' + uri.slice(7);
+      }
+      return uri;
+    }
+
+    async function unpackTokenUri(tokenUri) {
+      if (!tokenUri) return { metadata: null };
+      if (isDataUri(tokenUri)) {
+        const decoded = decodeDataUri(tokenUri);
+        const raw = decoded.data || '';
+        if (decoded.mime.includes('json') || raw.trim().startsWith('{')) {
+          return { metadata: JSON.parse(raw) };
+        }
+        return { metadata: null };
+      }
+      const res = await fetch(normalizeUri(tokenUri));
+      const text = await res.text();
+      if (text.trim().startsWith('{')) {
+        return { metadata: JSON.parse(text) };
+      }
+      return { metadata: null };
+    }
+
+    function pickMedia(animationUrl, imageUrl) {
+      if (animationUrl) return makeMedia(animationUrl, 'html');
+      if (imageUrl) return makeMedia(imageUrl, 'image');
+      return null;
+    }
+
+    function makeMedia(uri, kind) {
+      if (!uri) return null;
+      if (isDataUri(uri)) {
+        const decoded = decodeDataUri(uri);
+        const blob = new Blob([decoded.data], { type: decoded.mime || (kind === 'image' ? 'image/png' : 'text/html') });
+        const url = URL.createObjectURL(blob);
+        return { type: kind, url };
+      }
+      return { type: kind, url: normalizeUri(uri) };
+    }
+
+    function buildCover(project, index, total) {
+      const section = document.createElement('section');
+      section.className = 'cover';
+      section.id = `cover-${project.key}`;
+
+      const header = document.createElement('div');
+      header.className = 'cover-header';
+      const refreshButton = project.refreshable
+        ? `<button class="refresh" data-refresh="${project.key}">Refresh</button>`
+        : '';
+      const helpButton = `<button class="help" data-help="${project.key}">?</button>`;
+      const tokenLabel = project.tokens.length === 1
+        ? ''
+        : `Tokens: ${project.tokens[0]} – ${project.tokens[project.tokens.length - 1]}`;
+      header.innerHTML = `
+        <div class="label">${project.label}</div>
+        <h2>${project.title} ${helpButton} ${refreshButton}</h2>
+        <p>${project.subtitle}</p>
+        ${tokenLabel ? `<div class="token-range">${tokenLabel}</div>` : ''}
+      `;
+
+      const grid = document.createElement('div');
+      grid.className = `grid ${project.gridClass}`;
+
+      project.tokens.forEach((tokenId) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="caption">Token #${tokenId}</div>
+          <div class="media" data-token="${tokenId}"><div class="loader"></div></div>
+        `;
+        grid.appendChild(card);
+      });
+
+      section.appendChild(header);
+      section.appendChild(grid);
+
+      if (index < total - 1) {
+        const arrow = document.createElement('button');
+        arrow.className = 'scroll-arrow';
+        arrow.innerHTML = '↓';
+        arrow.addEventListener('click', () => {
+          const next = document.querySelector(`#cover-${PROJECTS[index + 1].key}`);
+          if (next) next.scrollIntoView({ behavior: 'smooth' });
+        });
+        section.appendChild(arrow);
+      }
+
+      return section;
+    }
+
+    async function fillMedia(contractInstance, tokenId, container) {
+      try {
+        const tokenUri = await contractInstance.tokenURI(tokenId);
+        const unpacked = await unpackTokenUri(tokenUri);
+        const meta = unpacked.metadata || {};
+        const animationUrl = meta.animation_url || meta.animationUrl || meta.animation;
+        const imageUrl = meta.image;
+        const media = pickMedia(animationUrl, imageUrl);
+        if (!media) {
+          container.innerHTML = '<div class="hint">No media</div>';
+          return;
+        }
+        container.innerHTML = '';
+        if (media.type === 'html') {
+          const iframe = document.createElement('iframe');
+          iframe.sandbox = 'allow-scripts allow-same-origin';
+          iframe.src = media.url;
+          container.appendChild(iframe);
+        } else {
+          const img = document.createElement('img');
+          img.src = media.url;
+          img.alt = `Token ${tokenId}`;
+          container.appendChild(img);
+        }
+      } catch (err) {
+        container.innerHTML = `<div class="error">${String(err.message || err)}</div>`;
+      }
+    }
+
+    async function loadProject(projectKey) {
+      if (!contract) return;
+      const project = PROJECTS.find((p) => p.key === projectKey);
+      if (!project) return;
+      for (const tokenId of project.tokens) {
+        const container = scroll.querySelector(`.media[data-token="${tokenId}"]`);
+        if (container) {
+          container.innerHTML = '<div class="loader"></div>';
+          await fillMedia(contract, tokenId, container);
+        }
+      }
+    }
+
+    async function connectAndLoad() {
+      if (!window.ethereum) {
+        setStatus('Metamask not found.');
+        return;
+      }
+      setStatus('');
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send('eth_requestAccounts', []);
+      contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+
+      const existing = scroll.querySelectorAll('.cover:not(.hero)');
+      existing.forEach((el) => el.remove());
+
+      PROJECTS.forEach((project, index) => {
+        scroll.appendChild(buildCover(project, index, PROJECTS.length));
+      });
+
+      const totalTokens = PROJECTS.reduce((acc, project) => acc + project.tokens.length, 0);
+      let loaded = 0;
+      if (toProject1) toProject1.classList.remove('pulse');
+      setProgress(0, totalTokens);
+
+      const tasks = [];
+      for (const project of PROJECTS) {
+        for (const tokenId of project.tokens) {
+          const container = scroll.querySelector(`.media[data-token="${tokenId}"]`);
+          if (container) {
+            const task = fillMedia(contract, tokenId, container).then(() => {
+              loaded += 1;
+              setProgress(loaded, totalTokens);
+            });
+            tasks.push(task);
+          }
+        }
+      }
+
+      await Promise.all(tasks);
+      setStatus('');
+    }
+
+    scroll.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!target) return;
+      if (target.matches('[data-refresh]')) {
+        const key = target.getAttribute('data-refresh');
+        loadProject(key);
+        return;
+      }
+      if (target.matches('[data-help]')) {
+        const key = target.getAttribute('data-help');
+        const project = PROJECTS.find((p) => p.key === key);
+        if (project) openModal(project);
+      }
+    });
+
+    if (modal) {
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+    }
+
+    if (modalClose) {
+      modalClose.addEventListener('click', () => closeModal());
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeModal();
+    });
+
+    connectBtn.addEventListener('click', () => {
+      connectAndLoad();
+    });
+  </script>
+</body>
+</html>
