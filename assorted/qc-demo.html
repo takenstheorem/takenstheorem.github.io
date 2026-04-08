@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚛️ Quantum ECDSA Cracker</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#070714;color:#cbd0e6;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision}
+#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1150px;margin:0 auto;padding:18px}
+h1{text-align:center;font-size:1.75em;color:#0fc;text-shadow:0 0 18px #0fc3;margin-bottom:4px;display:inline-block;letter-spacing:.02em}
+.title-row{text-align:center;position:relative}
+.sub{text-align:center;color:#7f86a8;font-size:.82em;margin-bottom:22px}
+.panels{display:flex;gap:14px;margin-bottom:14px}
+.panel{flex:1;background:linear-gradient(180deg,#10102a,#0b0b1c);border:1px solid #2b2b60;border-radius:8px;padding:12px;min-width:0;position:relative;overflow:visible;box-shadow:0 10px 30px #0008}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#0fc8,transparent)}
+.panel h2{font-size:.82em;color:#11baff;letter-spacing:2.2px;text-transform:uppercase;margin-bottom:6px;display:inline-block}
+.panel canvas{display:block;width:100%;background:#070717;border-radius:6px;border:1px solid #1e1e44}
+.cv-wrap{position:relative}
+.info{background:#070717;border:1px solid #232354;border-radius:8px;padding:9px 11px;margin-top:8px;font-size:.75em;line-height:1.85;position:relative;box-shadow:inset 0 1px 0 #ffffff08}
+.c1{color:#0fc}.c2{color:#fc0}.c3{color:#f55}.c4{color:#4f4}
+.ctrls{text-align:center;margin:14px 0;position:relative}
+#go{background:linear-gradient(135deg,#0ff,#0a84ff);color:#041018;border:1px solid #0ff6;padding:12px 40px;font-size:1.05em;font-weight:800;font-family:inherit;border-radius:12px;cursor:pointer;letter-spacing:1.4px;text-transform:uppercase;box-shadow:0 10px 24px #0008,0 0 0 1px #0ff2;transition:transform .2s,box-shadow .2s,filter .2s}
+#go:hover{transform:translateY(-1px);filter:saturate(1.08);box-shadow:0 14px 30px #000a,0 0 0 1px #0ff4}
+#go:disabled{opacity:.4;cursor:default;transform:none}
+#log{background:#070717;border:1px solid #232354;border-radius:10px;padding:10px 14px;max-height:200px;overflow-y:auto;font-size:.75em;line-height:1.9;position:relative;box-shadow:inset 0 1px 0 #ffffff08}
+.ll{animation:fi .4s}
+@keyframes fi{from{opacity:0;transform:translateX(-10px)}to{opacity:1}}
+#res{text-align:center;margin:16px 0;padding:22px;background:linear-gradient(180deg,#10102a,#0b0b1c);border:1px solid #2b2b60;border-radius:12px;display:none;position:relative;box-shadow:0 14px 40px #000a}
+#res.show{display:block;animation:rv 1s forwards}
+@keyframes rv{0%{opacity:0;transform:scale(.85);border-color:#f44}50%{border-color:#fc0}100%{opacity:1;transform:scale(1);border-color:#4f4;box-shadow:0 0 40px #4f43}}
+#res h2{color:#4f4;font-size:1.3em;margin-bottom:8px}
+#res .big{font-size:2.2em;color:#f55;text-shadow:0 0 20px #f443}
+#res .verify{color:#4f4;margin-top:8px;font-size:.95em}
+
+/* ═══ HELP SYSTEM ═══ */
+.help-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(180deg,#151535,#0c0c1f);
+  border:1px solid #2b2b60;color:#7ad6ff;
+  font-size:13px;font-weight:800;font-family:inherit;
+  cursor:pointer;vertical-align:middle;margin-left:6px;
+  transition:.25s;position:relative;z-index:10;
+  line-height:1;user-select:none;flex-shrink:0;
+}
+.help-btn:hover{background:#0b2a44;border-color:#38bdf8;color:#eaf7ff;transform:translateY(-1px);box-shadow:0 8px 18px #0009}
+.help-btn.on-canvas{position:absolute;z-index:10}
+
+#help-overlay{
+  display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(4,4,20,.75);z-index:9000;
+  justify-content:center;align-items:center;
+  animation:foIn .2s;
+}
+#help-overlay.vis{display:flex}
+@keyframes foIn{from{opacity:0}to{opacity:1}}
+
+#help-card{
+  background:linear-gradient(145deg,#12123a,#0c0c28);
+  border:1px solid #2b2b60;border-radius:12px;
+  max-width:460px;width:90%;padding:0;
+  box-shadow:0 18px 60px #000b;
+  animation:cardIn .3s;position:relative;
+  max-height:85vh;display:flex;flex-direction:column;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:none}}
+#help-card .hc-head{
+  padding:16px 20px 12px;border-bottom:1px solid #1a1a40;
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+#help-card .hc-icon{font-size:1.6em}
+#help-card .hc-title{color:#0fc;font-size:1.05em;font-weight:bold;flex:1}
+#help-card .hc-close{
+  width:28px;height:28px;border-radius:50%;border:1px solid #333;
+  background:#1a1a30;color:#889;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+#help-card .hc-close:hover{background:#f443;color:#fff;border-color:#f44}
+#help-card .hc-body{
+  padding:16px 20px 20px;font-size:.88em;line-height:1.85;
+  color:#b0b0d0;overflow-y:auto;
+}
+#help-card .hc-body b{color:#fc0}
+#help-card .hc-body .analogy{
+  background:rgba(0,170,255,.533);border-left:3px solid #0af;
+  padding:8px 12px;margin:10px 0;border-radius:0 6px 6px 0;
+  font-style:italic;color:#8ac;font-size:.92em;
+}
+#help-card .hc-body .real-world{
+  background:rgba(255,85,85,.533);border-left:3px solid #f55;
+  padding:8px 12px;margin:10px 0;border-radius:0 6px 6px 0;
+  color:#e99;font-size:.92em;
+}
+#help-card .hc-tags{
+  padding:10px 20px 14px;border-top:1px solid #1a1a40;
+  display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;
+}
+.hc-tag{
+  background:rgba(0,170,255,.333);border:1px solid rgba(0,170,255,.2);border-radius:20px;
+  padding:2px 10px;font-size:.7em;color:#0af;
+}
+
+@media(max-width:700px){.panels{flex-direction:column}h1{font-size:1.3em}#help-card{max-width:95%}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<!-- HELP OVERLAY -->
+<div id="help-overlay" onclick="if(event.target===this)closeHelp()">
+  <div id="help-card">
+    <div class="hc-head">
+      <span class="hc-icon" id="hcIcon">?</span>
+      <span class="hc-title" id="hcTitle">Title</span>
+      <button class="hc-close" onclick="closeHelp()">✕</button>
+    </div>
+    <div class="hc-body" id="hcBody">...</div>
+    <div class="hc-tags" id="hcTags"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="title-row">
+    <h1>⚛️ QUANTUM ECDSA CRACKER</h1>
+    <span class="help-btn" onclick="showHelp('main')">?</span>
+  </div>
+  <p class="sub">Shor's Algorithm vs. Elliptic Curve Discrete Logarithm Problem</p>
+  <div class="panels">
+    <div class="panel">
+      <h2>📐 Elliptic Curve E(𝔽<sub>p</sub>)</h2>
+      <span class="help-btn" onclick="showHelp('curve')">?</span>
+      <div class="cv-wrap">
+        <canvas id="ecC" width="520" height="420"></canvas>
+        <span class="help-btn on-canvas" style="top:6px;right:6px" onclick="showHelp('points')">?</span>
+      </div>
+      <div class="info" id="ecI">
+        Curve not yet initialized.
+        <span class="help-btn" onclick="showHelp('keys')" style="float:right">?</span>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>🔮 Quantum Circuit</h2>
+      <span class="help-btn" onclick="showHelp('circuit')">?</span>
+      <div class="cv-wrap">
+        <canvas id="qcC" width="520" height="420"></canvas>
+        <span class="help-btn on-canvas" style="top:6px;left:6px" onclick="showHelp('qubits')">?</span>
+        <span class="help-btn on-canvas" style="top:6px;right:6px" onclick="showHelp('gates')">?</span>
+
+        <!-- Gate-specific helps positioned over canvas areas -->
+        <span class="help-btn on-canvas" style="bottom:8px;left:22%" onclick="showHelp('hadamard')">?</span>
+        <span class="help-btn on-canvas" style="bottom:8px;left:43%" onclick="showHelp('oracle')">?</span>
+        <span class="help-btn on-canvas" style="bottom:8px;left:62%" onclick="showHelp('qft')">?</span>
+        <span class="help-btn on-canvas" style="bottom:8px;left:82%" onclick="showHelp('measure')">?</span>
+      </div>
+      <div class="info" id="qcI">
+        Quantum processor: <span class="c1">STANDBY</span>
+        <span class="help-btn" onclick="showHelp('processor')" style="float:right">?</span>
+      </div>
+    </div>
+  </div>
+  <div class="ctrls">
+    <button id="go" onclick="startAttack()">⚡ CRACK ECDSA ⚡</button>
+    <span class="help-btn" onclick="showHelp('attack')" style="vertical-align:middle">?</span>
+  </div>
+  <div style="position:relative">
+    <div id="log"></div>
+    <span class="help-btn" style="position:absolute;top:8px;right:10px;z-index:2" onclick="showHelp('log')">?</span>
+  </div>
+  <div id="res">
+    <span class="help-btn" style="position:absolute;top:10px;right:14px" onclick="showHelp('result')">?</span>
+    <h2>🔓 PRIVATE KEY RECOVERED</h2>
+    <p>Secret scalar <b>d</b> = <span class="big" id="resK"></span></p>
+    <p class="verify" id="resV"></p>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  CURVE SETUP
+// ═══════════════════════════════════════
+const CP=97,CA=2,CB=3;
+
+// ═══════════════════════════════════════
+//  HELP CONTENT
+// ═══════════════════════════════════════
+const HELP = {
+  main: {
+    icon: '⚛️', title: 'What Is This Demo?',
+    tags: ['Quantum Computing', 'Cryptography', 'ECDSA'],
+    body: `
+      This demo simulates a <b>quantum computer cracking ECDSA</b> — the same digital signature algorithm that secures <b>Bitcoin, Ethereum, and most of the internet</b>.
+      <div class="analogy">🍕 Analogy: Imagine your crypto wallet has a lock (public key) and a secret combination (private key). This demo shows how a quantum computer could figure out the combination just by looking at the lock.</div>
+      <b>ECDSA</b> (Elliptic Curve Digital Signature Algorithm) is considered unbreakable by normal computers because it relies on a math problem that's insanely hard to reverse. But <b>quantum computers</b> use physics tricks to solve it exponentially faster.
+      <div class="real-world">⚠️ Real ECDSA uses huge numbers (256-bit). We use a tiny curve here so you can see it all happen visually. The math is identical — our curve is just a toy-sized version.</div>
+    `
+  },
+  curve: {
+    icon: '📐', title: 'What Is an Elliptic Curve?',
+    tags: ['Math', 'Elliptic Curves', 'Finite Fields'],
+    body: `
+      An <b>elliptic curve</b> is a special type of equation: <b>y² = x³ + ax + b</b>.
+      <br><br>When drawn on a normal graph, it looks like a smooth swooping line. But in cryptography we use it over a <b>finite field</b> — meaning we only allow whole numbers and wrap around at a prime number <b>p</b> (like clock arithmetic).
+      <div class="analogy">🕐 Analogy: Imagine doing math on a clock — after 12 comes 1 again. We do the same thing but the "clock" has ${CP} hours (positions 0 to ${CP-1}). This makes the curve into a scattered set of dots instead of a smooth line.</div>
+      The magic property: you can <b>"add" two points together</b> to get a third point, and this operation forms a <b>mathematical group</b> — meaning it follows nice rules that make cryptography possible.
+      <div class="real-world">🔐 Bitcoin uses the curve <b>secp256k1</b>: y² = x³ + 7 over a 256-bit prime. Same concept, astronomically bigger numbers.</div>
+    `
+  },
+  points: {
+    icon: '✨', title: 'What Are These Dots?',
+    tags: ['Curve Points', 'Finite Field', 'Group'],
+    body: `
+      Each glowing dot is a <b>point (x, y)</b> that satisfies our curve equation y² = x³ + ${CA}x + ${CB} (mod ${CP}).
+      <br><br>We test every possible x from 0 to ${CP-1}, compute the right side, and check if any y value squared equals it (mod ${CP}). Only some (x,y) pairs work — those are our curve points.
+      <div class="analogy">🎯 Analogy: Imagine throwing darts at a grid. Only the darts that land on specific magic spots "count." Those magic spots are our curve points.</div>
+      <b>Green dot (G)</b> = the <b>Generator</b> — our agreed-upon starting point.<br>
+      <b>Red dot (Q)</b> = the <b>Public Key</b> — where you end up after "walking" <b>d</b> steps from G.<br>
+      <b>Yellow path</b> = the secret route from G to Q (the private key's trail).
+      <div class="real-world">🌐 Everyone agrees on G publicly. The trick is that knowing G and Q, you can't figure out how many steps (d) it took to get there — unless you have a quantum computer!</div>
+    `
+  },
+  keys: {
+    icon: '🔑', title: 'Public Keys, Private Keys & Signatures',
+    tags: ['ECDSA', 'Digital Signatures', 'Private Key'],
+    body: `
+      <b>Private key (d)</b>: A secret random number. This is what you must protect!
+      <br><b>Public key (Q)</b>: Computed as Q = d × G (add G to itself d times). This is shared openly.
+      <br><br>The <b>"Discrete Log Problem"</b>: Given G and Q, find d. On normal computers this is practically impossible for large curves.
+      <div class="analogy">🏃 Analogy: Imagine running laps on a circular track. I tell you "I'm at position Q" and "each lap starts at G." How many laps did I run? With a huge track and huge number of laps, you can't tell — but a quantum computer can.</div>
+      <b>ECDSA Signatures</b> use the private key to create a mathematical proof that you authored a message — without revealing the key. If someone steals your private key, they can <b>forge your signatures</b>, steal your crypto, impersonate you.
+      <div class="real-world">💸 If a quantum computer recovers d from someone's public key, it can sign transactions and <b>drain their entire wallet</b>.</div>
+    `
+  },
+  circuit: {
+    icon: '🔮', title: 'What Is a Quantum Circuit?',
+    tags: ['Quantum Computing', 'Circuits', 'Algorithms'],
+    body: `
+      A <b>quantum circuit</b> is a program for a quantum computer, shown as horizontal lines (wires) representing <b>qubits</b>, with boxes (gates) that perform operations on them.
+      <br><br>You read it left to right: qubits start on the left, pass through gates, and are measured on the right.
+      <div class="analogy">🎵 Analogy: Think of it like a music score — each line is an instrument (qubit), and the notes/symbols (gates) tell it what to do at each moment in time.</div>
+      This circuit implements <b>Shor's Algorithm</b> adapted for elliptic curves. It's the specific quantum program that breaks ECDSA by solving the discrete log problem exponentially faster than any classical method.
+      <div class="real-world">🖥️ Today's quantum computers (~1000 noisy qubits) are too small and error-prone to run this. Breaking real ECDSA would require ~2,300+ perfect logical qubits — estimated to be 5-20+ years away.</div>
+    `
+  },
+  qubits: {
+    icon: '🌀', title: 'What Are Qubits?',
+    tags: ['Qubits', 'Superposition', 'Quantum Mechanics'],
+    body: `
+      A <b>qubit</b> (quantum bit) is the quantum version of a regular bit.
+      <br><br>A normal bit is either <b>0</b> or <b>1</b>. A qubit can be in a <b>superposition</b> — it's 0 AND 1 at the same time until you look at it (measure it). This is written as |ψ⟩ = α|0⟩ + β|1⟩.
+      <div class="analogy">🪙 Analogy: A classical bit is a coin lying heads or tails. A qubit is a coin <b>spinning in the air</b> — it's both heads and tails simultaneously. Only when it lands (measurement) does it commit to one.</div>
+      We use <b>two registers</b> of qubits:
+      <br>• <b>Register A</b> (top 3 wires): holds value "a"
+      <br>• <b>Register B</b> (bottom 3 wires): holds value "b"
+      <br><br>In superposition, they explore <b>ALL possible (a,b) combinations at once</b> — this is where quantum speedup comes from!
+      <div class="real-world">🧪 Real qubits are made from superconducting loops (Google, IBM), trapped ions (IonQ), photons, or other quantum systems cooled to near absolute zero.</div>
+    `
+  },
+  gates: {
+    icon: '🔲', title: 'What Are Quantum Gates?',
+    tags: ['Gates', 'H Gate', 'Operations'],
+    body: `
+      <b>Quantum gates</b> are operations that change the state of qubits — like logic gates (AND, OR, NOT) in a normal computer, but for quantum states.
+      <br><br>The gates in our circuit:
+      <br>• <b>H (Hadamard)</b> — Creates superposition
+      <br>• <b>Uf (Oracle)</b> — Encodes the math problem
+      <br>• <b>QFT† (Quantum Fourier Transform)</b> — Extracts the answer
+      <br>• <b>📊 (Measurement)</b> — Reads the result
+      <div class="analogy">🎛️ Analogy: Gates are like audio effects pedals for a guitar. Each one transforms the "signal" (quantum state) in a specific way. Chain them together and you get the sound (answer) you want.</div>
+      Unlike classical gates, quantum gates are <b>reversible</b> (you can always undo them) and they work on superpositions — so one gate operation transforms ALL possible states simultaneously.
+    `
+  },
+  hadamard: {
+    icon: '🌊', title: 'H — Hadamard Gate (Superposition)',
+    tags: ['Hadamard', 'Superposition', 'Parallelism'],
+    body: `
+      The <b>Hadamard gate (H)</b> puts a qubit into an <b>equal superposition</b> of 0 and 1:
+      <br><br><b>|0⟩ → (|0⟩ + |1⟩) / √2</b>
+      <br><br>When applied to ALL qubits, it creates a superposition of <b>every possible input combination</b> at once.
+      <div class="analogy">🚪 Analogy: Imagine you're at a crossroads and you need to try every possible path. A normal computer walks down one path at a time. The Hadamard gate lets the quantum computer take <b>ALL paths simultaneously</b>.</div>
+      With 6 qubits in superposition, we're exploring <b>2⁶ = 64 states at once</b>. In a real attack on secp256k1, you'd superpose over 2²⁵⁶ states — an astronomically huge number computed in parallel.
+      <div class="real-world">⚡ This massive parallelism is why quantum computers threaten cryptography. One operation processes trillions of trillions of possibilities at once.</div>
+    `
+  },
+  oracle: {
+    icon: '🔮', title: 'Uf — Quantum Oracle (The Secret Sauce)',
+    tags: ['Oracle', 'Point Multiplication', 'Entanglement'],
+    body: `
+      The <b>oracle (Uf)</b> is the heart of the attack. It computes:
+      <br><br><b>f(a, b) = aG + bQ</b>
+      <br><br>…for <b>ALL values of (a, b) simultaneously</b> thanks to superposition. It entangles the input registers with the result.
+      <div class="analogy">📖 Analogy: Imagine a magic book where you ask "what's aG + bQ?" and it answers for every possible (a,b) at the same time, writing all answers in invisible ink that only the QFT can reveal.</div>
+      The key insight: whenever <b>a + d·b ≡ 0 (mod n)</b>, the oracle outputs the <b>same point</b>. This creates a hidden pattern in the quantum state that encodes the secret key d.
+      <br><br>A classical computer would need to try each (a,b) pair one at a time — taking forever for large curves. The quantum oracle does it in <b>one shot</b>.
+      <div class="real-world">🧬 Building this oracle for real elliptic curves is the hardest engineering challenge. It requires reversible modular arithmetic circuits with thousands of qubits.</div>
+    `
+  },
+  qft: {
+    icon: '📊', title: 'QFT† — Quantum Fourier Transform',
+    tags: ['QFT', 'Interference', 'Period Finding'],
+    body: `
+      The <b>Quantum Fourier Transform (QFT†)</b> is the thing that pulls the answer out of the noise. It converts the pattern left by the oracle into a measurable signal.
+      <div class="analogy">🎵 Analogy: Imagine a room full of people humming different notes at once (superposition). The QFT is like a magical microphone that picks out the <b>one hidden melody</b> (the secret key) from the noise — through constructive and destructive interference.</div>
+      <b>How it works</b>: The oracle created a periodic pattern in the quantum state. The QFT detects this period via <b>interference</b>:
+      <br>• Wrong answers <b>cancel each other out</b> (destructive interference)
+      <br>• The right answer <b>reinforces itself</b> (constructive interference)
+      <br><br>After QFT, measuring the qubits will give values (a, b) that satisfy <b>a + d·b ≡ 0 (mod n)</b>, letting us solve for d.
+      <div class="real-world">🌊 This is analogous to how noise-canceling headphones work — unwanted signals are made to cancel themselves while the desired signal passes through.</div>
+    `
+  },
+  measure: {
+    icon: '📏', title: 'Measurement — Collapsing the Qubits',
+    tags: ['Measurement', 'Collapse', 'Classical Output'],
+    body: `
+      <b>Measurement</b> forces each qubit to "decide" — it goes from a superposition to a definite classical <b>0</b> or <b>1</b>. This is called <b>wavefunction collapse</b>.
+      <div class="analogy">🪙 Analogy: Remember the spinning coin? Measurement is the coin landing. It was both heads and tails; now it's one or the other. You can't un-measure it!</div>
+      After the QFT, the superposition has been sculpted so that measuring gives us values <b>(a, b)</b> where:
+      <br><br><b>a + d·b ≡ 0 (mod n)</b>
+      <br><br>We then solve this equation classically:
+      <br><b>d = −a × b⁻¹ (mod n)</b>
+      <br><br>And just like that, we've recovered the <b>private key</b>!
+      <div class="real-world">🎰 There's some probability involved — you might need to run the circuit a few times to get a useful (a,b) pair. But on average it works quickly.</div>
+    `
+  },
+  processor: {
+    icon: '💻', title: 'The Quantum Processor Status',
+    tags: ['Status', 'Phases', 'Pipeline'],
+    body: `
+      This status bar shows what <b>phase</b> the quantum computation is in:
+      <br><br>
+      <b>STANDBY</b> → Processor not yet started<br>
+      <b>ACTIVE</b> → Circuit is running<br>
+      <b>SUPERPOSITION</b> → Qubits in parallel states<br>
+      <b>ORACLE</b> → Computing on the curve<br>
+      <b>QFT</b> → Extracting the answer<br>
+      <b>COLLAPSING</b> → Measuring the qubits<br>
+      <b>COLLAPSED</b> → Classical result obtained
+      <div class="analogy">🚦 Analogy: Like a traffic light showing the current phase of the computation pipeline. Each phase transforms the quantum state one step closer to revealing the secret key.</div>
+    `
+  },
+  attack: {
+    icon: '⚡', title: 'What Happens When I Click This?',
+    tags: ['Shor\'s Algorithm', 'ECDLP', 'Full Attack'],
+    body: `
+      Clicking this button runs the <b>full quantum attack simulation</b>:
+      <br><br>
+      <b>Step 1</b> — Set up the elliptic curve and find all its points<br>
+      <b>Step 2</b> — Pick a generator G and a secret key d, compute public key Q = dG<br>
+      <b>Step 3</b> — Run Shor's Algorithm: H → Oracle → QFT → Measure<br>
+      <b>Step 4</b> — Classical post-processing to extract d<br>
+      <b>Step 5</b> — Verify: does d × G equal Q? If yes, key is cracked!
+      <div class="analogy">🔓 Analogy: It's like watching a locksmith (quantum computer) pick a lock (ECDSA) by trying every possible combination simultaneously and then using physics-magic to make all the wrong combinations cancel out, leaving only the correct one.</div>
+      <div class="real-world">⏱️ Our demo curve takes seconds. Real ECDSA (secp256k1) would take a sufficiently large quantum computer perhaps hours. No such computer exists yet — but researchers are racing to build one.</div>
+    `
+  },
+  log: {
+    icon: '📜', title: 'The Attack Log',
+    tags: ['Narration', 'Steps', 'Equations'],
+    body: `
+      This log narrates every step of the quantum attack in real time, showing:
+      <br><br>
+      • <b>🔐 Setup</b> — the curve parameters and key generation<br>
+      • <b>🌊 Quantum ops</b> — each gate being applied<br>
+      • <b>🧮 Math</b> — the actual equations being solved<br>
+      • <b>✅ Verification</b> — proof the recovered key is correct
+      <div class="analogy">📋 Think of it as a play-by-play sports commentary for a cryptographic heist!</div>
+      The math notation: <b>d ≡ −a · b⁻¹ (mod n)</b> means we compute the modular inverse of b, multiply by −a, and take the remainder when divided by n (the group order). This is fast classical arithmetic — the hard part was the quantum step that found (a, b).
+    `
+  },
+  result: {
+    icon: '🔓', title: 'The Key Is Cracked — What Does This Mean?',
+    tags: ['Private Key', 'Impact', 'Post-Quantum'],
+    body: `
+      The <b>private key d</b> has been <b>fully recovered</b> from just the public key Q and the known curve parameters.
+      <br><br>We verified it by computing d × G and confirming it equals Q. This means an attacker could now:
+      <br>• <b>Forge digital signatures</b> (pretend to be you)<br>
+      • <b>Steal cryptocurrency</b> from your wallet<br>
+      • <b>Decrypt TLS/HTTPS</b> sessions<br>
+      • <b>Impersonate servers</b> and intercept communications
+      <div class="real-world">
+        🛡️ <b>How do we fix this?</b><br><br>
+        <b>Post-quantum cryptography</b> uses math problems that are hard for <b>both</b> classical and quantum computers:
+        <br>• <b>CRYSTALS-Dilithium</b> — signatures (NIST standard)
+        <br>• <b>CRYSTALS-Kyber</b> — key exchange (NIST standard)
+        <br>• <b>SPHINCS+</b> — hash-based signatures
+        <br><br>Migration is already underway. NIST finalized post-quantum standards in 2024. The race is on!
+      </div>
+    `
+  }
+};
+
+function showHelp(id){
+  const h=HELP[id]; if(!h)return;
+  document.getElementById('hcIcon').textContent=h.icon;
+  document.getElementById('hcTitle').textContent=h.title;
+  document.getElementById('hcBody').innerHTML=h.body;
+  const tags=document.getElementById('hcTags');
+  tags.innerHTML=h.tags.map(t=>`<span class="hc-tag">${t}</span>`).join('');
+  document.getElementById('help-overlay').classList.add('vis');
+}
+function closeHelp(){
+  document.getElementById('help-overlay').classList.remove('vis');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHelp();});
+
+// ═══════════════════════════════════════
+//  MATH UTILITIES
+// ═══════════════════════════════════════
+const mod=(a,m)=>((a%m)+m)%m;
+function modPow(base,exp,m){let r=1;base=mod(base,m);while(exp>0){if(exp&1)r=mod(r*base,m);exp>>=1;base=mod(base*base,m);}return r;}
+const modInv=(a,m)=>modPow(a,m-2,m);
+
+// ═══════════════════════════════════════
+//  ELLIPTIC CURVE ARITHMETIC
+// ═══════════════════════════════════════
+function ecAdd(P,Q,a,p){
+  if(!P)return Q;if(!Q)return P;
+  const[x1,y1]=P,[x2,y2]=Q;
+  if(x1===x2&&y1!==y2)return null;
+  let lam;
+  if(x1===x2&&y1===y2){if(y1===0)return null;lam=mod((3*x1*x1+a)*modInv(2*y1,p),p);}
+  else{lam=mod((y2-y1)*modInv(mod(x2-x1,p),p),p);}
+  const x3=mod(lam*lam-x1-x2,p),y3=mod(lam*(x1-x3)-y1,p);
+  return[x3,y3];
+}
+function ecMul(k,P,a,p){let R=null,Q=[...P];while(k>0){if(k&1)R=ecAdd(R,Q,a,p);Q=ecAdd(Q,Q,a,p);k>>=1;}return R;}
+function findPoints(a,b,p){const pts=[];for(let x=0;x<p;x++){const rhs=mod(x*x*x+a*x+b,p);for(let y=0;y<p;y++)if(mod(y*y,p)===rhs)pts.push([x,y]);}return pts;}
+function pointOrder(P,a,p){let Q=P;for(let i=2;i<=300;i++){Q=ecAdd(Q,P,a,p);if(!Q)return i;}return-1;}
+
+// ═══════════════════════════════════════
+//  CURVE SETUP
+// ═══════════════════════════════════════
+const pts=findPoints(CA,CB,CP);
+const ptsSorted=[...pts].sort(()=>Math.random()-.5);
+let G=null,ord=0;
+for(const pt of pts){const o=pointOrder(pt,CA,CP);if(o>ord){ord=o;G=pt;}}
+const secretD=2+Math.floor(Math.random()*(ord-3));
+const Q=ecMul(secretD,G,CA,CP);
+const orbit=[];
+{let P=null;for(let k=1;k<ord;k++){P=ecAdd(P,G,CA,CP);if(P)orbit.push({k,pt:[...P]});}}
+const scalarPath=[];
+{let P=null;for(let k=1;k<=secretD;k++){P=ecAdd(P,G,CA,CP);if(P)scalarPath.push([...P]);}}
+const measB=1+Math.floor(Math.random()*(ord-2));
+const measA=mod(-secretD*measB,ord);
+
+// ═══════════════════════════════════════
+//  ANIMATION STATE
+// ═══════════════════════════════════════
+const S={phase:'idle',time:0,ptReveal:0,showG:false,showQ:false,circuitProg:0,showPath:false,pathProg:0,oracleGlow:0,measuredBits:[],qubitsCollapsed:false};
+
+// ═══════════════════════════════════════
+//  BACKGROUND PARTICLES
+// ═══════════════════════════════════════
+const bgC=document.getElementById('bg'),bgX=bgC.getContext('2d');
+const particles=[];
+function resizeBg(){bgC.width=innerWidth;bgC.height=innerHeight;}
+addEventListener('resize',resizeBg);resizeBg();
+for(let i=0;i<60;i++)particles.push({x:Math.random()*bgC.width,y:Math.random()*bgC.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*1.5+.5});
+function drawBg(){
+  bgX.clearRect(0,0,bgC.width,bgC.height);
+  for(const p of particles){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>bgC.width)p.vx*=-1;if(p.y<0||p.y>bgC.height)p.vy*=-1;bgX.beginPath();bgX.arc(p.x,p.y,p.r,0,Math.PI*2);bgX.fillStyle='rgba(0,220,180,.25)';bgX.fill();}
+  bgX.lineWidth=.5;
+  for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<130){bgX.strokeStyle=`rgba(0,200,160,${(.15*(1-d/130)).toFixed(3)})`;bgX.beginPath();bgX.moveTo(particles[i].x,particles[i].y);bgX.lineTo(particles[j].x,particles[j].y);bgX.stroke();}}
+}
+
+// ═══════════════════════════════════════
+//  ELLIPTIC CURVE CANVAS
+// ═══════════════════════════════════════
+const ecCv=document.getElementById('ecC'),ecX=ecCv.getContext('2d');
+const W=520,H=420,PAD=35;
+function px(v){return PAD+(v/(CP-1))*(W-2*PAD);}
+function py(v){return PAD+(H-2*PAD)-(v/(CP-1))*(H-2*PAD);}
+function drawEC(){
+  const c=ecX;c.clearRect(0,0,W,H);
+  c.strokeStyle='#171730';c.lineWidth=.3;
+  const step=Math.ceil(CP/12);
+  for(let i=0;i<CP;i+=step){const x=px(i),y=py(i);c.beginPath();c.moveTo(x,PAD);c.lineTo(x,H-PAD);c.stroke();c.beginPath();c.moveTo(PAD,y);c.lineTo(W-PAD,y);c.stroke();}
+  c.fillStyle='#334';c.font='9px monospace';c.textAlign='center';
+  c.fillText('0',px(0),H-PAD+13);c.fillText(CP-1+'',px(CP-1),H-PAD+13);
+  c.textAlign='right';c.fillText('0',PAD-4,py(0)+3);c.fillText(CP-1+'',PAD-4,py(CP-1)+3);
+  const pr=Math.max(2,Math.min(4.2,(W-2*PAD)/CP*.42));
+  const vis=Math.min(ptsSorted.length,Math.floor(S.ptReveal*ptsSorted.length));
+  for(let i=0;i<vis;i++){const[x,y]=ptsSorted[i],sx=px(x),sy=py(y);c.beginPath();c.arc(sx,sy,pr+3,0,Math.PI*2);c.fillStyle='rgba(0,240,200,.06)';c.fill();c.beginPath();c.arc(sx,sy,pr,0,Math.PI*2);c.fillStyle='rgba(0,240,200,.4)';c.fill();}
+  if(S.phase==='q_oracle'||S.phase==='q_qft'){const intensity=S.phase==='q_oracle'?.55:.15;for(const o of orbit){const[x,y]=o.pt,sx=px(x),sy=py(y),pulse=.5+.5*Math.sin(S.time*6+o.k*.7),alpha=intensity*pulse;c.beginPath();c.arc(sx,sy,pr+5,0,Math.PI*2);c.fillStyle=`rgba(160,100,255,${(alpha*.5).toFixed(3)})`;c.fill();c.beginPath();c.arc(sx,sy,pr+1,0,Math.PI*2);c.fillStyle=`rgba(180,120,255,${alpha.toFixed(3)})`;c.fill();}}
+  if(S.phase==='q_qft'){for(let i=0;i<scalarPath.length;i++){const[x,y]=scalarPath[i],sx=px(x),sy=py(y),pulse=.6+.4*Math.sin(S.time*4+i*.5);c.beginPath();c.arc(sx,sy,pr+6,0,Math.PI*2);c.fillStyle=`rgba(255,200,0,${(.4*pulse).toFixed(3)})`;c.fill();}}
+  if(S.showPath){const show=Math.floor(S.pathProg*scalarPath.length);if(show>1){c.strokeStyle='#fc0';c.lineWidth=1.5;c.setLineDash([5,4]);c.beginPath();for(let i=0;i<show;i++){const[x,y]=scalarPath[i],sx=px(x),sy=py(y);i===0?c.moveTo(sx,sy):c.lineTo(sx,sy);}c.stroke();c.setLineDash([]);}for(let i=0;i<show;i++){const[x,y]=scalarPath[i],sx=px(x),sy=py(y);c.beginPath();c.arc(sx,sy,pr+1,0,Math.PI*2);c.fillStyle='rgba(255,200,0,.6)';c.fill();}}
+  if(S.showG&&G){const sx=px(G[0]),sy=py(G[1]);c.save();c.shadowColor='#0f4';c.shadowBlur=15;c.beginPath();c.arc(sx,sy,pr+4,0,Math.PI*2);c.fillStyle='#0f4';c.fill();c.restore();c.fillStyle='#fff';c.font='bold 11px monospace';c.textAlign='center';c.fillText('G',sx,sy-pr-8);}
+  if(S.showQ&&Q){const sx=px(Q[0]),sy=py(Q[1]);c.save();c.shadowColor='#f44';c.shadowBlur=15;c.beginPath();c.arc(sx,sy,pr+4,0,Math.PI*2);c.fillStyle='#f55';c.fill();c.restore();c.fillStyle='#fff';c.font='bold 11px monospace';c.textAlign='center';c.fillText('Q = d·G',sx,sy-pr-8);}
+  c.fillStyle='#4a4a6a';c.font='10px monospace';c.textAlign='left';
+  c.fillText(`y² = x³ + ${CA}x + ${CB}  (mod ${CP})`,PAD,18);
+  c.textAlign='right';c.fillText(`|E| = ${pts.length+1}`,W-PAD,18);
+}
+
+// ═══════════════════════════════════════
+//  QUANTUM CIRCUIT CANVAS
+// ═══════════════════════════════════════
+const qcCv=document.getElementById('qcC'),qcX=qcCv.getContext('2d');
+const NQ=6,WS=55,WE=490,WY0=58,WSP=52;
+function wireY(i){return WY0+i*WSP;}
+function drawWave(c,x1,x2,y,amp,freq,ph,col,lw){c.strokeStyle=col;c.lineWidth=lw;c.beginPath();for(let x=x1;x<=x2;x+=2){const wy=y+Math.sin((x-x1)*freq+ph)*amp;x===x1?c.moveTo(x,wy):c.lineTo(x,wy);}c.stroke();}
+function drawGateBox(c,cx,cy,w,h,label,active,done,col){
+  c.save();if(active){c.shadowColor=col;c.shadowBlur=18;}
+  const a=active?'cc':done?'66':'20';c.fillStyle=col+a;c.strokeStyle=col+(active?'ff':done?'99':'44');c.lineWidth=active?2:1;
+  c.beginPath();c.roundRect(cx-w/2,cy-h/2,w,h,5);c.fill();c.stroke();
+  c.shadowBlur=0;c.fillStyle=active||done?'#fff':'#556';c.font=(h<50?'bold 13':'11')+'px monospace';c.textAlign='center';c.textBaseline='middle';c.fillText(label,cx,cy);c.restore();
+}
+function drawMeter(c,cx,cy,active,done){
+  const r=14;c.save();if(active){c.shadowColor='#fc0';c.shadowBlur=15;}
+  c.strokeStyle=active||done?'#fc0':'#444';c.lineWidth=active?2:1;c.fillStyle=done?'#fc022':'#0000';
+  c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.fill();c.stroke();
+  c.beginPath();c.arc(cx,cy+4,r-4,Math.PI*1.15,Math.PI*1.85);c.stroke();
+  const na=done?-.3:active?(-Math.PI/2+Math.sin(S.time*12)*.8):-Math.PI/2;
+  c.beginPath();c.moveTo(cx,cy+4);c.lineTo(cx+Math.cos(na)*(r-5),cy+4+Math.sin(na)*(r-5));c.stroke();c.shadowBlur=0;c.restore();
+}
+function drawQC(){
+  const c=qcX;c.clearRect(0,0,W,H);const cp=S.circuitProg;
+  const gH=130,gO=240,gQ=340,gM=440;
+  for(let i=0;i<NQ;i++){
+    const wy=wireY(i);c.fillStyle='#556';c.font='12px monospace';c.textAlign='right';c.textBaseline='middle';
+    if(S.qubitsCollapsed){c.fillStyle='#fc0';c.fillText(`|${S.measuredBits[i]}⟩`,WS-8,wy);}
+    else if(cp>.12){c.fillText(`|q${i<3?'ₐ':'ᵦ'}${i%3}⟩`,WS-8,wy);}
+    else{c.fillStyle='#334';c.fillText('|0⟩',WS-8,wy);}
+    const afterH=cp>.28,afterO=cp>.52,afterQ=cp>.72,afterM=cp>.92;
+    if(afterM){c.strokeStyle=S.measuredBits[i]?'#0fc':'#08f';c.lineWidth=2.5;c.beginPath();c.moveTo(WS,wy);c.lineTo(WE,wy);c.stroke();}
+    else if(afterQ){const amp=4+3*Math.sin(S.time*2+i);drawWave(c,WS,WE,wy,amp,.18,S.time*5+i*2.1,'rgba(180,100,255,.65)',1.5);}
+    else if(afterO){drawWave(c,WS,WE,wy,5,.12,S.time*4+i*1.7,'rgba(0,200,120,.55)',1.3);}
+    else if(afterH){drawWave(c,WS,WE,wy,4,.14,S.time*3.5+i*1.3,'rgba(0,180,255,.5)',1.2);}
+    else{c.strokeStyle=cp>.05?'#2a2a4a':'#1a1a2a';c.lineWidth=.8;c.beginPath();c.moveTo(WS,wy);c.lineTo(WE,wy);c.stroke();}
+  }
+  if(cp>.12){
+    c.save();c.fillStyle='#445';c.font='9px monospace';c.textAlign='center';c.strokeStyle='#335';c.lineWidth=1;
+    const ay1=wireY(0)-15,ay2=wireY(2)+15;c.beginPath();c.moveTo(WS-38,ay1);c.lineTo(WS-43,ay1);c.lineTo(WS-43,ay2);c.lineTo(WS-38,ay2);c.stroke();
+    c.save();c.translate(WS-50,(ay1+ay2)/2);c.rotate(-Math.PI/2);c.fillText('Reg A',0,0);c.restore();
+    const by1=wireY(3)-15,by2=wireY(5)+15;c.beginPath();c.moveTo(WS-38,by1);c.lineTo(WS-43,by1);c.lineTo(WS-43,by2);c.lineTo(WS-38,by2);c.stroke();
+    c.save();c.translate(WS-50,(by1+by2)/2);c.rotate(-Math.PI/2);c.fillText('Reg B',0,0);c.restore();c.restore();
+  }
+  for(let i=0;i<NQ;i++){const active=cp>=.18&&cp<.30,done=cp>=.30;drawGateBox(c,gH,wireY(i),32,32,'H',active,done,'#08f');}
+  {const cy=(wireY(0)+wireY(NQ-1))/2,ch=wireY(NQ-1)-wireY(0)+40,active=cp>=.38&&cp<.54,done=cp>=.54;drawGateBox(c,gO,cy,46,ch,'Uf',active,done,'#0c8');if(active||done){c.fillStyle='#0c8'+(active?'aa':'55');c.font='9px monospace';c.textAlign='center';c.fillText('aG+bQ',gO,cy+ch/2+12);}}
+  {const cy=(wireY(0)+wireY(NQ-1))/2,ch=wireY(NQ-1)-wireY(0)+40,active=cp>=.60&&cp<.74,done=cp>=.74;drawGateBox(c,gQ,cy,46,ch,'QFT†',active,done,'#a0f');}
+  for(let i=0;i<NQ;i++){const active=cp>=.82&&cp<.94,done=cp>=.94;drawMeter(c,gM,wireY(i),active,done);}
+  if(cp>0&&cp<1){const sx=WS+cp*(WE-WS);c.save();c.strokeStyle='#0fc';c.lineWidth=2;c.shadowColor='#0fc';c.shadowBlur=20;c.beginPath();c.moveTo(sx,wireY(0)-22);c.lineTo(sx,wireY(NQ-1)+22);c.stroke();c.restore();}
+  c.fillStyle='#4a4a6a';c.font='10px monospace';c.textAlign='left';c.fillText("Shor's Algorithm for ECDLP",WS,22);
+  if(cp>.01){c.font='9px monospace';c.textAlign='right';c.fillStyle='#0fc8';const labels=['INIT','SUPERPOSITION','ORACLE','QFT','COLLAPSE','MEASURED ✓'];const idx=cp>.94?5:cp>.82?4:cp>.60?3:cp>.38?2:cp>.18?1:0;c.fillText(labels[idx],WE,22);}
+}
+
+// ═══════════════════════════════════════
+//  ANIMATION HELPERS
+// ═══════════════════════════════════════
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+function ease(t){return t<.5?2*t*t:1-(-2*t+2)**2/2;}
+function animateTo(prop,target,dur){return new Promise(resolve=>{const s=S[prop],st=performance.now();(function step(now){const t=Math.min(1,(now-st)/dur);S[prop]=s+(target-s)*ease(t);t<1?requestAnimationFrame(step):resolve();})(performance.now());});}
+function log(icon,text,cls=''){const d=document.getElementById('log');d.innerHTML+=`<div class="ll"><span>${icon}</span> <span class="${cls}">${text}</span></div>`;d.scrollTop=d.scrollHeight;}
+
+// ═══════════════════════════════════════
+//  MAIN ANIMATION SEQUENCE
+// ═══════════════════════════════════════
+async function startAttack(){
+  document.getElementById('go').disabled=true;
+  document.getElementById('log').innerHTML='';
+  log('🔐',`Initializing curve E: y² = x³ + ${CA}x + ${CB} over 𝔽<sub>${CP}</sub>`,'c1');
+  S.phase='setup';await delay(400);await animateTo('ptReveal',1,2200);
+  log('📍',`Found <b>${pts.length}</b> affine points on E (+point at ∞ → group order ≈ ${pts.length+1})`,'c2');
+  document.getElementById('ecI').innerHTML=
+    `Curve: <span class="c1">y² = x³ + ${CA}x + ${CB} (mod ${CP})</span><br>`+
+    `Points: <span class="c2">${pts.length+1}</span> (incl. ∞)<br>`+
+    `Generator: <span class="c4">G = (${G[0]}, ${G[1]})</span>, ord(G) = ${ord}<br>`+
+    `Public key: <span class="c3">Q = (${Q[0]}, ${Q[1]})</span><br>`+
+    `Secret key: <span class="c3">d = ???</span>`+
+    `<span class="help-btn" onclick="showHelp('keys')" style="float:right">?</span>`;
+  await delay(600);log('📌',`Generator G = (${G[0]}, ${G[1]}) with order ${ord}`,'c4');S.showG=true;await delay(800);
+  log('🔑',`Public key Q = d·G = (${Q[0]}, ${Q[1]})`,'c2');S.showQ=true;await delay(800);
+  log('🔒','Secret key d = ??? — <i>this is what we must find!</i>','c3');await delay(1200);
+  log('','────────── ⚛️ <b>QUANTUM ATTACK BEGINS</b> ⚛️ ──────────','c1');await delay(400);
+  log('⚙️',`Initializing 2×⌈log₂(${ord})⌉ = ${NQ*2} logical qubits (showing ${NQ})...`,'c1');
+  document.getElementById('qcI').innerHTML='Quantum processor: <span class="c2">ACTIVE — Initializing registers</span><span class="help-btn" onclick="showHelp(\'processor\')" style="float:right">?</span>';
+  S.phase='q_init';await animateTo('circuitProg',.14,1200);
+  log('🌊','Applying Hadamard gates → <b>uniform superposition</b> of all (a,b) pairs','c1');
+  log('','&nbsp;&nbsp;|ψ⟩ = (1/√N) Σ<sub>a,b</sub> |a⟩|b⟩','c2');
+  document.getElementById('qcI').innerHTML='State: <span class="c1">SUPERPOSITION</span> — evaluating all keys simultaneously<span class="help-btn" onclick="showHelp(\'processor\')" style="float:right">?</span>';
+  S.phase='q_hadamard';await animateTo('circuitProg',.30,1800);
+  log('🔮','Quantum oracle: computing f(a,b) = aG + bQ for <b>ALL</b> (a,b) at once!','c2');
+  log('','&nbsp;&nbsp;This is the quantum speedup — exponential parallelism','c1');
+  document.getElementById('qcI').innerHTML='State: <span class="c2">ORACLE</span> — entangling with elliptic curve group<span class="help-btn" onclick="showHelp(\'processor\')" style="float:right">?</span>';
+  S.phase='q_oracle';await animateTo('circuitProg',.54,2800);
+  log('📊','Quantum Fourier Transform — extracting period / hidden structure...','c1');
+  log('','&nbsp;&nbsp;Constructive interference amplifies the correct answer','c2');
+  document.getElementById('qcI').innerHTML='State: <span class="c1">QFT</span> — interference pattern forming<span class="help-btn" onclick="showHelp(\'processor\')" style="float:right">?</span>';
+  S.phase='q_qft';await animateTo('circuitProg',.74,2400);
+  log('📏','<b>Measuring</b> quantum registers → wavefunction collapse!','c3');
+  document.getElementById('qcI').innerHTML='State: <span class="c3">COLLAPSING...</span><span class="help-btn" onclick="showHelp(\'processor\')" style="float:right">?</span>';
+  S.phase='q_measure';
+  S.measuredBits=[];
+  const aBin=measA.toString(2).padStart(3,'0'),bBin=measB.toString(2).padStart(3,'0');
+  for(let i=0;i<3;i++)S.measuredBits.push(+aBin[i]);
+  for(let i=0;i<3;i++)S.measuredBits.push(+bBin[i]);
+  await animateTo('circuitProg',.94,1800);S.qubitsCollapsed=true;await animateTo('circuitProg',1,800);
+  log('🎯',`Measured register A: <b>a = ${measA}</b>, register B: <b>b = ${measB}</b>`,'c2');
+  document.getElementById('qcI').innerHTML=`Measured: a = <span class="c2">${measA}</span>, b = <span class="c2">${measB}</span> — <span class="c4">collapsed</span><span class="help-btn" onclick="showHelp('processor')" style="float:right">?</span>`;
+  await delay(1200);
+  log('🧮','Classical post-processing: d ≡ −a · b⁻¹ (mod n)','c1');await delay(800);
+  const bInv=modInv(measB,ord),recovered=mod(-measA*bInv,ord);
+  log('','`&nbsp;&nbsp;b⁻¹ mod ${ord} = ${bInv}`','c2');await delay(600);
+  log('','`&nbsp;&nbsp;d = −${measA} × ${bInv} mod ${ord} = <b>${recovered}</b>`','c2');await delay(1000);
+  const verify=ecMul(recovered,G,CA,CP);
+  const ok=verify&&verify[0]===Q[0]&&verify[1]===Q[1];
+  log('✅',`Verification: ${recovered} × G = (${verify?verify[0]:'?'}, ${verify?verify[1]:'?'}) ${ok?'= Q ✓':'≠ Q ✗'}`,'c4');
+  S.phase='done';S.showPath=true;await animateTo('pathProg',1,2000);
+  document.getElementById('ecI').innerHTML=
+    `Curve: <span class="c1">y² = x³ + ${CA}x + ${CB} (mod ${CP})</span><br>`+
+    `Generator: <span class="c4">G = (${G[0]}, ${G[1]})</span>, ord = ${ord}<br>`+
+    `Public key: <span class="c3">Q = (${Q[0]}, ${Q[1]})</span><br>`+
+    `<b>Secret key: <span class="c3">d = ${recovered}</span> 🔓</b>`+
+    `<span class="help-btn" onclick="showHelp('keys')" style="float:right">?</span>`;
+  document.getElementById('resK').textContent=recovered;
+  document.getElementById('resV').innerHTML=
+    `Verified: <b>${recovered}</b> × G(${G[0]},${G[1]}) = Q(${Q[0]},${Q[1]}) ✓<br>`+
+    `<span style="color:#889;font-size:.85em">A real quantum computer would break secp256k1 the same way — just with ~2330 logical qubits.</span>`;
+  document.getElementById('res').classList.add('show');
+  await delay(1500);
+  log('💀','<b>ECDSA private key fully compromised by quantum attack.</b>','c3');
+  log('🛡️','Migrate to post-quantum cryptography (CRYSTALS-Dilithium, SPHINCS+, etc.)','c4');
+}
+
+// ═══════════════════════════════════════
+//  RENDER LOOP
+// ═══════════════════════════════════════
+function render(now){S.time=now/1000;drawBg();drawEC();drawQC();requestAnimationFrame(render);}
+requestAnimationFrame(render);
+</script>
+</body>
+</html>
