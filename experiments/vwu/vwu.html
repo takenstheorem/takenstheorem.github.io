@@ -490,10 +490,10 @@
         <div class="card-body">
           <h2>Batch Claim</h2>
           <p class="hint">
-            Enter vessel token IDs separated by commas, spaces, or new lines. The contract will skip vessels
+            Enter craft token IDs separated by commas, spaces, or new lines. The contract will skip vessels
             that are unchanged, in cooldown, or invalid.
           </p>
-          <label for="vesselIds" style="margin-top: 20px;">Vessel Token IDs</label>
+          <label for="vesselIds" style="margin-top: 20px;">Craft Token IDs</label>
           <textarea id="vesselIds" placeholder="12, 77, 105"></textarea>
           <div class="action-row">
             <button id="refreshButton" type="button" class="button-secondary">Refresh Balance</button>
@@ -626,7 +626,7 @@
         .filter(Boolean);
 
       if (!parts.length) {
-        throw new Error("Enter at least one vessel token ID.");
+        throw new Error("Enter at least one craft token ID.");
       }
 
       return parts.map((part) => {
