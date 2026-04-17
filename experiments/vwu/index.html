@@ -84,47 +84,73 @@
             border-left: 3px solid var(--accent);
             padding-left: 1rem;
         }
+        .splash {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .splash img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+        }
+        .splash-caption {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
     <main>
+        
         <h1>Shipyard Work Unit (VWU)</h1>
-        <p class="highlight">A community-built add-on project by <strong>Takens Theorem</strong> - an experimental ERC-20 token within <strong>The Vessel</strong> ecosystem that rewards when vessel payloads change.</p>
-        <p class="highlight">This is an art project. An experiment of community activity and mutual support. VWU is assumed to have no value. Use at your own risk.</p>
+        <p class="highlight">Experimental token project by <strong>Takens Theorem</strong>. ERC-20 token within <a href="https://www.thevessel.fun/" target="_blank">The Vessel</a> ecosystem that rewards when craft payloads change.</p>
+        <p class="highlight"><b>Caveat</b>: This is an art project. An experiment of community activity and mutual support. VWU is assumed to have no value. Use at your own risk.</p>
         
         <div class="nav">
             <a href="./vwu.html">🛠️ Console</a>
         </div>
         
+        <div class="splash">
+            <a href="https://vessel.worldcomputer.art/1600" target="_blank">
+                <img src="craft1600.png" alt="Craft #1600 on The Vessel">
+            
+                <div class="splash-caption">
+                    Craft #1600 on The Vessel
+                </div>
+            </a>
+        </div>
+
         <div class="card">
             <p><strong>Project Links:</strong></p>
             <div class="nav">
-                <a href="https://www.thevessel.fun/" target="_blank">🚢 Main Project</a>
-                <a href="https://vessel.worldcomputer.art/" target="_blank">👁️ Community Viewer</a>
+                <a href="https://www.thevessel.fun/" target="_blank">The Vessel Main Project</a>
+                <a href="https://vessel.worldcomputer.art/" target="_blank">Community Viewer</a>
             </div>
             <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
                 <strong>The Vessel</strong> by 
-                <a href="https://x.com/stephensantoro_" target="_blank" style="color: var(--accent);">@stephensantoro_</a> & 
-                <a href="https://x.com/producedbydav" target="_blank" style="color: var(--accent);">@producedbydav</a> | 
+                <a href="https://x.com/stephensantoro_" target="_blank" style="color: var(--accent);">Stephen / Imperfect Line</a> & 
+                <a href="https://x.com/producedbydav" target="_blank" style="color: var(--accent);">dav</a> | 
                 <strong>Community Viewer</strong> by 
-                <a href="https://x.com/yougogirl_eth" target="_blank" style="color: var(--accent);">@yougogirl_eth</a>
+                <a href="https://x.com/yougogirl_eth" target="_blank" style="color: var(--accent);">ygg</a>
             </p>
         </div>
 
         <div class="card">
-            <h2>What is The Vessel?</h2>
-            <p>The Vessel is a generative art and on-chain machine project created by <a href="https://x.com/stephensantoro_" target="_blank"><strong>stephensantoro_</strong></a> and <a href="https://x.com/producedbydav" target="_blank"><strong>producedbydav</strong></a> where each token (a "craft") carries a dynamic payload that evolves through interactions with on-chain machines. Craft payloads can be crafted, mixed, and transformed via various contracts in the ecosystem. An extensive, expansive sociocultural machine.</p>
-            <p><strong>Shipyard Work Units</strong> are a lightweight, experimental token that rewards vessel owners for provable payload evolution.</p>
-            <p><em>Visit <a href="https://www.thevessel.fun/" target="_blank">thevessel.fun</a> to explore the main project and learn more about vessels.</em></p>
+            <h2>The Vessel + VWU</h2>
+            <p>The Vessel is a generative art and on-chain machine project created by <a href="https://x.com/stephensantoro_" target="_blank"><strong>Stephen / Imperfect Line</strong></a> and <a href="https://x.com/producedbydav" target="_blank"><strong>dav</strong></a> where each token (a "craft") carries a dynamic payload that evolves through interactions with on-chain machines. Craft payloads can be crafted, mixed, and transformed via various contracts in the ecosystem. An extensive, expansive sociocultural machine.</p>
+            <p><strong>Shipyard Work Units</strong> are a lightweight, experimental token that rewards craft owners for provable payload evolution. Using symbol VWU, anyone can call the claim function on contract to mint 1 VWU for each craft that has a changed payload.</p>
+            <p>Visit <a href="https://www.thevessel.fun/" target="_blank">thevessel.fun</a> to explore the main project and learn more.</p>
         </div>
 
         <div class="card">
             <h2>How VWU Works</h2>
             <ul>
                 <li>Each successful claim of a changed payload mints exactly <strong>1 VWU</strong>.</li>
-                <li>Claims are per-vessel and enforce a cooldown (configurable by the contract owner).</li>
-                <li>If a vessel has an associated machine, the claim is keyed off the machine's address; otherwise, it uses the vessel's payload hash.</li>
-                <li>First claim per vessel always succeeds (previous hash is zero).</li>
+                <li>Claims are per-craft with a cooldown (currently 1 hour, updatable by the contract owner).</li>
+                <li>If a craft has an associated machine, the claim is keyed off the machine's address; otherwise, it uses the craft's payload hash.</li>
+                <li>First claim per craft always succeeds (previous hash is zero).</li>
             </ul>
         </div>
 
@@ -133,16 +159,17 @@
             <ul>
                 <li><strong>Name:</strong> The Vessel Shipyard Work Unit</li>
                 <li><strong>Symbol:</strong> VWU</li>
+                <li><strong>Contract Address:</strong> <a href="https://etherscan.io/address/0xfFD2992BC734664FCE63991D7509Ec979344A108" target="_blank">0xfFD29...4A108</a></li>
                 <li><strong>Decimals:</strong> 0 (integer-only by design)</li>
                 <li><strong>Supply:</strong> Dynamic; grows with successful claims</li>
-                <li><strong>Claim Cooldown:</strong> Configurable (default: 0 hours)</li>
+                <li><strong>Claim Cooldown:</strong> Configurable (default: 1 hour)</li>
             </ul>
         </div>
 
         <div class="card">
             <h2>Interacting with VWU</h2>
             <p>Use the contract's <code>claimWorkUnit(vesselTokenId)</code> or <code>claimWorkUnitBatch(vesselTokenIds[])</code> functions to mint tokens. Standard ERC-20 functions (<code>transfer</code>, <code>approve</code>, <code>balanceOf</code>, etc.) are supported.</p>
-            <p>Check a vessel's machine with <code>checkMachine(vesselTokenId)</code> to see whether claims will hash the payload or the machine address.</p>
+            <p>Check a craft's machine with <code>checkMachine(vesselTokenId)</code> to see whether claims will hash the payload or the machine address.</p>
         </div>
 
         <div class="card">
@@ -152,7 +179,7 @@
         </div>
 
         <footer style="margin-top: 4rem; text-align: center; opacity: 0.6; border-top: 1px solid var(--border); padding-top: 2rem;">
-            <p style="margin-top: 2rem; margin-bottom: 0.5rem;">A community-built add-on project by <strong>Takens Theorem</strong></p>
+            <p style="margin-top: 2rem; margin-bottom: 0.5rem;">Experimental little project by <strong>Takens Theorem</strong></p>
             <p style="font-size: 0.9rem; margin: 0;">
                 <a href="https://x.com/takenstheorem" target="_blank" style="color: var(--accent);">@takenstheorem</a>
             </p>
