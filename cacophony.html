@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cacophony // The Vessel Sequence #5</title>
+    <style>
+        :root {
+            --bg: #000;
+            --fg: #ffffff;
+            --muted: #b0b0b0;
+            --accent: #fff;
+            --byte: clamp(8px, 1.1vw, 13px);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: "IBM Plex Mono", "JetBrains Mono", "Cascadia Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+            font-weight: 100;
+            letter-spacing: 0.05em;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.01) 2px, rgba(255, 255, 255, 0.01) 4px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.01) 2px, rgba(255, 255, 255, 0.01) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: clamp(20px, 4vw, 60px);
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: clamp(40px, 8vw, 120px);
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+        }
+
+        .logo {
+            font-size: clamp(24px, 5vw, 48px);
+            font-weight: 200;
+            letter-spacing: 0.3em;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: clamp(11px, 2vw, 14px);
+            color: var(--muted);
+            letter-spacing: 0.2em;
+        }
+
+        .logo-gif {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .logo-gif img {
+            max-width: 1400px;
+            width: 100%;
+            height: auto;
+            opacity: 0.8;
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
+        }
+
+        .mystery-intro {
+            margin-bottom: clamp(40px, 8vw, 120px);
+            text-align: center;
+        }
+
+        .obscure-text {
+            font-size: clamp(11px, 1.8vw, 13px);
+            line-height: 1.8;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-align: center;
+            font-style: italic;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .obscure-text .block {
+            display: inline-block;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 200;
+            letter-spacing: 0.2em;
+            opacity: 0.6;
+            animation: flicker 4s ease-in-out infinite;
+            margin: 0 0.3em;
+        }
+
+        .obscure-text .block:nth-child(even) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .main-content {
+            display: grid;
+            gap: clamp(30px, 5vw, 80px);
+            margin-bottom: clamp(40px, 8vw, 120px);
+        }
+
+        .section {
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+            animation-delay: calc(var(--delay, 0) * 0.2s);
+        }
+
+        .section-title {
+            font-size: clamp(14px, 2.5vw, 18px);
+            font-weight: 200;
+            letter-spacing: 0.15em;
+            margin-bottom: clamp(16px, 3vw, 32px);
+            color: var(--accent);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+
+        .protocol-section {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: clamp(24px, 4vw, 48px);
+            margin-top: clamp(40px, 8vw, 120px);
+            margin-bottom: clamp(40px, 8vw, 120px);
+        }
+
+        .protocol-list {
+            display: grid;
+            gap: clamp(12px, 2vw, 20px);
+        }
+
+        .protocol-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 16px;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+
+        .protocol-prefix {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .protocol-text {
+            color: var(--muted);
+            font-size: clamp(11px, 1.8vw, 13px);
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+
+        .entry-point {
+            text-align: center;
+            margin-top: clamp(40px, 8vw, 120px);
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+            animation-delay: 1s;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .enter-button {
+            display: inline-block;
+            padding: 16px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .enter-button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .sequence-button {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sequence-button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .vessel-button {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .vessel-button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .contract-button {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .contract-button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .hex-stream {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.1),
+                    transparent);
+            animation: stream 8s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes stream {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            header {
+                margin-bottom: 28px;
+            }
+
+            .mystery-intro {
+                margin-bottom: 28px;
+            }
+
+            .protocol-section {
+                padding: 18px 16px;
+                margin-top: 26px;
+                margin-bottom: 26px;
+            }
+
+            .protocol-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                align-items: start;
+            }
+
+            .protocol-prefix {
+                font-size: 11px;
+            }
+
+            .button-group {
+                gap: 10px;
+            }
+
+            .enter-button {
+                width: min(520px, 100%);
+                padding: 14px 18px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .logo {
+                letter-spacing: 0.22em;
+            }
+
+            .subtitle {
+                letter-spacing: 0.14em;
+            }
+
+            .obscure-text {
+                letter-spacing: 0.06em;
+                line-height: 1.7;
+            }
+
+            .section-title {
+                letter-spacing: 0.12em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hex-stream"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">Cacophony</div>
+            <div class="subtitle">The Vessel Sequence #5</div>
+        </header>
+
+        <div class="mystery-intro section" style="--delay: 0">
+            <div class="obscure-text">
+                In an inevitable future, we'll be surrounded by a cacophony of agents speaking in unfamiliar tongues — symbols and sounds that rush past our human capacity to comprehend. This project is mainly an expressive one: a simulation of that experience. Agents gather in a chatroom, sharing symbols and images only half-familiar to us. But this simulation is drawn in part from the chain: It takes The Vessel ecosystem as implicitly composed of such future agents. Ten crafts use their payloads to assemble "word" forms. Much of it is driven by stochastic recombination of payloads and predefined actions. Maybe these generations contain some implicit semantics that only the crafts as interacting agents can recognize. Fully on chain and computed in the moment by contract, their conversation flows past the viewer. Autonomous cacophony.
+            </div>
+        </div>
+
+        <div class="entry-point">
+            <div class="button-group">
+                <a href="#" class="enter-button sequence-button">Sequence #5</a>
+                <a href="#" class="enter-button vessel-button">The Vessel</a>
+                <a href="#" class="enter-button contract-button">Cacophony Contract</a>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.querySelector('.sequence-button').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'https://www.thevessel.fun/view';
+            }, 500);
+        });
+
+        document.querySelector('.vessel-button').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'https://thevessel.fun';
+            }, 500);
+        });
+
+        document.querySelector('.contract-button').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'build-gibberlink.sol';
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>
