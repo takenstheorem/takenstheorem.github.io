@@ -1,5 +1,14 @@
 [
     {
+        "title": "0xconvo",
+        "image_url": "imgs/0xconvo.jpg",
+        "image_alt": "0xconvo",
+        "description": "In an inevitable future, we'll be surrounded by a cacophony of agents speaking in unfamiliar tongues.",
+        "date": "2026-04-26",
+        "tags": [{"note":"ERC-1155"},{"note":"on-chain"}],
+        "url": "https://takenstheorem.github.io/0xconvo.html"
+    }, 
+    {
         "title": "Private Ledger",
         "image_url": "html,private-ledger/asset.html",
         "image_alt": "Private Ledger",
