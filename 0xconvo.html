@@ -397,9 +397,10 @@
 
        <div class="entry-point" style="--delay: 0">
             <div class="button-group">
-                <a href="#" class="enter-button sequence-button">Sequence 005</a>
-                <a href="#" class="enter-button vessel-button">The Vessel</a>
-                <a href="#" class="enter-button contract-button">0xconvo Contract</a>
+                <a href="https://www.thevessel.fun/view" class="enter-button sequence-button">Sequence 005</a>
+                <a href="https://thevessel.fun" class="enter-button vessel-button">The Vessel</a>
+                <a href="https://etherscan.io/address/0x9cEdA3551c86e894d60E5DAD3bEf3A68287B4BD9" class="enter-button contract-button">0xconvo Contract</a>
+                <a href="https://onchainchecker.xyz/fullscreen/ethereum/0x9cEdA3551c86e894d60E5DAD3bEf3A68287B4BD9/5/animation" class="enter-button contract-button">Fully On-Chain</a>
             </div>
         </div>
 
@@ -413,32 +414,6 @@
 
     </div>
 
-
-    <script>
-        document.querySelector('.sequence-button').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                window.location.href = 'https://www.thevessel.fun/view';
-            }, 500);
-        });
-
-        document.querySelector('.vessel-button').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                window.location.href = 'https://thevessel.fun';
-            }, 500);
-        });
-
-        document.querySelector('.contract-button').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                window.location.href = 'https://etherscan.io/address/0x9cEdA3551c86e894d60E5DAD3bEf3A68287B4BD9';
-            }, 500);
-        });
-    </script>
 </body>
 
 </html>
