@@ -1,11 +1,19 @@
 [
   {
+    "title": "Alive on Chain",
+    "url": "https://info.etherscan.com/alive-on-chain-a-survey-of-recent-art-where-the-medium-is-the-work",
+    "image_url": "https://info.etherscan.com/alive-on-chain-a-survey-of-recent-art-where-the-medium-is-the-work/images/2026/06/image.png",
+    "image_alt": "Alive on Chain: A Survey of Recent Art Where the Medium Is the Work",
+    "date": "2026-06-09",
+    "description": "From bytecode to token standards, a wave of recent Ethereum projects treats the chain's own components as creative material."
+  },  
+  {
     "title": "Digital Exports to Reality",
     "url": "https://medium.com/etherscan-blog/digital-exports-to-reality-4bddb0eb1745",
     "image_url": "imgs/reality.webp",
     "image_alt": "Digital exports to reality in Tron: Ares",
     "date": "2026-02-06",
-    "description": "Stablecoins and real‑world assets show blockchain is being exported into reality as much as reality itself goes on chain."
+    "description": "Stablecoins and real-world assets show blockchain is being exported into reality as much as reality itself goes on chain."
   },  
   {
     "title": "Trillion Emergent Poems",
@@ -27,7 +35,7 @@
     "title": "Aesthetic Commodities through a Collective Filter",
     "url": "https://takenstheorem.medium.com/aesthetic-commodities-through-a-collective-filter-105adfad2dfb",
     "image_url": "assorted_imgs/beuys.webp",
-    "image_alt": "Beuys’s Information Action (1972); collaboration + estrangement",
+    "image_alt": "Beuys's Information Action (1972); collaboration + estrangement",
     "date": "2024-11-30",
     "description": "Surveying relationships between cryptoart and performance art and introducing a data performance that involves creators and collectors as awkward product recommendations."
   },
