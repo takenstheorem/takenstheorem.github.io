@@ -104,6 +104,14 @@
     "description": "Mysterious patterns appeared in the on-chain activity of $XLM, $LTC and $BCH. Analyzing on-chain data revealed that curious external software packages using these chains radically skewed their on-chain metrics."
   },
   {
+    "title": "What are you missing?",
+    "url": "https://opensea.io/blog/articles/predict-and-recommend-nfts",
+    "image_url": "imgs/weights.png",
+    "image_alt": "Weights of features in ML model",
+    "date": "2020-01-30",
+    "description": "Using basic machine learning to predict and recommend NFTs with OpenSea data."
+  },  
+  {
     "title": "What's in a name? Predicting ENS Domain Value from Multiple Features",
     "url": "https://opensea.io/blog/articles/predicting-ens-domain-value",
     "image_url": "assorted_imgs/ens.jpg",
