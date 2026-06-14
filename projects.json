@@ -175,7 +175,7 @@
         "image_url": "project_imgs/thecoin.svg",
         "image_alt": "the_coin",
         "description": "100% on-chain SVGs rendered by ERC-721 contract. Pieces are drawn from data or theory of Bitcoin, offering a visual representation of its core definition, history and possible future. Owners can interact with the contract via changeStyle() and alter the underlying CSS of their pieces, giving the original visual a \"base layer\" identity to be built upon.",
-        "date": "2022-06-24",
+        "date": "2021-06-24",
         "tags": [{"issuance":"84"},{"note":"on-chain"},{"note":"dynamic"},{"note":"interactive"}],
         "url": "https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
     },
