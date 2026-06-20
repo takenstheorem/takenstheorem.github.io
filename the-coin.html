@@ -3,349 +3,564 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>the_coin // On-Chain SVGs</title>
+        <title>the_coin // visual history, modifiable on-chain</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,400;0,700;1,200&display=swap"
+            rel="stylesheet"
+        />
         <style>
+            /* ─── Reset & base ───────────────────────────────────────── */
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
             :root {
                 --bg: #ffffff;
                 --fg: #000000;
-                --muted: #666666;
-                --accent: #000;
-                --byte: clamp(8px, 1.1vw, 13px);
-            }
-
-            * {
-                box-sizing: border-box;
+                --muted: #555555;
+                --rule: 1px solid #000;
+                --mono:
+                    "IBM Plex Mono", "JetBrains Mono", "Cascadia Mono",
+                    "SFMono-Regular", Menlo, Consolas, monospace;
             }
 
             html,
             body {
-                margin: 0;
-                padding: 0;
                 width: 100%;
-                height: 100%;
                 overflow-x: hidden;
                 background: var(--bg);
                 color: var(--fg);
-                font-family:
-                    "IBM Plex Mono", "JetBrains Mono", "Cascadia Mono",
-                    "SFMono-Regular", Menlo, Consolas, monospace;
-                font-weight: 100;
-                letter-spacing: 0.05em;
-            }
-
-            body {
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-                position: relative;
+                font-family: var(--mono);
+                font-weight: 400;
+                letter-spacing: 0.04em;
             }
 
             a {
-                color: #0066cc;
+                color: inherit;
                 text-decoration: none;
             }
-
             a:hover {
                 text-decoration: underline;
-                text-decoration-color: rgba(0, 102, 204, 0.7);
             }
 
-            .container {
-                max-width: clamp(600px, 70vw, 800px);
-                margin: 0 auto;
-                padding: clamp(20px, 4vw, 60px);
-                position: relative;
-                z-index: 2;
-                flex: 1;
-            }
-
-            .gallery-container {
-                width: 100vw;
-                margin-left: calc(-50vw + 50%);
-                margin-right: calc(-50vw + 50%);
-                padding: 0;
-                position: relative;
-                left: 0;
-                right: 0;
-            }
-
-            header {
-                text-align: left;
-                margin-bottom: clamp(40px, 8vw, 120px);
+            /* ─── Fade-in utility ────────────────────────────────────── */
+            .fade {
                 opacity: 0;
-                animation: fadeIn 1.2s ease forwards;
+                animation: fadeUp 0.9s ease forwards;
+                animation-delay: calc(var(--d, 0) * 180ms);
+            }
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            /* ─── Top bar ────────────────────────────────────────────── */
+            .topbar {
                 display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .logo {
-                font-size: clamp(24px, 5vw, 48px);
-                font-weight: 200;
-                letter-spacing: 0.3em;
-                margin-bottom: 8px;
-                color: var(--accent);
-                text-align: left;
-            }
-
-            .subtitle {
-                font-size: clamp(11px, 2vw, 14px);
-                letter-spacing: 0.2em;
-            }
-
-            .date {
-                font-size: clamp(10px, 1.5vw, 12px);
-                letter-spacing: 0.15em;
-                color: var(--muted);
-                margin-top: 4px;
-            }
-
-            .mystery-intro {
-                margin-bottom: clamp(40px, 8vw, 120px);
-                text-align: left;
-            }
-
-            .obscure-text {
-                font-size: clamp(11px, 1.8vw, 13px);
-                line-height: 1.8;
-                letter-spacing: 0.1em;
-                text-align: left;
-                font-style: italic;
-                opacity: 0.8;
-                max-width: 800px;
-                margin: 0;
-            }
-
-            .section {
-                opacity: 0;
-                animation: fadeIn 1.2s ease forwards;
-                animation-delay: calc(var(--delay, 0) * 0.2s);
-            }
-
-            .gallery {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0;
-                margin: 0;
-                width: 100%;
-            }
-
-            .gallery-item {
-                background: transparent;
-                border: none;
-                padding: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                height: 70vh;
-                overflow: hidden;
-                transition: all 0.3s ease;
-            }
-
-            .gallery-item:hover {
-                background: transparent;
-            }
-
-            .gallery-item img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                opacity: 1;
-                filter: grayscale(0%);
-                transition: all 0.3s ease;
-            }
-
-            .gallery-item:hover img {
-                opacity: 1;
-                filter: grayscale(0%);
-            }
-
-            .entry-point {
-                text-align: left;
-                margin-top: clamp(40px, 8vw, 120px);
-                margin-bottom: clamp(40px, 8vw, 120px);
-                opacity: 0;
-                animation: fadeIn 1.2s ease forwards;
-                animation-delay: 1s;
-            }
-
-            .button-group {
-                display: flex;
-                gap: 16px;
-                justify-content: flex-start;
+                align-items: baseline;
+                justify-content: space-between;
+                padding: 18px clamp(20px, 4vw, 56px);
+                gap: 12px;
                 flex-wrap: wrap;
             }
 
-            .enter-button {
-                display: inline-block;
-                padding: 16px 32px;
-                border: 1px solid rgba(0, 0, 0, 0.2);
-                background: transparent;
-                color: var(--accent);
-                text-decoration: none;
-                font-size: 12px;
+            .topbar-left {
+                display: flex;
+                align-items: baseline;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .logo {
+                font-size: clamp(18px, 2.4vw, 26px);
+                font-weight: 700;
+                letter-spacing: 0.36em;
+            }
+
+            .logo-sub {
+                font-size: clamp(9px, 1.1vw, 11px);
+                letter-spacing: 0.22em;
+                color: var(--muted);
+            }
+
+            .topbar-nav {
+                display: flex;
+                gap: 24px;
+                font-size: clamp(9px, 1.1vw, 11px);
                 letter-spacing: 0.2em;
-                transition: all 0.3s ease;
+                color: var(--muted);
             }
 
-            .enter-button:hover {
-                background: rgba(0, 0, 0, 0.05);
-                border-color: rgba(0, 0, 0, 0.4);
+            .topbar-nav a:hover {
+                color: var(--fg);
+                text-decoration: none;
             }
 
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+            /* ─── Full-bleed image mosaic ─────────────────────────────── */
+            /*
+             * Key decisions:
+             *   - grid-template-columns: 1fr 1fr  →  two equal columns
+             *   - Each cell: aspect-ratio 1/1 so it's a perfect square
+             *   - object-fit: cover  →  fills every pixel, no letterbox gap
+             *   - overflow: hidden on cell clips the cover overflow cleanly
+             *   - Border rules drawn with box-shadow so they don't add width
+             */
+            .mosaic {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                width: 100%;
             }
 
-            @media (max-width: 768px) {
-                .container {
-                    padding: 20px;
-                }
+            .mosaic-cell {
+                aspect-ratio: 1 / 1;
+                overflow: hidden;
+                position: relative;
+            }
 
-                header {
-                    margin-bottom: 28px;
-                }
+            .mosaic-cell img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* fills cell — no gaps */
+                object-position: center;
+                display: block;
+                transition:
+                    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+                    filter 0.55s ease;
+                will-change: transform;
+            }
 
-                .mystery-intro {
-                    margin-bottom: 28px;
-                }
+            /* per-image position tweaks — adjust as needed once you see them */
+            .mosaic-cell:nth-child(1) img {
+                object-position: center center;
+            }
+            .mosaic-cell:nth-child(2) img {
+                object-position: center center;
+            }
+            .mosaic-cell:nth-child(3) img {
+                object-position: center center;
+            }
+            .mosaic-cell:nth-child(4) img {
+                object-position: center center;
+            }
 
-                .gallery {
+            .mosaic-cell:hover img {
+                filter: contrast(1.08);
+            }
+
+            /* ─── Body content ───────────────────────────────────────── */
+            .content {
+                max-width: clamp(560px, 72vw, 860px);
+                margin: 0 auto;
+                padding: clamp(40px, 6vw, 80px) clamp(20px, 4vw, 56px);
+            }
+
+            /* ─── Headline row ───────────────────────────────────────── */
+            .headline-row {
+                padding-bottom: clamp(24px, 3.5vw, 40px);
+                margin-bottom: clamp(28px, 4vw, 48px);
+            }
+
+            .headline {
+                font-size: clamp(28px, 5.5vw, 56px);
+                font-weight: 700;
+                letter-spacing: 0.06em;
+                line-height: 1.05;
+                margin-bottom: 14px;
+            }
+
+            .headline em {
+                font-style: italic;
+                font-weight: 200;
+            }
+
+            .datestamp {
+                font-size: clamp(9px, 1.1vw, 11px);
+                letter-spacing: 0.22em;
+                color: var(--muted);
+            }
+
+            /* ─── Two-column body ────────────────────────────────────── */
+            .body-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: clamp(24px, 4vw, 56px);
+                margin-bottom: clamp(32px, 5vw, 60px);
+            }
+
+            .body-col p {
+                font-size: clamp(11px, 1.4vw, 13px);
+                line-height: 1.85;
+                letter-spacing: 0.07em;
+                color: var(--fg);
+                margin-bottom: 1.4em;
+            }
+            .body-col p:last-child {
+                margin-bottom: 0;
+            }
+
+            /* ─── Stats column ───────────────────────────────────────── */
+            .stats-col {
+                border-left: var(--rule);
+                padding-left: clamp(20px, 3vw, 40px);
+            }
+
+            .stat {
+                margin-bottom: clamp(20px, 3vw, 32px);
+                padding-bottom: clamp(16px, 2.5vw, 24px);
+                border-bottom: 1px solid #ddd;
+            }
+            .stat:last-of-type {
+                border-bottom: none;
+                margin-bottom: 0;
+            }
+
+            .stat-value {
+                font-size: clamp(22px, 3.5vw, 36px);
+                font-weight: 700;
+                letter-spacing: 0.04em;
+                line-height: 1.1;
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            .stat-label {
+                font-size: clamp(9px, 1.1vw, 10px);
+                letter-spacing: 0.28em;
+                color: var(--muted);
+            }
+
+            /* ─── Contract strip ─────────────────────────────────────── */
+            .contract-strip {
+                border-top: var(--rule);
+                border-bottom: var(--rule);
+                padding: 14px 0;
+                margin-bottom: clamp(28px, 4vw, 48px);
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .contract-label {
+                font-size: 10px;
+                letter-spacing: 0.3em;
+                color: var(--muted);
+                white-space: nowrap;
+            }
+
+            /* ─── CTA ────────────────────────────────────────────────── */
+            .cta-row {
+                display: flex;
+                gap: 14px;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                display: inline-block;
+                padding: 14px 28px;
+                font-family: var(--mono);
+                font-size: 11px;
+                letter-spacing: 0.26em;
+                border: var(--rule);
+                background: transparent;
+                color: var(--fg);
+                cursor: pointer;
+                transition:
+                    background 0.2s ease,
+                    color 0.2s ease;
+            }
+
+            .btn:hover {
+                background: var(--fg);
+                color: var(--bg);
+                text-decoration: none;
+            }
+
+            .btn-filled {
+                background: var(--fg);
+                color: var(--bg);
+            }
+
+            .btn-filled:hover {
+                background: var(--bg);
+                color: var(--fg);
+            }
+
+            /* ─── Footer ─────────────────────────────────────────────── */
+            footer {
+                border-top: var(--rule);
+                background: var(--fg);
+                color: var(--bg);
+                padding: clamp(18px, 3vw, 32px) clamp(20px, 4vw, 56px);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .footer-brand {
+                font-size: 11px;
+                letter-spacing: 0.3em;
+                opacity: 0.6;
+            }
+
+            .footer-links {
+                display: flex;
+                gap: 28px;
+                font-size: 10px;
+                letter-spacing: 0.22em;
+            }
+
+            .footer-links a {
+                color: var(--bg);
+                opacity: 0.65;
+                transition: opacity 0.2s;
+            }
+            .footer-links a:hover {
+                opacity: 1;
+                text-decoration: none;
+            }
+
+            /* ─── Mobile ─────────────────────────────────────────────── */
+            @media (max-width: 680px) {
+                .mosaic {
                     grid-template-columns: 1fr;
-                    gap: 20px;
                 }
 
-                .button-group {
-                    gap: 10px;
+                /* on mobile each cell is already square via aspect-ratio */
+                .mosaic-cell {
+                    box-shadow: inset 0 -1px 0 #000;
+                }
+                .mosaic-cell:last-child {
+                    box-shadow: none;
                 }
 
-                .enter-button {
-                    width: min(520px, 100%);
-                    padding: 14px 18px;
-                    text-align: center;
+                .body-grid {
+                    grid-template-columns: 1fr;
                 }
-            }
-
-            @media (max-width: 420px) {
-                .logo {
-                    letter-spacing: 0.22em;
+                .stats-col {
+                    border-left: none;
+                    border-top: var(--rule);
+                    padding-left: 0;
+                    padding-top: clamp(20px, 3vw, 32px);
                 }
 
-                .subtitle {
-                    letter-spacing: 0.14em;
-                }
-
-                .obscure-text {
-                    letter-spacing: 0.06em;
-                    line-height: 1.7;
+                .headline {
+                    letter-spacing: 0.04em;
                 }
             }
         </style>
     </head>
 
     <body>
-        <div class="container">
-            <header>
-                <div class="logo">the_coin</div>
-                <div class="date">June 24, 2021</div>
-                <span
-                    style="
-                        font-size: 0.8em;
-                        color: #666;
-                        text-align: left;
-                        display: block;
-                    "
+        <!-- ── Top bar ──────────────────────────────────────────────── -->
+        <div class="topbar fade" style="--d: 0">
+            <div class="topbar-left">
+                <span class="logo">the_coin</span>
+                <span class="logo-sub"></span>
+            </div>
+            <nav class="topbar-nav" aria-label="Site navigation">
+                <a href="../">Takens&nbsp;Theorem&nbsp;↩</a>
+                <a
+                    href="https://opensea.io/collection/the-coin-by-takens-theorem"
+                    target="_blank"
+                    rel="noopener"
+                    >OpenSea</a
                 >
-                    <a href="../" style="text-decoration: none; color: #000">
-                        Takens <span>🏠</span>
-                    </a>
-                    |
-                    <a
-                        href="https://opensea.io/collection/the-coin-by-takens-theorem"
-                        style="text-decoration: none; color: #000"
-                        target="_blank"
-                    >
-                        OpenSea
-                    </a>
-                    |
-                    <a
-                        href="https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
-                        style="text-decoration: none; color: #000"
-                        target="_blank"
-                    >
-                        Read on Medium
-                    </a>
-                </span>
-            </header>
+                <a
+                    href="https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
+                    target="_blank"
+                    rel="noopener"
+                    >Medium</a
+                >
+            </nav>
         </div>
 
-        <div class="gallery-container">
-            <div class="gallery section" style="--delay: 0">
-                <div class="gallery-item">
-                    <img src="project_imgs/issuance.svg" alt="Miner" />
-                </div>
-                <div class="gallery-item">
-                    <img src="project_imgs/miner1.svg" alt="The Coin" />
-                </div>
-                <div class="gallery-item">
-                    <img src="project_imgs/security.svg" alt="Security" />
-                </div>
-                <div class="gallery-item">
-                    <img src="project_imgs/integration.svg" alt="Integration" />
-                </div>
+        <!-- ── Full-bleed mosaic ─────────────────────────────────────── -->
+        <section
+            class="mosaic fade"
+            style="--d: 1"
+            aria-label="Collection preview"
+        >
+            <div class="mosaic-cell">
+                <img
+                    src="project_imgs/issuance.svg"
+                    alt="Issuance — Bitcoin supply curve"
+                />
             </div>
-        </div>
-
-        <div class="container">
-            <div class="mystery-intro section" style="--delay: 1">
-                <div class="obscure-text">
-                    100% on-chain SVGs rendered by ERC-721 contract. Pieces are
-                    drawn from data or theory of Bitcoin, offering a visual
-                    representation of its core definition, history and possible
-                    future. Owners can interact with the contract via
-                    changeStyle() and alter the underlying CSS of their pieces,
-                    giving the original visual a "base layer" identity to be
-                    built upon.<br /><br />
-
-                    Each piece exists entirely on-chain — the SVG data, the
-                    rendering logic, the interactivity. A study in what it means
-                    to be truly decentralized art.<br /><br />
-                </div>
+            <div class="mosaic-cell">
+                <img
+                    src="project_imgs/miner1.svg"
+                    alt="Miner — proof-of-work portrait"
+                />
             </div>
+            <div class="mosaic-cell">
+                <img
+                    src="project_imgs/security.svg"
+                    alt="Security — network hashrate"
+                />
+            </div>
+            <div class="mosaic-cell">
+                <img
+                    src="project_imgs/integration.svg"
+                    alt="Integration — chain topology"
+                />
+            </div>
+        </section>
 
-            <div class="mystery-intro section" style="--delay: 2">
-                <div class="obscure-text">
-                    The contract allows collectors to modify the CSS of their
-                    pieces, creating a collaborative layer atop the original
-                    work. This interactive element transforms each piece from
-                    static art into a living system — a base layer waiting for
-                    personal expression.<br /><br />
-
-                    84 pieces total, each a unique interpretation of Bitcoin's
-                    essence through the lens of on-chain data and cryptographic
-                    theory.
-                </div>
+        <!-- ── Main content ──────────────────────────────────────────── -->
+        <main class="content">
+            <!-- Headline -->
+            <div class="headline-row fade" style="--d: 2">
+                <h1 class="headline">
+                    Visual<br />history<br />on-chain,<br />modifiable.
+                </h1>
+                <p class="datestamp">Deployed &nbsp;·&nbsp; June 24, 2021</p>
             </div>
 
-            <div class="entry-point" style="--delay: 3">
-                <div class="button-group">
-                    <a
-                        href="https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
-                        class="enter-button"
-                        target="_blank"
-                        >Read on Medium</a
-                    >
+            <main class="headline-row fade">
+                <img
+                    src="imgs/coinmods.webp"
+                    style="width: 100%"
+                    alt="Set of illustrated modifications of the 4 images above."
+                />
+            </main>
+
+            <div class="body-grid fade" style="--d: 3">
+                <!-- Left: manifesto -->
+                <div class="body-col">
+                    <p>
+                        4 SVG artworks (21 editions) rendered entirely by their
+                        ERC-721 contract — no IPFS, no off-chain server, no
+                        external dependency. Every line, curve and color is
+                        driven by SVG elements stored on contract.
+                    </p>
+                    <p>
+                        Each piece was generated from the data and theory of
+                        Bitcoin: its supply curve, proof-of-work mechanics,
+                        network security and on-chain history and given visual
+                        form on Ethereum.
+                    </p>
+                    <p>
+                        Owners can call
+                        <code style="font-size: 0.9em">changeStyle()</code>
+                        on the contract to alter the underlying CSS of their
+                        piece. The original visual becomes a base layer — a
+                        fixed identity that collectors can build upon, now and
+                        indefinitely.
+                    </p>
+                </div>
+
+                <!-- Right: stats -->
+                <div class="body-col stats-col">
+                    <div class="stat">
+                        <span class="stat-value">4 visuals</span>
+                        <span class="stat-label">84 modifiable editions</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">100%</span>
+                        <span class="stat-label"
+                            >On-chain — SVG rendered by contract</span
+                        >
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">ERC-721</span>
+                        <span class="stat-label"
+                            >Token standard / Ethereum mainnet</span
+                        >
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">∞</span>
+                        <span class="stat-label"
+                            >Collector-modifiable via changeStyle()</span
+                        >
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Contract strip -->
+            <div class="contract-strip fade" style="--d: 4">
+                <span class="contract-label">Contract</span>
+                <a
+                    href="https://etherscan.io/address/0xf76c5d925b27a63a3745a6b787664a7f38fa79bd"
+                    target="_blank"
+                    rel="noopener"
+                    >0xf76c5d925b27a63a3745a6b787664a7f38fa79bd</a
+                >
+            </div>
+
+            <!-- CTA -->
+            <div class="cta-row fade" style="--d: 5">
+                <a
+                    href="https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
+                    class="btn btn-filled"
+                    target="_blank"
+                    rel="noopener"
+                    >Read Essay on Medium</a
+                >
+                <a
+                    href="https://opensea.io/collection/the-coin-by-takens-theorem"
+                    class="btn"
+                    target="_blank"
+                    rel="noopener"
+                    >View on OpenSea</a
+                >
+                <br />
+                <a
+                    href="https://takenstheorem.medium.com/16%C2%B2-bytes-of-css-bddaa7af9bc4"
+                    class="btn btn-filled"
+                    target="_blank"
+                    rel="noopener"
+                    >Bonus Collector's Guide</a
+                >
+                <a
+                    href="layer_two.html"
+                    class="btn"
+                    target="_blank"
+                    rel="noopener"
+                    >layer_two Extension</a
+                ><br />
+                <a
+                    href="https://takenstheorem.medium.com/token-update-2084-d2540e6a7cb"
+                    class="btn btn-filled"
+                    target="_blank"
+                    rel="noopener"
+                    >Playful Lore: Token Update 2084</a
+                >
+            </div>
+        </main>
+
+        <!-- ── Footer ────────────────────────────────────────────────── -->
+        <footer>
+            <span class="footer-brand"
+                >the_coin &nbsp;·&nbsp; Takens Theorem &nbsp;·&nbsp; 2021</span
+            >
+            <nav class="footer-links" aria-label="Footer navigation">
+                <a href="../">Home</a>
+                <a
+                    href="https://opensea.io/collection/the-coin-by-takens-theorem"
+                    target="_blank"
+                    rel="noopener"
+                    >OpenSea</a
+                >
+                <a
+                    href="https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
+                    target="_blank"
+                    rel="noopener"
+                    >Medium</a
+                >
+            </nav>
+        </footer>
     </body>
 </html>
