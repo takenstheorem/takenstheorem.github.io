@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>the_coin // On-Chain SVGs</title>
+        <style>
+            :root {
+                --bg: #ffffff;
+                --fg: #000000;
+                --muted: #666666;
+                --accent: #000;
+                --byte: clamp(8px, 1.1vw, 13px);
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow-x: hidden;
+                background: var(--bg);
+                color: var(--fg);
+                font-family:
+                    "IBM Plex Mono", "JetBrains Mono", "Cascadia Mono",
+                    "SFMono-Regular", Menlo, Consolas, monospace;
+                font-weight: 100;
+                letter-spacing: 0.05em;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                position: relative;
+            }
+
+            a {
+                color: #0066cc;
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+                text-decoration-color: rgba(0, 102, 204, 0.7);
+            }
+
+            .container {
+                max-width: clamp(600px, 70vw, 800px);
+                margin: 0 auto;
+                padding: clamp(20px, 4vw, 60px);
+                position: relative;
+                z-index: 2;
+                flex: 1;
+            }
+
+            .gallery-container {
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+                margin-right: calc(-50vw + 50%);
+                padding: 0;
+                position: relative;
+                left: 0;
+                right: 0;
+            }
+
+            header {
+                text-align: left;
+                margin-bottom: clamp(40px, 8vw, 120px);
+                opacity: 0;
+                animation: fadeIn 1.2s ease forwards;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .logo {
+                font-size: clamp(24px, 5vw, 48px);
+                font-weight: 200;
+                letter-spacing: 0.3em;
+                margin-bottom: 8px;
+                color: var(--accent);
+                text-align: left;
+            }
+
+            .subtitle {
+                font-size: clamp(11px, 2vw, 14px);
+                letter-spacing: 0.2em;
+            }
+
+            .date {
+                font-size: clamp(10px, 1.5vw, 12px);
+                letter-spacing: 0.15em;
+                color: var(--muted);
+                margin-top: 4px;
+            }
+
+            .mystery-intro {
+                margin-bottom: clamp(40px, 8vw, 120px);
+                text-align: left;
+            }
+
+            .obscure-text {
+                font-size: clamp(11px, 1.8vw, 13px);
+                line-height: 1.8;
+                letter-spacing: 0.1em;
+                text-align: left;
+                font-style: italic;
+                opacity: 0.8;
+                max-width: 800px;
+                margin: 0;
+            }
+
+            .section {
+                opacity: 0;
+                animation: fadeIn 1.2s ease forwards;
+                animation-delay: calc(var(--delay, 0) * 0.2s);
+            }
+
+            .gallery {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0;
+                margin: 0;
+                width: 100%;
+            }
+
+            .gallery-item {
+                background: transparent;
+                border: none;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 70vh;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .gallery-item:hover {
+                background: transparent;
+            }
+
+            .gallery-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                opacity: 1;
+                filter: grayscale(0%);
+                transition: all 0.3s ease;
+            }
+
+            .gallery-item:hover img {
+                opacity: 1;
+                filter: grayscale(0%);
+            }
+
+            .entry-point {
+                text-align: left;
+                margin-top: clamp(40px, 8vw, 120px);
+                margin-bottom: clamp(40px, 8vw, 120px);
+                opacity: 0;
+                animation: fadeIn 1.2s ease forwards;
+                animation-delay: 1s;
+            }
+
+            .button-group {
+                display: flex;
+                gap: 16px;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .enter-button {
+                display: inline-block;
+                padding: 16px 32px;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                background: transparent;
+                color: var(--accent);
+                text-decoration: none;
+                font-size: 12px;
+                letter-spacing: 0.2em;
+                transition: all 0.3s ease;
+            }
+
+            .enter-button:hover {
+                background: rgba(0, 0, 0, 0.05);
+                border-color: rgba(0, 0, 0, 0.4);
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding: 20px;
+                }
+
+                header {
+                    margin-bottom: 28px;
+                }
+
+                .mystery-intro {
+                    margin-bottom: 28px;
+                }
+
+                .gallery {
+                    grid-template-columns: 1fr;
+                    gap: 20px;
+                }
+
+                .button-group {
+                    gap: 10px;
+                }
+
+                .enter-button {
+                    width: min(520px, 100%);
+                    padding: 14px 18px;
+                    text-align: center;
+                }
+            }
+
+            @media (max-width: 420px) {
+                .logo {
+                    letter-spacing: 0.22em;
+                }
+
+                .subtitle {
+                    letter-spacing: 0.14em;
+                }
+
+                .obscure-text {
+                    letter-spacing: 0.06em;
+                    line-height: 1.7;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <header>
+                <div class="logo">the_coin</div>
+                <div class="date">June 24, 2021</div>
+                <span
+                    style="
+                        font-size: 0.8em;
+                        color: #666;
+                        text-align: left;
+                        display: block;
+                    "
+                >
+                    <a href="../" style="text-decoration: none; color: #000">
+                        Takens <span>🏠</span>
+                    </a>
+                    |
+                    <a
+                        href="https://opensea.io/collection/the-coin-by-takens-theorem"
+                        style="text-decoration: none; color: #000"
+                        target="_blank"
+                    >
+                        OpenSea
+                    </a>
+                    |
+                    <a
+                        href="https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
+                        style="text-decoration: none; color: #000"
+                        target="_blank"
+                    >
+                        Read on Medium
+                    </a>
+                </span>
+            </header>
+        </div>
+
+        <div class="gallery-container">
+            <div class="gallery section" style="--delay: 0">
+                <div class="gallery-item">
+                    <img src="project_imgs/issuance.svg" alt="Miner" />
+                </div>
+                <div class="gallery-item">
+                    <img src="project_imgs/miner1.svg" alt="The Coin" />
+                </div>
+                <div class="gallery-item">
+                    <img src="project_imgs/security.svg" alt="Security" />
+                </div>
+                <div class="gallery-item">
+                    <img src="project_imgs/integration.svg" alt="Integration" />
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="mystery-intro section" style="--delay: 1">
+                <div class="obscure-text">
+                    100% on-chain SVGs rendered by ERC-721 contract. Pieces are
+                    drawn from data or theory of Bitcoin, offering a visual
+                    representation of its core definition, history and possible
+                    future. Owners can interact with the contract via
+                    changeStyle() and alter the underlying CSS of their pieces,
+                    giving the original visual a "base layer" identity to be
+                    built upon.<br /><br />
+
+                    Each piece exists entirely on-chain — the SVG data, the
+                    rendering logic, the interactivity. A study in what it means
+                    to be truly decentralized art.<br /><br />
+                </div>
+            </div>
+
+            <div class="mystery-intro section" style="--delay: 2">
+                <div class="obscure-text">
+                    The contract allows collectors to modify the CSS of their
+                    pieces, creating a collaborative layer atop the original
+                    work. This interactive element transforms each piece from
+                    static art into a living system — a base layer waiting for
+                    personal expression.<br /><br />
+
+                    84 pieces total, each a unique interpretation of Bitcoin's
+                    essence through the lens of on-chain data and cryptographic
+                    theory.
+                </div>
+            </div>
+
+            <div class="entry-point" style="--delay: 3">
+                <div class="button-group">
+                    <a
+                        href="https://takenstheorem.medium.com/the-coin-f66bc3bfaae2"
+                        class="enter-button"
+                        target="_blank"
+                        >Read on Medium</a
+                    >
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
