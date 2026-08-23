@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>$CORPUS by Takens Theorem</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:#000;cursor:crosshair;font:11px 'Courier New',monospace}
+  canvas,#overlay{position:absolute;top:0;left:0;width:100%;height:100%}
+  #overlay{pointer-events:none;z-index:10;border:20px solid rgba(255,0,0,.04);background:radial-gradient(circle,transparent 50%,rgba(0,0,0,.85) 100%)}
+
+  /* Large Stark Title - Top Left (Monochrome, No Glow) */
+  #title-card{
+    position:absolute;
+    top:28px;
+    left:28px;
+    z-index:30;
+    user-select:none;
+    background:#000;
+    border:1px solid #fff;
+    padding:14px 22px;
+  }
+
+  .title-text{
+    color:#fff;
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:6px;
+    text-transform:uppercase;
+    display:block;
+    line-height:1;
+    text-shadow:none;
+  }
+
+  .byline{
+    margin-top:7px;
+    display:block;
+    color:rgba(255,255,255,0.65);
+    font-size:11px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    text-shadow:none;
+  }
+
+  /* Info Button - Top Right (Monochrome, No Glow) */
+  #info-btn{
+    position:absolute;
+    top:28px;
+    right:28px;
+    z-index:30;
+    width:42px;
+    height:42px;
+    cursor:pointer;
+    background:#000;
+    border:1px solid #fff;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    font-family:'Courier New',monospace;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all 0.15s ease;
+    user-select:none;
+    text-shadow:none;
+  }
+
+  #info-btn:hover{
+    background:#fff;
+    color:#000;
+  }
+
+  /* Modal Backdrop */
+  #modal-backdrop{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:100;
+    background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease;
+  }
+
+  #modal-backdrop.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  /* Modal Window (Monochrome, No Glow) */
+  #modal{
+    background:#000;
+    border:1px solid #fff;
+    max-width:580px;
+    width:90%;
+    max-height:85vh;
+    overflow-y:auto;
+    padding:28px 32px 32px;
+    position:relative;
+    transform:translateY(8px);
+    transition:transform 0.2s ease;
+  }
+
+  #modal-backdrop.open #modal{
+    transform:translateY(0);
+  }
+
+  .modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid rgba(255,255,255,0.3);
+    padding-bottom:12px;
+    margin-bottom:18px;
+  }
+
+  .modal-title{
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    text-shadow:none;
+  }
+
+  .modal-close{
+    cursor:pointer;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    opacity:0.7;
+    transition:opacity 0.15s;
+    line-height:1;
+    text-shadow:none;
+  }
+
+  .modal-close:hover{
+    opacity:1;
+  }
+
+  .modal-body{
+    color:#fff;
+    font-size:13px;
+    line-height:1.75;
+    letter-spacing:0.6px;
+    border-left:2px solid #fff;
+    padding-left:16px;
+    text-shadow:none;
+  }
+
+  .modal-body p{
+    margin:0 0 14px 0;
+  }
+
+  .modal-body p:last-child{
+    margin-bottom:0;
+  }
+
+  .modal-footer{
+    margin-top:20px;
+    font-size:9px;
+    color:rgba(255,255,255,0.5);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    text-shadow:none;
+  }
+</style>
+</head>
+<body>
+  <div id="overlay"></div>
+
+  <!-- Top Left Large Title & Byline -->
+  <div id="title-card">
+    <span class="title-text">$CORPUS</span>
+    <span class="byline">BY TAKENS THEOREM <a href="https://takenstheorem.github.io">🏠</a></span>
+  </div>
+
+  <!-- Top Right Info Button -->
+  <div id="info-btn" title="System Manifesto">?</div>
+
+  <!-- Modal Window -->
+  <div id="modal-backdrop">
+    <div id="modal">
+      <div class="modal-header">
+        <span class="modal-title">// ONTOLOGY & STATE</span>
+        <span class="modal-close" id="modalClose">✕</span>
+      </div>
+      <div class="modal-body">
+        <p>Human collectives are mortal. $CORPUS is body and corporation. It embodies a collective by revealing its structure. It is not a static structure propagating stably into the future. It is an on-chain ecosystem under constant metabolic threat. Its aesthetic is entirely dependent on whether the community can sustain the coordination that keeps it alive.</p>
+
+        <p>Market dynamics directly sculpt its anatomy: buy and sell pressure shift the form between organic growth and rigid structural scaffolding; liquidity depth governs its cohesion and surface richness; and trading velocity fuels its kinetic agitation and chromatic intensity. And in times of flight or  neglect, its embodied manifestation atrophies back into a featureless void.</p>
+
+        <p>The market's metabolic tide is combined with an oligarchic council of 4 LENS ERC-721 artifacts. Each LENS token can be wielded by its custodian to bend the will of the collective, alter the piece and, importantly, serve as a custodian to its liveness.</p>
+      </div>
+      <div class="modal-footer">
+        [ SYSTEM METABOLISM: ACTIVE ] — TOPOLOGICAL CHIMERA
+      </div>
+    </div>
+  </div>
+
+  <canvas id="glcanvas"></canvas>
+
+<script id="frag" type="x-shader/x-fragment">
+precision highp float;
+uniform vec3 iResolution;
+uniform vec2 iMouse;
+uniform float iTime, iBurst, iGranularity, iRotSpeed, iColorRichness, iSurfaceRichness, iSize, iFormulaBlend, iXyzFuse;
+
+float h1(float n){return fract(sin(n)*43758.5453);}
+float h2(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+
+float noise(vec3 p){
+    vec3 i=floor(p), f=fract(p);
+    f=f*f*(3.-2.*f);
+    float n=i.x+i.y*57.+113.*i.z;
+    return mix(mix(mix(h1(n),h1(n+1.),f.x),mix(h1(n+57.),h1(n+58.),f.x),f.y),
+               mix(mix(h1(n+113.),h1(n+114.),f.x),mix(h1(n+170.),h1(n+171.),f.x),f.y),f.z);
+}
+
+float mapBulb(vec3 p){
+    float pwr=7.+pow(sin(iTime*.7)*.5+.5,4.)*1.2+iBurst*2.;
+    vec3 z=p+exp(-length(p.xy-((iMouse/iResolution.xy)*2.-1.)*2.)*2.)*iBurst*.5*p;
+    float dr=1., r=0.;
+    float maxIt = floor(mix(2.0, 8.0, clamp(iGranularity * 0.1, 0.0, 1.0)));
+    for(int i=0;i<8;i++){
+        if(float(i) >= maxIt) break;
+        r=length(z); if(r>2.) break;
+        float th=acos(clamp(z.z/r,-1.,1.))*pwr, ph=atan(z.y,z.x)*pwr;
+        dr=pow(r,pwr-1.)*pwr*dr+1.;
+        z=pow(r,pwr)*vec3(sin(th)*cos(ph),sin(th)*sin(ph),cos(th))+p;
+    }
+    return .5*log(r)*r/dr+noise(p*(6.+iGranularity*.8)+iTime)*(.004 + .0016*iGranularity);
+}
+
+float mapMenger(vec3 p){
+    float a=iTime*.07*(iRotSpeed*.2), c=cos(a), s=sin(a);
+    p.xz*=mat2(c,-s,s,c);
+    float a2=a*.33+.5, c2=cos(a2), s2=sin(a2);
+    p.yz*=mat2(c2,-s2,s2,c2);
+    p.xy+=((iMouse/iResolution.xy)*2.-1.)*(.03+iBurst*.1);
+    float hole=1.+(.5+.5*sin(iTime*.45))*.06+iBurst*.2;
+    vec3 q=abs(p)-1.;
+    float d=length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.), scl=1.;
+    float maxIt = floor(mix(1.0, 6.0, clamp(iGranularity * 0.1, 0.0, 1.0)));
+    for(int i=0;i<6;i++){
+        if(float(i) >= maxIt) break;
+        vec3 a3=mod(p*scl,2.)-1.; scl*=3.;
+        vec3 r=abs(1.-3.*abs(a3))*hole;
+        float crs=(min(max(r.x,r.y),min(max(r.y,r.z),max(r.z,r.x)))-1.)/scl;
+        d=max(d,crs);
+        if(iBurst>.08 && i==2) d-=noise(p*6.+iTime*5.)*.035*iBurst;
+    }
+    return d+noise(p*(5.+iGranularity*.6)+iTime*.3)*(.0015 + .0007*iGranularity);
+}
+
+float mengerShare(vec3 p){
+    vec3 a=abs(p);
+    float ax=max(a.x,max(a.y,a.z)), rd=length(p);
+    return clamp(smoothstep(.62,.95,ax/max(rd,1e-3))+.12*sin(iTime*.27+ax*3.+rd*2.),0.,1.);
+}
+
+float map(vec3 p){
+    float sc=mix(.3,2.2,clamp(iSize*.1,0.,1.));
+    vec3 q=p/sc;
+
+    float rotA = iTime * .12 * (iRotSpeed * .2);
+    float cR = cos(rotA), sR = sin(rotA);
+    q.xz *= mat2(cR, -sR, sR, cR);
+
+    float rch=clamp(iSurfaceRichness*.1,0.,1.), fb=clamp(iFormulaBlend*.1,0.,1.), xz=clamp(iXyzFuse*.1,0.,1.);
+    float dB=mapBulb(q), dM=mapMenger(q), wM=mengerShare(q);
+    float k=mix(.02,.16,xz)+iBurst*.07, h=clamp(.5+.5*(dM-dB)/k,0.,1.);
+    float dU=mix(dM,dB,h)-k*h*(1.-h);
+    float dF=mix(mix(dB,dM,fb),mix(mix(dB,dM,wM),dU,xz*.6),xz)+noise(q*(4.+iGranularity*.4)+iTime*.5)*.008*(.35+xz);
+    float d=mix(length(q)-1.,dF,rch);
+    if(rch<.35) d=mix(length(q)-1.,d,rch/.35)+noise(q*4.+iTime*.15)*.02*(rch/.35);
+    return d*sc;
+}
+
+vec3 getNormal(vec3 p){
+    float eps = mix(.003, .0006, clamp(iGranularity * .1, 0., 1.));
+    vec2 e=vec2(eps,0);
+    return normalize(vec3(map(p+e.xyy)-map(p-e.xyy),map(p+e.yxy)-map(p-e.yxy),map(p+e.yyx)-map(p-e.yyx)));
+}
+
+void main(){
+    vec2 uv=(gl_FragCoord.xy-.5*iResolution.xy)/iResolution.y;
+    float cr=clamp(iColorRichness*.1,0.,1.), rch=clamp(iSurfaceRichness*.1,0.,1.);
+    uv+=noise(vec3(uv*2.,iTime*.2))*.04*iBurst*rch;
+
+    vec3 ro=vec3(3.6*cos(iTime*.1),1.1+sin(iTime*.3),3.6*sin(iTime*.1));
+    vec3 ww=normalize(-ro), uu=normalize(cross(ww,vec3(0,1,0))), vv=cross(uu,ww);
+    vec3 rd=normalize(uv.x*uu+uv.y*vv+1.5*ww), col=vec3(0);
+
+    float hitEps = mix(.0025, .0006, clamp(iGranularity * .1, 0., 1.));
+    float stepMult = mix(.95, .82, clamp(iGranularity * .1, 0., 1.));
+
+    float t=0.;
+    for(int i=0;i<100;i++){
+        vec3 p=ro+rd*t;
+        float d=map(p);
+        if(d<hitEps){
+            vec3 n=getNormal(p), q=p/mix(.3,2.2,clamp(iSize*.1,0.,1.));
+            float rotA = iTime * .12 * (iRotSpeed * .2);
+            float cR = cos(rotA), sR = sin(rotA);
+            q.xz *= mat2(cR, -sR, sR, cR);
+
+            float diff=max(dot(n,normalize(vec3(1.1,2,-1))),0.)+max(dot(n,normalize(vec3(-1.2,.5,.7))),0.)*.3;
+            float fres=pow(1.-max(dot(n,-rd),0.),5.), spec=pow(max(dot(n,normalize(normalize(vec3(1.1,2,-1))-rd)),0.),40.);
+
+            float s1=smoothstep(0.,.25,cr), s2=smoothstep(.25,.5,cr), s3=smoothstep(.5,.625,cr), s4=smoothstep(.625,.75,cr), s5=smoothstep(.75,.875,cr);
+            vec3 cB=mix(mix(mix(mix(mix(vec3(.32,.32,.36),vec3(.4,.3,.45),s1),vec3(.5,.15,.55),s2),vec3(1,.15,.2),s3),vec3(.15,.95,.25),s4),vec3(.2,.4,1),s5);
+            vec3 cM=mix(mix(mix(mix(mix(vec3(.42,.38,.33),vec3(.6,.35,.25),s1),vec3(.8,.38,.18),s2),vec3(1,.25,.15),s3),vec3(.2,1,.3),s4),vec3(.25,.5,1),s5);
+            vec3 cE=mix(mix(mix(mix(mix(vec3(.38,.42,.47),vec3(.25,.7,.85),s1),vec3(.1,.85,.95),s2),vec3(1,.3,.35),s3),vec3(.35,1,.4),s4),vec3(.4,.55,1),s5);
+
+            vec3 rain=.5+.5*cos(6.28318*(fract((q.x+q.y+q.z)*.5+iTime*.1+(cr-.875)*2.)+vec3(0,.33,.67)));
+            float rm=smoothstep(.875,1.,cr);
+            cB=mix(cB,rain,rm); cM=mix(cM,rain*vec3(1,.9,.8),rm); cE=mix(cE,rain*vec3(.9,1,.95),rm);
+
+            float wM=mengerShare(q), fb=clamp(iFormulaBlend*.1,0.,1.), xz=clamp(iXyzFuse*.1,0.,1.);
+            vec3 base=mix(mix(cB,cM,fb),mix(cB,cM,wM),xz);
+            base=mix(base,cE,fres*mix(.5,.75,cr));
+
+            float box=mix(fb,wM,xz), edge=1.-smoothstep(.78,.98,max(abs(n.x),max(abs(n.y),abs(n.z))));
+            base=mix(base,cE,edge*mix(.6,.95,cr)*box);
+            base=mix(base,base*(.8+.2*sin(q.y*5.+iTime)),(1.-box)*.55);
+
+            col=base*(diff+mix(.15,.09,cr))+vec3(.9,.95,1)*spec*(.3+.35*box)+fres*mix(1.2,1.6,cr)*mix(vec3(1),cE,cr*.55);
+            break;
+        }
+        t+=d*stepMult; if(t>14.) break;
+    }
+
+    if(col==vec3(0)) col=mix(vec3(.015,.01,.04),vec3(.025,0,.07),cr)*(1.+h2(uv+iTime)*.12);
+    col+=vec3(1)*iBurst*.3*h1(iTime*100.);
+    col*= .9+.1*sin(gl_FragCoord.y*1.5);
+    col=mix(col,col.brg*vec3(1.1,.7,1.2),step(.975,h1(floor(uv.y*48.)+floor(iTime*8.)))*iBurst*(.35+.65*clamp(iFormulaBlend*.1,0.,1.)));
+
+    float lum=dot(col,vec3(.299,.587,.114));
+    col=mix(vec3(lum),mix(vec3(dot(mix(vec3(lum),col,cr),vec3(.299,.587,.114))),mix(vec3(lum),col,cr),mix(1.,mix(1.15,2.45,pow(cr,1.45)),cr)),1.);
+    float mx=max(col.r,max(col.g,col.b)), mn=min(col.r,min(col.g,col.b));
+    col=mix(col,mix(vec3(lum),(col-mn)/max(mx-mn,1e-4)*mx,1.15),pow(cr,1.6)*.55);
+    col*=mix(1.,lum/max(dot(col,vec3(.299,.587,.114)),1e-3),.35*cr);
+    gl_FragColor=vec4(pow(max(col,0.),vec3(mix(.82,.72,cr*cr))),1);
+}
+</script>
+
+<script>
+const C=document.getElementById('glcanvas'), gl=C.getContext('webgl');
+
+const P={
+  granularity: 7,
+  rotSpeed: 5,
+  colorRichness: 10,
+  surfaceRichness: 10,
+  size: 5,
+  formulaBlend: 5,
+  xyzFuse: 4
+};
+
+// Modal Control
+const infoBtn=document.getElementById('info-btn'),
+      modalBackdrop=document.getElementById('modal-backdrop'),
+      modalClose=document.getElementById('modalClose'),
+      modalBox=document.getElementById('modal');
+
+const openModal=()=>{ modalBackdrop.classList.add('open'); };
+const closeModal=()=>{ modalBackdrop.classList.remove('open'); };
+
+infoBtn.onclick=e=>{ e.stopPropagation(); openModal(); };
+modalClose.onclick=e=>{ e.stopPropagation(); closeModal(); };
+modalBackdrop.onclick=e=>{ if(e.target === modalBackdrop) closeModal(); };
+modalBox.onmousedown=e=>e.stopPropagation();
+document.getElementById('title-card').onmousedown=e=>e.stopPropagation();
+
+window.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
+
+const S=(src,t)=>{ const s=gl.createShader(t); gl.shaderSource(s,src); gl.compileShader(s); return s; };
+const prg=gl.createProgram();
+gl.attachShader(prg, S('attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}', gl.VERTEX_SHADER));
+gl.attachShader(prg, S(document.getElementById('frag').textContent, gl.FRAGMENT_SHADER));
+gl.linkProgram(prg); gl.useProgram(prg);
+
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,3,-1,-1,3]), gl.STATIC_DRAW);
+gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+
+const unifs={};
+['iResolution','iTime','iMouse','iBurst','iGranularity','iRotSpeed','iColorRichness','iSurfaceRichness','iSize','iFormulaBlend','iXyzFuse'].forEach(n=>unifs[n]=gl.getUniformLocation(prg,n));
+
+const resize=()=>{ C.width=window.innerWidth; C.height=window.innerHeight; gl.viewport(0,0,C.width,C.height); };
+window.onresize=resize; resize();
+
+let mouse=[window.innerWidth*0.5, window.innerHeight*0.5], burst=0, burstVal=0, tCur=0;
+window.onmousemove=e=>mouse=[e.clientX,e.clientY];
+window.onmousedown=e=>{
+  if(e.target.closest('#title-card') || e.target.closest('#info-btn') || e.target.closest('#modal')) return;
+  burst=1;
+};
+window.onmouseup=()=>burst=0;
+
+const t0=performance.now();
+
+(function render(now){
+  tCur=(now-t0)*0.001;
+
+  // Harmonic mutations across parameter space
+  P.formulaBlend = 5.0 + 4.9 * Math.sin(tCur * 0.19 + Math.sin(tCur * 0.08) * 1.5);
+  P.xyzFuse = 5.0 + 4.8 * Math.sin(tCur * 0.27 + 1.4);
+  P.surfaceRichness = 7.5 + 2.4 * Math.sin(tCur * 0.14 + Math.cos(tCur * 0.07));
+  P.granularity = 6.5 + 2.8 * Math.sin(tCur * 0.23 + 2.1);
+  P.colorRichness = 6.2 + 3.7 * Math.sin(tCur * 0.12 + 0.9);
+  P.rotSpeed = 7.0 + 6.0 * Math.sin(tCur * 0.16) + 3.5 * Math.cos(tCur * 0.33);
+  P.size = 5.0 + 2.2 * Math.sin(tCur * 0.15 + 3.1);
+
+  burstVal+=(burst-burstVal)*.1;
+
+  gl.uniform3f(unifs.iResolution,C.width,C.height,0);
+  gl.uniform1f(unifs.iTime,tCur);
+  gl.uniform2f(unifs.iMouse,mouse[0],C.height-mouse[1]);
+  gl.uniform1f(unifs.iBurst,burstVal);
+  for(let k in P) gl.uniform1f(unifs['i'+k[0].toUpperCase()+k.slice(1)], P[k]);
+  gl.drawArrays(gl.TRIANGLES,0,3);
+
+  requestAnimationFrame(render);
+})(t0);
+</script>
+</body>
+</html>
