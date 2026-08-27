@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>$CORPUS // Dashboard</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#050505;color:#f4f1ea;font:12px 'Courier New',monospace}
+  body{padding:22px}
+  button{background:#050505;color:#f4f1ea;border:1px solid rgba(244,241,234,.65);font:inherit;padding:9px 12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer}
+  button:hover{background:#f4f1ea;color:#050505}
+  .head{display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid rgba(244,241,234,.3);padding-bottom:15px;margin-bottom:18px}
+  h1{margin:0;font-size:20px;letter-spacing:5px;font-weight:900}
+  .headRight{display:flex;align-items:center;gap:14px;color:rgba(244,241,234,.58);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;text-align:right}
+  .status{min-height:17px;margin:0 auto 18px;max-width:1540px;color:rgba(244,241,234,.62);letter-spacing:1px}
+  .status.err{color:#ff6a63}
+  .actionNotice{max-width:1540px;margin:0 auto 18px;border:1px solid #d7a900;background:#d7a900;padding:11px 13px;color:#050505;display:flex;align-items:center;justify-content:space-between;gap:18px;line-height:1.5;opacity:0;transform:translateY(-5px);transition:opacity .24s ease,transform .24s ease}
+  .actionNotice[hidden]{display:none}
+  .actionNotice.is-visible{opacity:1;transform:translateY(0)}
+  .actionNotice.is-closing{opacity:0;transform:translateY(-5px)}
+  .actionNotice strong{display:block;color:#050505;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px}
+  .actionNotice a{color:#050505;text-decoration:none;border-bottom:1px solid rgba(5,5,5,.55)}
+  .actionNotice a:hover{color:#fff;border-color:#fff}
+  .noticeActions{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+  .noticeActions button{color:#050505;border-color:#050505;font-size:9px;padding:6px 9px}
+  .noticeActions button:hover{background:#050505;color:#68c8ff}
+  .layout{max-width:1540px;margin:0 auto}
+  .panel{border:1px solid rgba(244,241,234,.35);background:#0a0a0a;margin-bottom:18px}
+  .panelHead{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(244,241,234,.22);padding:10px 13px;color:rgba(244,241,234,.72);font-size:10px;letter-spacing:3px;text-transform:uppercase}
+  .panelHead strong{color:#f4f1ea;font-size:12px;letter-spacing:3px}
+  .panelBody{padding:14px}
+  .overview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
+  .overview .panel{margin:0}
+  .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:rgba(244,241,234,.14)}
+  .marketStats:after{content:'';display:block;min-width:0;background:#0a0a0a}
+  .stat{min-width:0;background:#0a0a0a;padding:11px 12px}
+  .stat label{display:block;color:rgba(244,241,234,.5);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+  .stat .value{display:block;color:#f4f1ea;font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+  .stat .value.small{font-size:11px;color:rgba(244,241,234,.8)}
+  .stat .sub{display:block;color:rgba(244,241,234,.4);font-size:9px;margin-top:4px;letter-spacing:.5px}
+  .meter{height:5px;border:1px solid rgba(244,241,234,.45);margin-top:9px}
+  .meter i{display:block;height:100%;width:0;background:#f4f1ea;transition:width .25s ease}
+  .pulseGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:rgba(244,241,234,.14)}
+  .pulse{background:#0a0a0a;padding:13px;min-width:0}
+  .pulseTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .pulseSummaryRight{display:flex;align-items:center;gap:9px}
+  .pulseName{font-weight:900;letter-spacing:2px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#555;display:inline-block;margin-right:7px;vertical-align:1px}
+  .pulse.active .dot{background:#68c8ff;box-shadow:0 0 12px #68c8ff}
+  .pulse.active .pulseState{color:#68c8ff}
+  .pulseState{font-size:9px;letter-spacing:1px;color:rgba(244,241,234,.42);text-transform:uppercase}
+  .pulseDetails{border-top:1px solid rgba(244,241,234,.12);padding-top:1px}
+  .pulseLine{display:flex;justify-content:space-between;gap:12px;border-top:1px solid rgba(244,241,234,.12);padding-top:7px;margin-top:7px;color:rgba(244,241,234,.55);font-size:10px}
+  .pulseLine b{color:#f4f1ea;font-weight:400;text-align:right;overflow-wrap:anywhere}
+  .influenceAction{background:#0a0a0a;color:#68c8ff;border:1px solid rgba(104,200,255,.7);font:inherit;font-size:9px;letter-spacing:1.5px;padding:6px 8px;cursor:pointer;white-space:nowrap}
+  .influenceAction:hover{background:#68c8ff;color:#050505}
+  .influenceAction:disabled{cursor:wait;opacity:.5}
+  .gmWrap{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(244,241,234,.14)}
+  .gmCard{background:#0a0a0a;padding:14px}
+  .gmTitle{font-size:13px;font-weight:900;letter-spacing:3px;margin-bottom:14px}
+  .gmCard .big{font-size:24px;line-height:1;margin-bottom:8px}
+  .gmCard .muted{color:rgba(244,241,234,.5);font-size:10px;line-height:1.5}
+  .gmCard.active .big,.gmCard.active .muted strong{color:#ffbf6b}
+  .gmAction{padding:6px 10px;font-size:10px;letter-spacing:2px;min-width:58px}
+  .gmAction:disabled{cursor:wait;opacity:.55}
+  .assetPanel{height:100%}
+  .assetPicker{background:#0a0a0a;color:#f4f1ea;border:1px solid rgba(244,241,234,.5);font:inherit;font-size:10px;letter-spacing:1.5px;padding:7px 9px;text-transform:uppercase;max-width:55%;cursor:pointer}
+  .assetPicker:focus{outline:1px solid #f4f1ea;outline-offset:2px}
+  .influencePicker{background:#0a0a0a;color:#f4f1ea;border:1px solid rgba(244,241,234,.5);font:inherit;font-size:10px;letter-spacing:1.5px;padding:8px 10px;text-transform:uppercase;width:100%;cursor:pointer;margin-bottom:14px}
+  .influencePicker:focus{outline:1px solid #f4f1ea;outline-offset:2px}
+  .asset{min-width:0}
+  .assetHead{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid rgba(244,241,234,.6);border-bottom:0;padding:8px 11px;text-transform:uppercase;font-size:10px;letter-spacing:1.5px}
+  .assetHead strong{font-size:11px;letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .assetHead span{color:rgba(244,241,234,.52);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stage{position:relative;aspect-ratio:1/1;border:1px solid #f4f1ea;background:#000;overflow:hidden}
+  .stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+  .asset.loading .stage:after{content:'QUERYING TOKENURI…';position:absolute;inset:0;display:grid;place-items:center;color:rgba(244,241,234,.55);letter-spacing:2px;pointer-events:none}
+  .asset.error .stage:after{content:'RENDER ERROR';position:absolute;inset:0;display:grid;place-items:center;color:#ff6a63;letter-spacing:2px;pointer-events:none}
+  .assetMeta{min-height:15px;margin-top:7px;color:rgba(244,241,234,.46);font-size:10px;letter-spacing:.7px;overflow-wrap:anywhere}
+  .foot{max-width:1540px;margin:22px auto 0;color:rgba(244,241,234,.35);font-size:9px;line-height:1.6;letter-spacing:.5px}
+  code{color:rgba(244,241,234,.65);font:inherit}
+  @media (max-width:1120px){.overview{grid-template-columns:1fr 1fr}}
+  @media (max-width:680px){body{padding:13px}.head{align-items:flex-start;flex-direction:column}.headRight{width:100%;justify-content:space-between;text-align:left}.actionNotice{align-items:flex-start;flex-direction:column}.noticeActions{width:100%;justify-content:flex-end}.overview{display:block}.overview .panel{margin-bottom:18px}.overview .panel:last-child{margin-bottom:0}.pulseGrid,.gmWrap{grid-template-columns:1fr}.panelBody{padding:10px}.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+  <header class='head'>
+      <h1><a href="../" style="text-decoration:none;color:white;">$CORPUS</a> // DASHBOARD</h1>
+    <div class='headRight'><span id='block'>Awaiting renderer</span><button id='reload'>Refresh all</button></div>
+  </header>
+  <div class='status' id='status'>Ready.</div>
+  <div class='actionNotice' id='actionNotice' hidden>
+    <div><strong>Before you continue</strong><span id='actionNoticeText'>This interaction assumes you have read the conditions on the <a href='about.html' target='_blank' rel='noopener'>ABOUT</a> page.</span></div>
+    <div class='noticeActions'><a href='about.html' target='_blank' rel='noopener'>READ ABOUT</a><button id='noticeContinue' type='button' style="color:silver;">CONTINUE</button></div>
+  </div>
+
+  <main class='layout'>
+    <section class='overview'>
+      <section class='panel assetPanel'>
+        <div class='panelHead'><strong>Live Corpus</strong><select class='assetPicker' id='assetSelect' aria-label='Choose corpus asset'>
+          <option value='le'>LIQUID EDITION</option>
+          <option value='1'>OLIGARCH #1 · SIZE</option>
+          <option value='2'>OLIGARCH #2 · COHESION</option>
+          <option value='3'>OLIGARCH #3 · STRUCTURE</option>
+          <option value='4'>OLIGARCH #4 · ENERGY</option>
+        </select></div>
+        <div class='panelBody'>
+          <article class='asset loading' id='asset-view'>
+            <div class='assetHead'><strong id='assetLabel'>LIQUID EDITION</strong><span id='assetName'>tokenURI()</span></div>
+            <div class='stage'><iframe id='assetFrame' sandbox='allow-scripts' allowfullscreen></iframe></div>
+            <div class='assetMeta' id='assetMeta'></div>
+          </article>
+        </div>
+      </section>
+
+      <article class='panel'>
+        <div class='panelHead'><strong>Market State</strong><span id='marketTime'>—</span></div>
+        <div class='stats marketStats'>
+          <div class='stat'><label>Current tick</label><span class='value' id='tick'>—</span><span class='sub' id='tickRange'>LP range —</span><div class='meter'><i id='tickMeter'></i></div></div>
+          <div class='stat'><label>Pool liquidity (L)</label><span class='value' id='liquidity'>—</span><span class='sub'>pool liquidity units · raw uint128 on hover</span></div>
+          <div class='stat'><label>Normalized sqrt price</label><span class='value small' id='sqrtPrice'>—</span><span class='sub'>sqrtPriceX96 ÷ 2^96 · raw X96 on hover</span></div>
+          <div class='stat'><label>RARE per LE</label><span class='value small' id='rarePerToken'>—</span><span class='sub'>native ratio · 1e18 fixed point</span></div>
+          <div class='stat'><label>LE per RARE</label><span class='value small' id='tokenPerRare'>—</span><span class='sub'>native ratio · 1e18 fixed point</span></div>
+          <div class='stat'><label>Current supply</label><span class='value small' id='currentSupply'>—</span><span class='sub' id='leName'>LE</span></div>
+          <div class='stat'><label>Corpus holder balance</label><span class='value small' id='held'>—</span><span class='sub'>LE native units</span></div>
+        </div>
+      </article>
+
+      <article class='panel'>
+        <div class='panelHead'><strong>Oligarchic Influence</strong><span id='decayLabel'>influence decay —</span></div>
+        <div class='panelBody'>
+          <select class='influencePicker' id='influenceSelect' aria-label='Choose oligarch influence'>
+            <option value='1'>OLIGARCH #1 · SIZE</option>
+            <option value='2'>OLIGARCH #2 · COHESION</option>
+            <option value='3'>OLIGARCH #3 · STRUCTURE</option>
+            <option value='4'>OLIGARCH #4 · ENERGY</option>
+          </select>
+          <div id='influences'></div>
+        </div>
+      </article>
+
+      <article class='panel'>
+        <div class='panelHead'><strong>GM Episode</strong><span id='gmWindowLabel'>window —</span><button class='gmAction' id='gmAction' type='button'>GM</button></div>
+        <div class='gmWrap'>
+          <div class='gmCard' id='gmCard'>
+            <div class='gmTitle'><span class='dot'></span><span id='gmState'>INACTIVE</span></div>
+            <div class='big' id='gmBalance'>0 LE</div>
+            <div class='muted'>Cumulative balance in the current episode.<br><strong id='gmRemaining'>No active episode</strong></div>
+            <div class='meter'><i id='gmMeter'></i></div>
+          </div>
+          <div class='gmCard'>
+            <div class='gmTitle'>RENDERER</div>
+            <div class='muted'>influence decay<br><strong id='rendererDecay'>—</strong></div>
+            <div class='muted' style='margin-top:12px'>episode<br><strong id='gmEpisode'>—</strong></div>
+            <div class='muted' style='margin-top:12px'>GM visual scale<br><strong id='gmVisual'>—</strong></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class='panel'>
+      <div class='panelHead'><strong>Contract Control</strong><span>live addresses and configuration</span></div>
+      <div class='stats'>
+        <div class='stat'><label>Renderer</label><span class='value small' id='rendererAddress'>—</span></div>
+        <div class='stat'><label>LE contract</label><span class='value small' id='liquidAddress'>—</span></div>
+        <div class='stat'><label>Corpus holder</label><span class='value small' id='holderAddress'>—</span></div>
+        <div class='stat'><label>Oligarch / LENS collection</label><span class='value small' id='lensAddress'>—</span></div>
+        <div class='stat'><label>Max total supply</label><span class='value small' id='maxSupply'>—</span></div>
+        <div class='stat'><label>Token decimals</label><span class='value' id='decimals'>—</span></div>
+      </div>
+    </section>
+  </main>
+
+  <div class='foot'>Reads the deployed renderer and LE contract directly from Sepolia. Influence balances are snapshots; expiry is calculated from their stored start time plus the renderer influence-decay window. GM is cumulative per episode and expires after the fixed GM window.</div>
+
+  <script src='https://cdn.jsdelivr.net/npm/ethers@6.15.0/dist/ethers.umd.min.js'></script>
+  <script>
+  const RENDERER='0xcd12eB4d9181F006F124049206C6F5F97974C373';
+  const RPC_URL='https://eth-sepolia.g.alchemy.com/v2/tP22aP3IvV7K9nbbepaFV6ayJ-UmXz1-';
+  const RENDERER_ABI=[
+    'function tokenURI() view returns (string)',
+    'function tokenURI(uint256 id) view returns (string)',
+    'function lensIds(uint256) view returns (uint256)',
+    'function gm()',
+    'function influence(uint256 tokenId)',
+    'function lensImpulse(uint256) view returns (uint40 start, uint256 balance, uint8 channel)',
+    'function gmStart() view returns (uint40)',
+    'function gmBalance() view returns (uint256)',
+    'function gmEpisode() view returns (uint256)',
+    'function GM_WINDOW() view returns (uint256)',
+    'function decayWindow() view returns (uint256)',
+    'function liquid() view returns (address)',
+    'function corpusHolder() view returns (address)',
+    'function lensCollection() view returns (address)',
+    'function archeLabel(uint256) view returns (string)'
+  ];
+  const LIQUID_ABI=[
+    'function name() view returns (string)',
+    'function decimals() view returns (uint8)',
+    'function maxTotalSupply() view returns (uint256)',
+    'function balanceOf(address) view returns (uint256)',
+    'function lpTickLower() view returns (int24)',
+    'function lpTickUpper() view returns (int24)',
+    'function getMarketState() view returns (uint256 rarePerToken,uint256 tokenPerRare,uint160 sqrtPriceX96,int24 currentTick,uint128 liquidity,uint256 currentSupply)'
+  ];
+  const LENS_ABI=['function ownerOf(uint256 tokenId) view returns (address)'];
+  const provider=new ethers.JsonRpcProvider(RPC_URL);
+  const renderer=new ethers.Contract(RENDERER,RENDERER_ABI,provider);
+  const $=id=>document.getElementById(id);
+  const LABELS=['SIZE','COHESION','STRUCTURE','ENERGY'];
+  let live={now:0,decimals:18,decay:3600,gmWindow:900};
+  let influenceData=[], selectedInfluence=1;
+  let conditionsAcknowledged=false, pendingAction=null;
+  let walletProvider=null, walletSigner=null;
+
+  function setText(id,value){$(id).textContent=value;}
+  function fmtBig(value){
+    const raw=BigInt(value).toString();
+    if(raw.length<=6)return raw.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    return raw[0]+'.'+raw.slice(1,3)+'e'+(raw.length-1);
+  }
+  function setLiquidity(id,value){const el=$(id);el.textContent=fmtBig(value)+' L';el.title='raw uint128: '+BigInt(value).toString();}
+  function fmtQ96(value){
+    const raw=BigInt(value),scale=1n<<96n,whole=raw/scale,fraction=(raw%scale)*100000000n/scale;
+    if(fraction===0n)return whole.toString();
+    return whole.toString()+'.'+fraction.toString().padStart(8,'0').replace(/0+$/,'');
+  }
+  function setNormalizedSqrtPrice(id,value){const el=$(id);el.textContent=fmtQ96(value);el.title='raw sqrtPriceX96: '+BigInt(value).toString();}
+  function fmtUnits(value,decimals){
+    try{return Number(ethers.formatUnits(value,decimals)).toLocaleString(undefined,{maximumFractionDigits:4});}
+    catch(e){return '—';}
+  }
+  function fmtRatio(value){
+    try{return Number(ethers.formatUnits(value,18)).toLocaleString(undefined,{maximumFractionDigits:8});}
+    catch(e){return '—';}
+  }
+  function shortAddress(value){return value.slice(0,7)+'…'+value.slice(-5);}
+  function duration(seconds){
+    seconds=Math.max(0,Math.floor(seconds));
+    const m=Math.floor(seconds/60),s=seconds%60,h=Math.floor(m/60);
+    if(h)return h+'h '+String(m%60).padStart(2,'0')+'m';
+    return m+'m '+String(s).padStart(2,'0')+'s';
+  }
+  function when(ts){return ts?new Date(ts*1000).toLocaleString():'—';}
+  function parseDataUriJson(uri){
+    if(uri.startsWith('data:application/json;base64,'))return JSON.parse(atob(uri.slice('data:application/json;base64,'.length)));
+    const comma=uri.indexOf(',');return JSON.parse(decodeURIComponent(uri.slice(comma+1)));
+  }
+  function htmlFromAnimationUrl(url){
+    if(url.startsWith('data:text/html;base64,'))return atob(url.slice('data:text/html;base64,'.length));
+    const comma=url.indexOf(',');return decodeURIComponent(url.slice(comma+1));
+  }
+  function assetState(state,message){
+    const el=$('asset-view');el.classList.remove('loading','error');if(state)el.classList.add(state);setText('assetMeta',message||'');
+  }
+  function setMeter(id,ratio){$(id).style.width=(Math.max(0,Math.min(1,ratio))*100).toFixed(1)+'%';}
+
+  async function loadAsset(selection){
+    const el=$('asset-view');el.classList.remove('error');el.classList.add('loading');setText('assetMeta','');
+    if(selection==='le'){
+    const metadata=parseDataUriJson(await renderer['tokenURI()']());
+      $('assetFrame').srcdoc=htmlFromAnimationUrl(metadata.animation_url);
+      setText('assetLabel','LIQUID EDITION');setText('assetName',metadata.name||'tokenURI()');assetState('', 'Loaded from tokenURI()');
+      return;
+    }
+    const slot=Number(selection);
+    const lensId=await renderer.lensIds(slot-1);
+    const tokenUriLens=renderer.getFunction('tokenURI(uint256)');
+    const metadata=parseDataUriJson(await tokenUriLens(lensId));
+    $('assetFrame').srcdoc=htmlFromAnimationUrl(metadata.animation_url);
+    setText('assetLabel','OLIGARCH #'+lensId.toString()+' · '+LABELS[slot-1]);
+    setText('assetName',metadata.name||'tokenURI(id)');assetState('', 'OLIGARCH token ID '+lensId.toString()+' · loaded');
+  }
+
+  function influenceResultParts(result){return {start:Number(result.start??result[0]),balance:result.balance??result[1],channel:Number(result.channel??result[2])};}
+  function renderInfluence(slot,info){
+    const active=info.balance>0n&&info.start>0&&live.now<info.start+live.decay;
+    const expiry=info.start?info.start+live.decay:0;
+    const remaining=active?expiry-live.now:0;
+    const el=document.createElement('article');el.className='pulse'+(active?' active':'');
+    const state=active?'ACTIVE':'QUIET';
+    el.innerHTML="<div class='pulseTop'><div class='pulseName'><span class='dot'></span>OLIGARCH #"+slot+' · '+LABELS[slot-1]+"</div><div class='pulseSummaryRight'><span class='pulseState'>"+state+"</span><button class='influenceAction' type='button'>INFLUENCE</button></div></div>"+
+      "<div class='pulseDetails'><div class='pulseLine'><span>influence balance</span><b>"+fmtUnits(info.balance,live.decimals)+' LE</b></div>'+ 
+      "<div class='pulseLine'><span>channel</span><b>"+(info.channel+1)+'</b></div>'+ 
+      "<div class='pulseLine'><span>owner</span><b title='"+info.owner+"'>"+shortAddress(info.owner)+'</b></div>'+ 
+      "<div class='pulseLine'><span>started</span><b>"+(info.start?when(info.start):'—')+'</b></div>'+ 
+      "<div class='pulseLine'><span>expires</span><b>"+(expiry?when(expiry):'—')+'</b></div>'+
+      "<div class='pulseLine'><span>remaining</span><b>"+(active?duration(remaining):'expired / none')+"</b></div></div>";
+    el.querySelector('.influenceAction').addEventListener('click',event=>{event.preventDefault();event.stopPropagation();requestContractAction('influence',()=>sendInfluence(slot,info.tokenId,event.currentTarget));});
+    return el;
+  }
+  function renderSelectedInfluence(){
+    const host=$('influences');
+    const info=influenceData[selectedInfluence-1];
+    host.replaceChildren(info?renderInfluence(selectedInfluence,info):document.createTextNode('No influence data'));
+  }
+  function requestContractAction(action,callback){
+    if(conditionsAcknowledged){callback();return;}
+    pendingAction=callback;
+    setText('actionNoticeText','This '+action+' interaction assumes you have read the conditions on the ABOUT page.');
+    const notice=$('actionNotice');
+    notice.hidden=false;
+    notice.classList.remove('is-closing');
+    requestAnimationFrame(()=>notice.classList.add('is-visible'));
+    $('noticeContinue').focus();
+  }
+  async function loadStats(){
+    const [block,liquidAddress,holder,lensCollection,decay,gmWindow,gmStart,gmBalance,gmEpisode]=await Promise.all([
+      provider.getBlock('latest'),renderer.liquid(),renderer.corpusHolder(),renderer.lensCollection(),renderer.decayWindow(),renderer.GM_WINDOW(),renderer.gmStart(),renderer.gmBalance(),renderer.gmEpisode()
+    ]);
+    const liquid=new ethers.Contract(liquidAddress,LIQUID_ABI,provider);
+    const [leName,decimals,maxSupply,held,lo,hi,market]=await Promise.all([
+      liquid.name(),liquid.decimals(),liquid.maxTotalSupply(),liquid.balanceOf(holder),liquid.lpTickLower(),liquid.lpTickUpper(),liquid.getMarketState()
+    ]);
+    live={now:Number(block.timestamp),decimals:Number(decimals),decay:Number(decay),gmWindow:Number(gmWindow)};
+    const [rarePerToken,tokenPerRare,sqrtPriceX96,currentTick,liquidity,currentSupply]=market;
+    const tick=Number(currentTick), lower=Number(lo), upper=Number(hi);
+    const tickRatio=upper>lower?Math.max(0,Math.min(1,(tick-lower)/(upper-lower))):0;
+    setText('block','Block '+block.number);
+    setText('marketTime',when(live.now));
+    setText('leName',leName+' · '+live.decimals+' decimals');
+    setText('tick',String(tick));setText('tickRange','LP range '+lower+' → '+upper);setMeter('tickMeter',tickRatio);
+    setLiquidity('liquidity',liquidity);setNormalizedSqrtPrice('sqrtPrice',sqrtPriceX96);setText('rarePerToken',fmtRatio(rarePerToken));setText('tokenPerRare',fmtRatio(tokenPerRare));
+    setText('currentSupply',fmtUnits(currentSupply,live.decimals)+' LE');setText('held',fmtUnits(held,live.decimals)+' LE');
+    setText('decayLabel',duration(live.decay));setText('rendererDecay',duration(live.decay));
+    setText('rendererAddress',shortAddress(RENDERER));setText('liquidAddress',shortAddress(liquidAddress));setText('holderAddress',shortAddress(holder));setText('lensAddress',shortAddress(lensCollection));
+    setText('maxSupply',fmtUnits(maxSupply,live.decimals)+' LE');setText('decimals',String(live.decimals));
+    const lens=new ethers.Contract(lensCollection,LENS_ABI,provider);
+    const influenceResults=await Promise.all([0,1,2,3].map(async slot=>{
+      const tokenId=await renderer.lensIds(slot);
+      const [owner,impulse]=await Promise.all([lens.ownerOf(tokenId),renderer.lensImpulse(tokenId)]);
+      return {...influenceResultParts(impulse),tokenId,owner};
+    }));
+    influenceData=influenceResults;renderSelectedInfluence();
+    const gmStartN=Number(gmStart),gmBalanceBig=BigInt(gmBalance),gmExpiry=gmStartN?gmStartN+live.gmWindow:0;
+    const gmActive=gmBalanceBig>0n&&gmStartN>0&&live.now<gmExpiry;
+    const gmCard=$('gmCard');gmCard.classList.toggle('active',gmActive);setText('gmState',gmActive?'ACTIVE':'INACTIVE');setText('gmBalance',fmtUnits(gmBalanceBig,live.decimals)+' LE');
+    setText('gmRemaining',gmActive?'expires in '+duration(gmExpiry-live.now):gmStartN?'expired at '+when(gmExpiry):'No active episode');setMeter('gmMeter',gmActive?(gmExpiry-live.now)/live.gmWindow:0);
+    setText('gmWindowLabel',duration(live.gmWindow));setText('gmEpisode',fmtBig(gmEpisode));
+    const gmVisual=gmActive?Math.max(0,Math.min(10,(Number(ethers.formatUnits(gmBalanceBig,live.decimals))<=2000?0:Number(ethers.formatUnits(gmBalanceBig,live.decimals))>=10000?1:(Number(ethers.formatUnits(gmBalanceBig,live.decimals))-2000)*2/8000)*(1-(live.now-gmStartN)/live.gmWindow)*10)):0;
+    setText('gmVisual',gmVisual.toFixed(2)+' / 10');
+    return {block,gmActive};
+  }
+  async function getSepoliaSigner(){
+    if(!window.ethereum)throw new Error('No browser wallet detected.');
+    walletProvider=new ethers.BrowserProvider(window.ethereum);
+    await walletProvider.send('eth_requestAccounts',[]);
+    const network=await walletProvider.getNetwork();
+    if(network.chainId!==11155111n)throw new Error('Switch wallet network to Sepolia before sending a transaction.');
+    walletSigner=await walletProvider.getSigner();
+    return walletSigner;
+  }
+
+  async function sendInfluence(slot,tokenId,button){
+    button.disabled=true;button.textContent='…';
+    try{
+      const signer=await getSepoliaSigner();
+      const writeRenderer=renderer.connect(signer);
+      setText('status','Sending influence for oligarch #'+slot+'…');$('status').className='status';
+      const tx=await writeRenderer.influence(tokenId);
+      setText('status','Influence transaction sent: '+tx.hash+' · waiting for confirmation…');
+      await tx.wait();
+      setText('status','Influence confirmed. Refreshing the selected asset…');
+      await Promise.all([loadStats(),loadAsset($('assetSelect').value)]);
+      setText('status','Influence confirmed on Sepolia for oligarch #'+slot+'.');
+    }catch(error){
+      console.error('Influence transaction failed',error);
+      setText('status','Influence failed: '+(error.shortMessage||error.reason||error.message||String(error)));$('status').classList.add('err');
+    }finally{button.disabled=false;button.textContent='INFLUENCE';}
+  }
+
+  async function sendGM(){
+    const button=$('gmAction');
+    if(!window.ethereum){setText('status','GM unavailable: no browser wallet detected.');$('status').classList.add('err');return;}
+    button.disabled=true;button.textContent='…';
+    try{
+      const signer=await getSepoliaSigner();
+      const writeRenderer=renderer.connect(signer);
+      setText('status','Sending GM transaction…');$('status').className='status';
+      const tx=await writeRenderer.gm();
+      setText('status','GM transaction sent: '+tx.hash+' · waiting for confirmation…');
+      await tx.wait();
+      setText('status','GM confirmed. Refreshing the live episode and selected asset…');
+      await Promise.all([loadStats(),loadAsset($('assetSelect').value)]);
+      setText('status','GM confirmed on Sepolia. The episode is now live.');
+    }catch(error){
+      console.error('GM transaction failed',error);
+      setText('status','GM failed: '+(error.shortMessage||error.reason||error.message||String(error)));$('status').classList.add('err');
+    }finally{button.disabled=false;button.textContent='GM';}
+  }
+  async function refresh(){
+    $('status').className='status';setText('status','Reading live Sepolia state…');
+    try{
+      await Promise.all([loadAsset($('assetSelect').value),loadStats()]);
+      setText('status','Live contract state and selected asset loaded.');
+    }catch(error){console.error(error);setText('status','Dashboard error: '+(error.shortMessage||error.reason||error.message||String(error)));$('status').classList.add('err');}
+  }
+  $('assetSelect').addEventListener('change',()=>loadAsset($('assetSelect').value).catch(error=>{console.error(error);assetState('error',error.shortMessage||error.message||String(error));setText('status','Asset error: '+(error.shortMessage||error.message||String(error)));$('status').classList.add('err');}));
+  $('influenceSelect').addEventListener('change',event=>{selectedInfluence=Number(event.target.value);renderSelectedInfluence();});
+  $('noticeContinue').addEventListener('click',()=>{
+    conditionsAcknowledged=true;
+    const notice=$('actionNotice');
+    notice.classList.remove('is-visible');
+    notice.classList.add('is-closing');
+    const action=pendingAction;pendingAction=null;
+    setTimeout(()=>{notice.hidden=true;notice.classList.remove('is-closing');if(action)action();},240);
+  });
+  $('gmAction').addEventListener('click',()=>requestContractAction('gm',sendGM));
+  $('reload').addEventListener('click',refresh);
+  refresh();
+  setInterval(()=>loadStats().catch(error=>{console.error(error);setText('status','Stats refresh error: '+(error.shortMessage||error.message||String(error)));$('status').classList.add('err');}),15000);
+  </script>
+</body>
+</html>
