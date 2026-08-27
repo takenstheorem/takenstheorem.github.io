@@ -70,21 +70,21 @@
 </head>
 <body>
   <div id="overlay"></div>
-  <div id="state-mark">STATE // QUERYING SEPOLIA</div>
+  <div id="state-mark">STATE // QUERYING MAINNET</div>
 
   <!-- Top Left Large Title & Byline -->
   <div id="title-card">
     <span class="title-text">CORPUS</span>
     <span class="byline">BY <a href="https://takenstheorem.github.io" style="color:rgba(255,255,255,.6);">TAKENS THEOREM</a></span>
-    <span class="nav-links"><a href="dashboard.html">DASHBOARD</a> <a href="about.html">ABOUT</a></span>
+    <span class="nav-links"><a href="dashboard_mainnet.html">DASHBOARD</a> <a href="about.html">ABOUT</a></span>
   </div>
 
   <iframe id='piece-frame' title='Live CORPUS' sandbox='allow-scripts' allowfullscreen></iframe>
 
 <script src='https://cdn.jsdelivr.net/npm/ethers@6.15.0/dist/ethers.umd.min.js'></script>
 <script>
-const RENDERER='0xcd12eB4d9181F006F124049206C6F5F97974C373';
-const RPC_URL='https://eth-sepolia.g.alchemy.com/v2/tP22aP3IvV7K9nbbepaFV6ayJ-UmXz1-';
+const RENDERER='0x150766E67e10B543c2Aa52625aE6Da0AaC5DD334';
+const RPC_URL='https://eth-mainnet.g.alchemy.com/v2/tP22aP3IvV7K9nbbepaFV6ayJ-UmXz1-';
 const provider=new ethers.JsonRpcProvider(RPC_URL);
 const renderer=new ethers.Contract(RENDERER,['function tokenURI() view returns (string)'],provider);
 
@@ -106,7 +106,7 @@ async function loadLivePiece(){
   const frame=document.getElementById('piece-frame');
   const mark=document.getElementById('state-mark');
   try{
-    mark.textContent='STATE // QUERYING SEPOLIA';
+    mark.textContent='STATE // QUERYING MAINNET';
     const uri=await renderer['tokenURI()']();
     const metadata=parseDataUriJson(uri);
     frame.srcdoc=htmlFromAnimationUrl(metadata.animation_url);

@@ -3,7 +3,7 @@
 <head>
 <meta charset='UTF-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>$CORPUS // Dashboard</title>
+<title>$CORPUS // Mainnet Dashboard</title>
 <style>
   *{box-sizing:border-box}
   html,body{margin:0;background:#050505;color:#f4f1ea;font:12px 'Courier New',monospace}
@@ -86,7 +86,7 @@
 </head>
 <body>
   <header class='head'>
-      <h1><a href="../" style="text-decoration:none;color:white;">$CORPUS</a> // DASHBOARD</h1>
+      <h1><a href="../" style="text-decoration:none;color:white;">$CORPUS</a> // MAINNET DASHBOARD</h1>
     <div class='headRight'><span id='block'>Awaiting renderer</span><button id='reload'>Refresh all</button></div>
   </header>
   <div class='status' id='status'>Ready.</div>
@@ -172,12 +172,12 @@
     </section>
   </main>
 
-  <div class='foot'>Reads the deployed renderer and LE contract directly from Sepolia. Influence balances are snapshots; expiry is calculated from their stored start time plus the renderer influence-decay window. GM is cumulative per episode and expires after the fixed GM window.</div>
+  <div class='foot'>Reads the deployed renderer and LE contract directly from Ethereum mainnet. Influence balances are snapshots; expiry is calculated from their stored start time plus the renderer influence-decay window. GM is cumulative per episode and expires after the fixed GM window.</div>
 
   <script src='https://cdn.jsdelivr.net/npm/ethers@6.15.0/dist/ethers.umd.min.js'></script>
   <script>
-  const RENDERER='0xcd12eB4d9181F006F124049206C6F5F97974C373';
-  const RPC_URL='https://eth-sepolia.g.alchemy.com/v2/tP22aP3IvV7K9nbbepaFV6ayJ-UmXz1-';
+  const RENDERER='0x150766E67e10B543c2Aa52625aE6Da0AaC5DD334';
+  const RPC_URL='https://eth-mainnet.g.alchemy.com/v2/tP22aP3IvV7K9nbbepaFV6ayJ-UmXz1-';
   const RENDERER_ABI=[
     'function tokenURI() view returns (string)',
     'function tokenURI(uint256 id) view returns (string)',
@@ -342,12 +342,12 @@
     setText('gmVisual',gmVisual.toFixed(2)+' / 10');
     return {block,gmActive};
   }
-  async function getSepoliaSigner(){
+  async function getMainnetSigner(){
     if(!window.ethereum)throw new Error('No browser wallet detected.');
     walletProvider=new ethers.BrowserProvider(window.ethereum);
     await walletProvider.send('eth_requestAccounts',[]);
     const network=await walletProvider.getNetwork();
-    if(network.chainId!==11155111n)throw new Error('Switch wallet network to Sepolia before sending a transaction.');
+    if(network.chainId!==1n)throw new Error('Switch wallet network to Ethereum mainnet before sending a transaction.');
     walletSigner=await walletProvider.getSigner();
     return walletSigner;
   }
@@ -355,7 +355,7 @@
   async function sendInfluence(slot,tokenId,button){
     button.disabled=true;button.textContent='…';
     try{
-      const signer=await getSepoliaSigner();
+      const signer=await getMainnetSigner();
       const writeRenderer=renderer.connect(signer);
       setText('status','Sending influence for oligarch #'+slot+'…');$('status').className='status';
       const tx=await writeRenderer.influence(tokenId);
@@ -363,7 +363,7 @@
       await tx.wait();
       setText('status','Influence confirmed. Refreshing the selected asset…');
       await Promise.all([loadStats(),loadAsset($('assetSelect').value)]);
-      setText('status','Influence confirmed on Sepolia for oligarch #'+slot+'.');
+      setText('status','Influence confirmed on Ethereum mainnet for oligarch #'+slot+'.');
     }catch(error){
       console.error('Influence transaction failed',error);
       setText('status','Influence failed: '+(error.shortMessage||error.reason||error.message||String(error)));$('status').classList.add('err');
@@ -375,7 +375,7 @@
     if(!window.ethereum){setText('status','GM unavailable: no browser wallet detected.');$('status').classList.add('err');return;}
     button.disabled=true;button.textContent='…';
     try{
-      const signer=await getSepoliaSigner();
+      const signer=await getMainnetSigner();
       const writeRenderer=renderer.connect(signer);
       setText('status','Sending GM transaction…');$('status').className='status';
       const tx=await writeRenderer.gm();
@@ -383,14 +383,14 @@
       await tx.wait();
       setText('status','GM confirmed. Refreshing the live episode and selected asset…');
       await Promise.all([loadStats(),loadAsset($('assetSelect').value)]);
-      setText('status','GM confirmed on Sepolia. The episode is now live.');
+      setText('status','GM confirmed on Ethereum mainnet. The episode is now live.');
     }catch(error){
       console.error('GM transaction failed',error);
       setText('status','GM failed: '+(error.shortMessage||error.reason||error.message||String(error)));$('status').classList.add('err');
     }finally{button.disabled=false;button.textContent='GM';}
   }
   async function refresh(){
-    $('status').className='status';setText('status','Reading live Sepolia state…');
+    $('status').className='status';setText('status','Reading live Ethereum mainnet state…');
     try{
       await Promise.all([loadAsset($('assetSelect').value),loadStats()]);
       setText('status','Live contract state and selected asset loaded.');
