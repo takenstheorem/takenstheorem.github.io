@@ -3,7 +3,7 @@
 <head>
 <meta charset='UTF-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>$CORPUS // Mainnet Dashboard</title>
+<title>CORPUS // Mainnet Dashboard</title>
 <style>
   *{box-sizing:border-box}
   html,body{margin:0;background:#050505;color:#f4f1ea;font:12px 'Courier New',monospace}
@@ -86,7 +86,7 @@
 </head>
 <body>
   <header class='head'>
-      <h1><a href="../" style="text-decoration:none;color:white;">$CORPUS</a> // MAINNET DASHBOARD</h1>
+      <h1><a href="../" style="text-decoration:none;color:white;">CORPUS</a> // MAINNET DASHBOARD</h1>
     <div class='headRight'><span id='block'>Awaiting renderer</span><button id='reload'>Refresh all</button></div>
   </header>
   <div class='status' id='status'>Ready.</div>
@@ -281,10 +281,10 @@
     const el=document.createElement('article');el.className='pulse'+(active?' active':'');
     const state=active?'ACTIVE':'QUIET';
     el.innerHTML="<div class='pulseTop'><div class='pulseName'><span class='dot'></span>OLIGARCH #"+slot+' · '+LABELS[slot-1]+"</div><div class='pulseSummaryRight'><span class='pulseState'>"+state+"</span><button class='influenceAction' type='button'>INFLUENCE</button></div></div>"+
-      "<div class='pulseDetails'><div class='pulseLine'><span>influence balance</span><b>"+fmtUnits(info.balance,live.decimals)+' LE</b></div>'+ 
-      "<div class='pulseLine'><span>channel</span><b>"+(info.channel+1)+'</b></div>'+ 
-      "<div class='pulseLine'><span>owner</span><b title='"+info.owner+"'>"+shortAddress(info.owner)+'</b></div>'+ 
-      "<div class='pulseLine'><span>started</span><b>"+(info.start?when(info.start):'—')+'</b></div>'+ 
+      "<div class='pulseDetails'><div class='pulseLine'><span>influence balance</span><b>"+fmtUnits(info.balance,live.decimals)+' LE</b></div>'+
+      "<div class='pulseLine'><span>channel</span><b>"+(info.channel+1)+'</b></div>'+
+      "<div class='pulseLine'><span>owner</span><b title='"+info.owner+"'>"+shortAddress(info.owner)+'</b></div>'+
+      "<div class='pulseLine'><span>started</span><b>"+(info.start?when(info.start):'—')+'</b></div>'+
       "<div class='pulseLine'><span>expires</span><b>"+(expiry?when(expiry):'—')+'</b></div>'+
       "<div class='pulseLine'><span>remaining</span><b>"+(active?duration(remaining):'expired / none')+"</b></div></div>";
     el.querySelector('.influenceAction').addEventListener('click',event=>{event.preventDefault();event.stopPropagation();requestContractAction('influence',()=>sendInfluence(slot,info.tokenId,event.currentTarget));});
