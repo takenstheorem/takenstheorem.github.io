@@ -58,6 +58,13 @@
   .influenceAction:disabled{cursor:wait;opacity:.5}
   .gmWrap{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(244,241,234,.14)}
   .gmCard{background:#0a0a0a;padding:14px}
+  .gmCallers{border-top:1px solid rgba(244,241,234,.14);background:#0a0a0a;padding:12px 14px}
+  .gmCallers[hidden]{display:none}
+  .gmCallersHead{display:flex;align-items:center;justify-content:space-between;gap:12px;color:rgba(244,241,234,.5);font-size:9px;letter-spacing:2px;text-transform:uppercase}
+  .gmCallersHead strong{color:#f4f1ea;font-size:10px}
+  .gmCallerList{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .gmCaller{border:1px solid rgba(104,200,255,.55);padding:6px 8px;color:#68c8ff;font-size:10px;letter-spacing:.4px}
+  .gmCaller.empty{border-style:dashed;border-color:rgba(244,241,234,.28);color:rgba(244,241,234,.45)}
   .gmTitle{font-size:13px;font-weight:900;letter-spacing:3px;margin-bottom:14px}
   .gmCard .big{font-size:24px;line-height:1;margin-bottom:8px}
   .gmCard .muted{color:rgba(244,241,234,.5);font-size:10px;line-height:1.5}
@@ -65,8 +72,11 @@
   .gmAction{padding:6px 10px;font-size:10px;letter-spacing:2px;min-width:58px}
   .gmAction:disabled{cursor:wait;opacity:.55}
   .assetPanel{height:100%}
+  .panelControls{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
   .assetPicker{background:#0a0a0a;color:#f4f1ea;border:1px solid rgba(244,241,234,.5);font:inherit;font-size:10px;letter-spacing:1.5px;padding:7px 9px;text-transform:uppercase;max-width:55%;cursor:pointer}
   .assetPicker:focus{outline:1px solid #f4f1ea;outline-offset:2px}
+  .copyPngAction{padding:7px 9px;font-size:9px;letter-spacing:1.2px;white-space:nowrap}
+  .copyPngAction:disabled{cursor:wait;opacity:.55}
   .influencePicker{background:#0a0a0a;color:#f4f1ea;border:1px solid rgba(244,241,234,.5);font:inherit;font-size:10px;letter-spacing:1.5px;padding:8px 10px;text-transform:uppercase;width:100%;cursor:pointer;margin-bottom:14px}
   .influencePicker:focus{outline:1px solid #f4f1ea;outline-offset:2px}
   .asset{min-width:0}
@@ -98,13 +108,13 @@
   <main class='layout'>
     <section class='overview'>
       <section class='panel assetPanel'>
-        <div class='panelHead'><strong>Live Corpus</strong><select class='assetPicker' id='assetSelect' aria-label='Choose corpus asset'>
+        <div class='panelHead'><strong>Live Corpus</strong><div class='panelControls'><button class='copyPngAction' id='copyPng' type='button'>COPY PNG</button><select class='assetPicker' id='assetSelect' aria-label='Choose corpus asset'>
           <option value='le'>LIQUID EDITION</option>
           <option value='1'>OLIGARCH #1 · SIZE</option>
           <option value='2'>OLIGARCH #2 · COHESION</option>
           <option value='3'>OLIGARCH #3 · STRUCTURE</option>
           <option value='4'>OLIGARCH #4 · ENERGY</option>
-        </select></div>
+        </select></div></div>
         <div class='panelBody'>
           <article class='asset loading' id='asset-view'>
             <div class='assetHead'><strong id='assetLabel'>LIQUID EDITION</strong><span id='assetName'>tokenURI()</span></div>
@@ -151,10 +161,13 @@
           </div>
           <div class='gmCard'>
             <div class='gmTitle'>RENDERER</div>
-            <div class='muted'>influence decay<br><strong id='rendererDecay'>—</strong></div>
-            <div class='muted' style='margin-top:12px'>episode<br><strong id='gmEpisode'>—</strong></div>
+            <div class='muted'>episode<br><strong id='gmEpisode'>—</strong></div>
             <div class='muted' style='margin-top:12px'>GM visual scale<br><strong id='gmVisual'>—</strong></div>
           </div>
+        </div>
+        <div class='gmCallers' id='gmCallersPanel' hidden>
+          <div class='gmCallersHead'><strong>GM summoned by</strong><span id='gmCallerCount'>—</span></div>
+          <div class='gmCallerList' id='gmCallerList'></div>
         </div>
       </article>
     </section>
@@ -183,6 +196,7 @@
     'function tokenURI(uint256 id) view returns (string)',
     'function lensIds(uint256) view returns (uint256)',
     'function gm()',
+    'event GMJoined(address indexed caller,uint256 balance,uint256 totalBalance,uint256 episode)',
     'function influence(uint256 tokenId)',
     'function lensImpulse(uint256) view returns (uint40 start, uint256 balance, uint8 channel)',
     'function gmStart() view returns (uint40)',
@@ -209,9 +223,12 @@
   const renderer=new ethers.Contract(RENDERER,RENDERER_ABI,provider);
   const $=id=>document.getElementById(id);
   const LABELS=['SIZE','COHESION','STRUCTURE','ENERGY'];
+  const GM_EVENT_LOOKBACK_BLOCKS=120, GM_EVENT_CHUNK_BLOCKS=10;
   let live={now:0,decimals:18,decay:3600,gmWindow:900};
   let influenceData=[], selectedInfluence=1;
   let conditionsAcknowledged=false, pendingAction=null;
+  let gmEventCache={episode:'',toBlock:-1,events:[]};
+  let snapshotPending=null;
   let walletProvider=null, walletSigner=null;
 
   function setText(id,value){$(id).textContent=value;}
@@ -251,16 +268,48 @@
     if(url.startsWith('data:text/html;base64,'))return atob(url.slice('data:text/html;base64,'.length));
     const comma=url.indexOf(',');return decodeURIComponent(url.slice(comma+1));
   }
+  function prepareAssetHtml(html){
+    html=html.replace(/getContext\(\s*['"]webgl['"]\s*,\s*\{\s*antialias\s*:\s*false\s*,\s*alpha\s*:\s*false\s*\}\s*\)/,"getContext('webgl',{antialias:false,alpha:false,preserveDrawingBuffer:true})");
+    const hook="<scr"+"ipt>(function(){function capture(){try{var c=document.getElementById('glcanvas')||document.querySelector('canvas'),d=c?c.toDataURL('image/png'):'';parent.postMessage({type:'corpusSnapshot',data:d},'*')}catch(e){parent.postMessage({type:'corpusSnapshotError',message:e.message},'*')}}window.addEventListener('message',function(e){if(e.data&&e.data.type==='captureCorpus')capture()});})();</scr"+"ipt>";
+    return /<\/body>/i.test(html)?html.replace(/<\/body>/i,hook+'</body>'):html+hook;
+  }
   function assetState(state,message){
     const el=$('asset-view');el.classList.remove('loading','error');if(state)el.classList.add(state);setText('assetMeta',message||'');
   }
   function setMeter(id,ratio){$(id).style.width=(Math.max(0,Math.min(1,ratio))*100).toFixed(1)+'%';}
+  function requestSnapshot(){
+    const frame=$('assetFrame');
+    if(!frame.srcdoc)throw new Error('No asset is loaded yet.');
+    return new Promise((resolve,reject)=>{
+      const timeout=setTimeout(()=>{snapshotPending=null;reject(new Error('The asset did not respond with a snapshot.'));},4000);
+      snapshotPending={resolve,reject,timeout};
+      frame.contentWindow.postMessage({type:'captureCorpus'},'*');
+    });
+  }
+  function downloadSnapshot(data){
+    const link=document.createElement('a');link.href=data;link.download='corpus-snapshot.png';document.body.appendChild(link);link.click();link.remove();
+  }
+  async function copyPng(){
+    const button=$('copyPng');button.disabled=true;button.textContent='CAPTURING…';
+    try{
+      const data=await requestSnapshot();
+      if(!navigator.clipboard||!window.ClipboardItem)throw new Error('Clipboard image access is unavailable.');
+      const blob=await (await fetch(data)).blob();
+      await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+      setText('status','PNG copied to clipboard.');$('status').className='status';
+    }catch(error){
+      console.error('PNG copy failed',error);
+      try{
+        const data=await requestSnapshot();downloadSnapshot(data);setText('status','Clipboard unavailable; PNG downloaded instead.');$('status').className='status';
+      }catch(fallbackError){setText('status','PNG capture failed: '+(fallbackError.message||error.message||String(error)));$('status').classList.add('err');}
+    }finally{button.disabled=false;button.textContent='COPY PNG';}
+  }
 
   async function loadAsset(selection){
     const el=$('asset-view');el.classList.remove('error');el.classList.add('loading');setText('assetMeta','');
     if(selection==='le'){
     const metadata=parseDataUriJson(await renderer['tokenURI()']());
-      $('assetFrame').srcdoc=htmlFromAnimationUrl(metadata.animation_url);
+      $('assetFrame').srcdoc=prepareAssetHtml(htmlFromAnimationUrl(metadata.animation_url));
       setText('assetLabel','LIQUID EDITION');setText('assetName',metadata.name||'tokenURI()');assetState('', 'Loaded from tokenURI()');
       return;
     }
@@ -268,7 +317,7 @@
     const lensId=await renderer.lensIds(slot-1);
     const tokenUriLens=renderer.getFunction('tokenURI(uint256)');
     const metadata=parseDataUriJson(await tokenUriLens(lensId));
-    $('assetFrame').srcdoc=htmlFromAnimationUrl(metadata.animation_url);
+    $('assetFrame').srcdoc=prepareAssetHtml(htmlFromAnimationUrl(metadata.animation_url));
     setText('assetLabel','OLIGARCH #'+lensId.toString()+' · '+LABELS[slot-1]);
     setText('assetName',metadata.name||'tokenURI(id)');assetState('', 'OLIGARCH token ID '+lensId.toString()+' · loaded');
   }
@@ -305,6 +354,41 @@
     requestAnimationFrame(()=>notice.classList.add('is-visible'));
     $('noticeContinue').focus();
   }
+  async function queryGMEvents(episode,latestBlock){
+    const episodeKey=episode.toString(),fromBlock=Math.max(0,latestBlock-GM_EVENT_LOOKBACK_BLOCKS);
+    const sameEpisode=gmEventCache.episode===episodeKey;
+    let events=sameEpisode?gmEventCache.events.filter(event=>event.blockNumber>=fromBlock):[];
+    let scanFrom=sameEpisode?Math.max(fromBlock,gmEventCache.toBlock+1):fromBlock;
+    for(let start=scanFrom;start<=latestBlock;start+=GM_EVENT_CHUNK_BLOCKS){
+      const end=Math.min(start+GM_EVENT_CHUNK_BLOCKS-1,latestBlock);
+      events.push(...await renderer.queryFilter(renderer.filters.GMJoined(),start,end));
+    }
+    gmEventCache={episode:episodeKey,toBlock:latestBlock,events:events.filter(event=>event.blockNumber>=fromBlock)};
+    return gmEventCache.events;
+  }
+  async function loadGMCallers(episode,active,latestBlock){
+    const panel=$('gmCallersPanel'),list=$('gmCallerList');
+    if(!active){panel.hidden=true;list.replaceChildren();setText('gmCallerCount','—');return;}
+    panel.hidden=false;setText('gmCallerCount','scanning…');list.replaceChildren();
+    try{
+      const events=await queryGMEvents(episode,latestBlock);
+      const callers=new Map();
+      events.forEach(event=>{
+        const eventEpisode=event.args?.episode??event.args?.[3];
+        const caller=event.args?.caller??event.args?.[0];
+        if(eventEpisode!=null&&caller&&eventEpisode.toString()===episode.toString())callers.set(caller.toLowerCase(),caller);
+      });
+      if(!callers.size){
+        const empty=document.createElement('span');empty.className='gmCaller empty';empty.textContent='No GM events found in recent blocks';list.append(empty);
+      }else{
+        callers.forEach(address=>{const item=document.createElement('span');item.className='gmCaller';item.textContent=shortAddress(address);item.title=address;list.append(item);});
+      }
+      setText('gmCallerCount',callers.size+' caller'+(callers.size===1?'':'s'));
+    }catch(error){
+      console.error('GM event scan failed',error);
+      const empty=document.createElement('span');empty.className='gmCaller empty';empty.textContent='Event scan unavailable';list.replaceChildren(empty);setText('gmCallerCount','unavailable');
+    }
+  }
   async function loadStats(){
     const [block,liquidAddress,holder,lensCollection,decay,gmWindow,gmStart,gmBalance,gmEpisode]=await Promise.all([
       provider.getBlock('latest'),renderer.liquid(),renderer.corpusHolder(),renderer.lensCollection(),renderer.decayWindow(),renderer.GM_WINDOW(),renderer.gmStart(),renderer.gmBalance(),renderer.gmEpisode()
@@ -323,7 +407,7 @@
     setText('tick',String(tick));setText('tickRange','LP range '+lower+' → '+upper);setMeter('tickMeter',tickRatio);
     setLiquidity('liquidity',liquidity);setNormalizedSqrtPrice('sqrtPrice',sqrtPriceX96);setText('rarePerToken',fmtRatio(rarePerToken));setText('tokenPerRare',fmtRatio(tokenPerRare));
     setText('currentSupply',fmtUnits(currentSupply,live.decimals)+' LE');setText('held',fmtUnits(held,live.decimals)+' LE');
-    setText('decayLabel',duration(live.decay));setText('rendererDecay',duration(live.decay));
+    setText('decayLabel',duration(live.decay));
     setText('rendererAddress',shortAddress(RENDERER));setText('liquidAddress',shortAddress(liquidAddress));setText('holderAddress',shortAddress(holder));setText('lensAddress',shortAddress(lensCollection));
     setText('maxSupply',fmtUnits(maxSupply,live.decimals)+' LE');setText('decimals',String(live.decimals));
     const lens=new ethers.Contract(lensCollection,LENS_ABI,provider);
@@ -337,9 +421,12 @@
     const gmActive=gmBalanceBig>0n&&gmStartN>0&&live.now<gmExpiry;
     const gmCard=$('gmCard');gmCard.classList.toggle('active',gmActive);setText('gmState',gmActive?'ACTIVE':'INACTIVE');setText('gmBalance',fmtUnits(gmBalanceBig,live.decimals)+' LE');
     setText('gmRemaining',gmActive?'expires in '+duration(gmExpiry-live.now):gmStartN?'expired at '+when(gmExpiry):'No active episode');setMeter('gmMeter',gmActive?(gmExpiry-live.now)/live.gmWindow:0);
-    setText('gmWindowLabel',duration(live.gmWindow));setText('gmEpisode',fmtBig(gmEpisode));
-    const gmVisual=gmActive?Math.max(0,Math.min(10,(Number(ethers.formatUnits(gmBalanceBig,live.decimals))<=2000?0:Number(ethers.formatUnits(gmBalanceBig,live.decimals))>=10000?1:(Number(ethers.formatUnits(gmBalanceBig,live.decimals))-2000)*2/8000)*(1-(live.now-gmStartN)/live.gmWindow)*10)):0;
+    setText('gmWindowLabel',duration(live.gmWindow));setText('gmEpisode','#'+fmtBig(gmEpisode));
+    const gmAmount=Number(ethers.formatUnits(gmBalanceBig,live.decimals));
+    const gmLevel=gmAmount<1000?0:gmAmount>=10000?1:Math.max(0,Math.min(1,0.5+(gmAmount-1000)*0.5*2/(10000-1000)));
+    const gmVisual=gmActive?gmLevel*(1-(live.now-gmStartN)/live.gmWindow)*10:0;
     setText('gmVisual',gmVisual.toFixed(2)+' / 10');
+    await loadGMCallers(gmEpisode,gmActive,block.number);
     return {block,gmActive};
   }
   async function getMainnetSigner(){
@@ -396,7 +483,14 @@
       setText('status','Live contract state and selected asset loaded.');
     }catch(error){console.error(error);setText('status','Dashboard error: '+(error.shortMessage||error.reason||error.message||String(error)));$('status').classList.add('err');}
   }
+  window.addEventListener('message',event=>{
+    if(event.source!==$('assetFrame').contentWindow||!snapshotPending)return;
+    const data=event.data||{},pending=snapshotPending;snapshotPending=null;clearTimeout(pending.timeout);
+    if(data.type==='corpusSnapshot'&&data.data)pending.resolve(data.data);
+    else pending.reject(new Error(data.message||'The asset could not create a PNG.'));
+  });
   $('assetSelect').addEventListener('change',()=>loadAsset($('assetSelect').value).catch(error=>{console.error(error);assetState('error',error.shortMessage||error.message||String(error));setText('status','Asset error: '+(error.shortMessage||error.message||String(error)));$('status').classList.add('err');}));
+  $('copyPng').addEventListener('click',copyPng);
   $('influenceSelect').addEventListener('change',event=>{selectedInfluence=Number(event.target.value);renderSelectedInfluence();});
   $('noticeContinue').addEventListener('click',()=>{
     conditionsAcknowledged=true;
