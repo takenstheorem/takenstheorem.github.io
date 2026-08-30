@@ -13,6 +13,17 @@
   .head{display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid rgba(244,241,234,.3);padding-bottom:15px;margin-bottom:18px}
   h1{margin:0;font-size:20px;letter-spacing:5px;font-weight:900}
   .headRight{display:flex;align-items:center;gap:14px;color:rgba(244,241,234,.58);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;text-align:right}
+  .chainBar{display:flex;align-items:center;justify-content:space-between;gap:18px;max-width:1540px;margin:0 auto 18px;padding:10px 13px;border:1px solid rgba(244,241,234,.22);background:#0a0a0a;color:rgba(244,241,234,.62);font-size:10px;letter-spacing:1px}
+  .chainItem,.walletItem{display:flex;align-items:center;gap:9px;min-width:0}
+  .chainLabel{color:rgba(244,241,234,.42);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+  .chainBar a{color:#68c8ff;text-decoration:none;overflow-wrap:anywhere}
+  .chainBar a:hover{text-decoration:underline}
+  .walletItem{justify-content:flex-end;text-align:right}
+  .walletDetails{display:flex;align-items:center;gap:7px;min-width:0;overflow-wrap:anywhere}
+  .walletDetails[hidden],.connectWallet[hidden]{display:none}
+  .walletDetails .walletBalance{color:#f4f1ea}
+  .walletDetails .walletToken{font-weight:900;letter-spacing:1.5px;white-space:nowrap}
+  .connectWallet{padding:6px 9px;font-size:9px}
   .status{min-height:17px;margin:0 auto 18px;max-width:1540px;color:rgba(244,241,234,.62);letter-spacing:1px}
   .status.err{color:#ff6a63}
   .actionNotice{max-width:1540px;margin:0 auto 18px;border:1px solid #d7a900;background:#d7a900;padding:11px 13px;color:#050505;display:flex;align-items:center;justify-content:space-between;gap:18px;line-height:1.5;opacity:0;transform:translateY(-5px);transition:opacity .24s ease,transform .24s ease}
@@ -91,7 +102,7 @@
   .foot{max-width:1540px;margin:22px auto 0;color:rgba(244,241,234,.35);font-size:9px;line-height:1.6;letter-spacing:.5px}
   code{color:rgba(244,241,234,.65);font:inherit}
   @media (max-width:1120px){.overview{grid-template-columns:1fr 1fr}}
-  @media (max-width:680px){body{padding:13px}.head{align-items:flex-start;flex-direction:column}.headRight{width:100%;justify-content:space-between;text-align:left}.actionNotice{align-items:flex-start;flex-direction:column}.noticeActions{width:100%;justify-content:flex-end}.overview{display:block}.overview .panel{margin-bottom:18px}.overview .panel:last-child{margin-bottom:0}.pulseGrid,.gmWrap{grid-template-columns:1fr}.panelBody{padding:10px}.stats{grid-template-columns:1fr 1fr}}
+  @media (max-width:680px){body{padding:13px}.head{align-items:flex-start;flex-direction:column}.headRight{width:100%;justify-content:space-between;text-align:left}.chainBar{align-items:flex-start;flex-direction:column}.walletItem{width:100%;justify-content:space-between;text-align:left}.actionNotice{align-items:flex-start;flex-direction:column}.noticeActions{width:100%;justify-content:flex-end}.overview{display:block}.overview .panel{margin-bottom:18px}.overview .panel:last-child{margin-bottom:0}.pulseGrid,.gmWrap{grid-template-columns:1fr}.panelBody{padding:10px}.stats{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -99,6 +110,10 @@
       <h1><a href="./" style="text-decoration:none;color:white;">CORPUS</a> // MAINNET DASHBOARD</h1>
     <div class='headRight'><span id='block'>Awaiting renderer</span><button id='reload'>Refresh all</button></div>
   </header>
+  <div class='chainBar'>
+    <div class='chainItem'><span class='chainLabel'>Renderer</span><a id='rendererTopAddress' href='https://etherscan.io/address/0x150766E67e10B543c2Aa52625aE6Da0AaC5DD334' target='_blank' rel='noopener'>0x150766E67e10B543c2Aa52625aE6Da0AaC5DD334</a></div>
+    <div class='walletItem'><span class='chainLabel'>Wallet</span><button class='connectWallet' id='connectWallet' type='button'>Connect</button><span class='walletDetails' id='walletDetails' hidden><a id='walletAddress' target='_blank' rel='noopener'></a><span>·</span><span class='walletBalance' id='walletBalance'>— CORPUS</span><a class='walletToken' id='walletToken' target='_blank' rel='noopener'>CORPUS</a></span></div>
+  </div>
   <div class='status' id='status'>Ready.</div>
   <div class='actionNotice' id='actionNotice' hidden>
     <div><strong>Before you continue</strong><span id='actionNoticeText'>This interaction assumes you have read the conditions on the <a href='about.html' target='_blank' rel='noopener'>ABOUT</a> page.</span></div>
@@ -229,7 +244,7 @@
   let conditionsAcknowledged=false, pendingAction=null;
   let gmEventCache={episode:'',toBlock:-1,events:[]};
   let snapshotPending=null;
-  let walletProvider=null, walletSigner=null;
+  let walletProvider=null, walletSigner=null, liquidTokenAddress='';
 
   function setText(id,value){$(id).textContent=value;}
   function fmtBig(value){
@@ -398,6 +413,7 @@
       liquid.name(),liquid.decimals(),liquid.maxTotalSupply(),liquid.balanceOf(holder),liquid.lpTickLower(),liquid.lpTickUpper(),liquid.getMarketState()
     ]);
     live={now:Number(block.timestamp),decimals:Number(decimals),decay:Number(decay),gmWindow:Number(gmWindow)};
+    liquidTokenAddress=liquidAddress;
     const [rarePerToken,tokenPerRare,sqrtPriceX96,currentTick,liquidity,currentSupply]=market;
     const tick=Number(currentTick), lower=Number(lo), upper=Number(hi);
     const tickRatio=upper>lower?Math.max(0,Math.min(1,(tick-lower)/(upper-lower))):0;
@@ -427,6 +443,7 @@
     const gmVisual=gmActive?gmLevel*(1-(live.now-gmStartN)/live.gmWindow)*10:0;
     setText('gmVisual',gmVisual.toFixed(2)+' / 10');
     await loadGMCallers(gmEpisode,gmActive,block.number);
+    await refreshWallet();
     return {block,gmActive};
   }
   async function getMainnetSigner(){
@@ -437,6 +454,42 @@
     if(network.chainId!==1n)throw new Error('Switch wallet network to Ethereum mainnet before sending a transaction.');
     walletSigner=await walletProvider.getSigner();
     return walletSigner;
+  }
+
+  function renderWalletDisconnected(){
+    $('connectWallet').hidden=false;
+    $('walletDetails').hidden=true;
+  }
+  function renderWallet(address,balance,decimals){
+    $('connectWallet').hidden=true;
+    $('walletDetails').hidden=false;
+    const walletLink=$('walletAddress');walletLink.textContent=shortAddress(address);walletLink.title=address;walletLink.href='https://etherscan.io/address/'+address;
+    setText('walletBalance',balance==null?'— CORPUS':fmtUnits(balance,decimals)+' CORPUS');
+    $('walletToken').href='https://etherscan.io/token/'+liquidTokenAddress;
+  }
+  async function refreshWallet(){
+    if(!window.ethereum){renderWalletDisconnected();return;}
+    try{
+      const accounts=await window.ethereum.request({method:'eth_accounts'}),address=accounts?.[0];
+      if(!address){renderWalletDisconnected();return;}
+      if(!liquidTokenAddress){renderWallet(address,null,live.decimals);return;}
+      const token=new ethers.Contract(liquidTokenAddress,LIQUID_ABI,provider),balance=await token.balanceOf(address);
+      renderWallet(address,balance,live.decimals);
+    }catch(error){
+      console.error('Wallet balance lookup failed',error);
+      renderWalletDisconnected();
+    }
+  }
+  async function connectWallet(){
+    const button=$('connectWallet');button.disabled=true;button.textContent='Connecting…';
+    try{
+      await getMainnetSigner();
+      await refreshWallet();
+      setText('status','Wallet connected on Ethereum mainnet.');$('status').className='status';
+    }catch(error){
+      console.error('Wallet connection failed',error);
+      setText('status','Wallet connection failed: '+(error.shortMessage||error.reason||error.message||String(error)));$('status').className='status err';
+    }finally{button.disabled=false;button.textContent='Connect';}
   }
 
   async function sendInfluence(slot,tokenId,button){
@@ -501,7 +554,12 @@
     setTimeout(()=>{notice.hidden=true;notice.classList.remove('is-closing');if(action)action();},240);
   });
   $('gmAction').addEventListener('click',()=>requestContractAction('gm',sendGM));
+  $('connectWallet').addEventListener('click',connectWallet);
   $('reload').addEventListener('click',refresh);
+  if(window.ethereum&&typeof window.ethereum.on==='function'){
+    window.ethereum.on('accountsChanged',()=>refreshWallet());
+    window.ethereum.on('chainChanged',()=>{walletProvider=null;walletSigner=null;refreshWallet();});
+  }
   refresh();
   setInterval(()=>loadStats().catch(error=>{console.error(error);setText('status','Stats refresh error: '+(error.shortMessage||error.message||String(error)));$('status').classList.add('err');}),15000);
   </script>
