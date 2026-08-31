@@ -209,11 +209,10 @@
   const RENDERER_ABI=[
     'function tokenURI() view returns (string)',
     'function tokenURI(uint256 id) view returns (string)',
-    'function lensIds(uint256) view returns (uint256)',
     'function gm()',
-    'event GMJoined(address indexed caller,uint256 balance,uint256 totalBalance,uint256 episode)',
+    'event GMJoined(address indexed caller,uint256 balance,uint256 totalBalance,uint256 episode,uint256 walletCount)',
     'function influence(uint256 tokenId)',
-    'function lensImpulse(uint256) view returns (uint40 start, uint256 balance, uint8 channel)',
+    'function lensImpulse(uint256) view returns (uint40 start, uint256 balance, uint256 channel)',
     'function gmStart() view returns (uint40)',
     'function gmBalance() view returns (uint256)',
     'function gmEpisode() view returns (uint256)',
@@ -329,7 +328,7 @@
       return;
     }
     const slot=Number(selection);
-    const lensId=await renderer.lensIds(slot-1);
+    const lensId=slot;
     const tokenUriLens=renderer.getFunction('tokenURI(uint256)');
     const metadata=parseDataUriJson(await tokenUriLens(lensId));
     $('assetFrame').srcdoc=prepareAssetHtml(htmlFromAnimationUrl(metadata.animation_url));
@@ -428,7 +427,7 @@
     setText('maxSupply',fmtUnits(maxSupply,live.decimals)+' LE');setText('decimals',String(live.decimals));
     const lens=new ethers.Contract(lensCollection,LENS_ABI,provider);
     const influenceResults=await Promise.all([0,1,2,3].map(async slot=>{
-      const tokenId=await renderer.lensIds(slot);
+      const tokenId=slot+1;
       const [owner,impulse]=await Promise.all([lens.ownerOf(tokenId),renderer.lensImpulse(tokenId)]);
       return {...influenceResultParts(impulse),tokenId,owner};
     }));
