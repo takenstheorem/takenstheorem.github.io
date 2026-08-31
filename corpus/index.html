@@ -83,7 +83,7 @@
 
 <script src='https://cdn.jsdelivr.net/npm/ethers@6.15.0/dist/ethers.umd.min.js'></script>
 <script>
-const RENDERER='0x150766E67e10B543c2Aa52625aE6Da0AaC5DD334';
+const RENDERER='0xDCcaeFAe6b496C32a8F38244a32FE5362D8dc061';
 const RPC_URL='https://eth-mainnet.g.alchemy.com/v2/tP22aP3IvV7K9nbbepaFV6ayJ-UmXz1-';
 const provider=new ethers.JsonRpcProvider(RPC_URL);
 const renderer=new ethers.Contract(RENDERER,['function tokenURI() view returns (string)'],provider);
