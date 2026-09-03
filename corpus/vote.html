@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CORPUS — WE WILL VOTE</title>
+<style>
+  :root{
+    --bg:#000;
+    --ink:#c9d6d3;
+    --dim:#3a4744;
+    --mid:#69807b;
+    --cyan:#5ff2d8;
+    --line:#e8f2ef;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    display:flex;flex-direction:column;min-height:100%;
+    overflow-x:hidden;
+    background-image:radial-gradient(120% 80% at 50% 40%,#050807 0%,#000 70%);
+  }
+  /* faint dithered field */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
+    background-image:radial-gradient(var(--mid) .5px,transparent .6px);
+    background-size:6px 6px;mix-blend-mode:screen;
+  }
+
+  header{
+    padding: 28px 22px 270px;
+    text-align:center;
+    letter-spacing:.35em;
+  }
+  header .kick{color:var(--dim);font-size:11px;letter-spacing:.5em}
+  header h1{
+    margin:.35em 0 0;font-size:clamp(20px,4vw,34px);font-weight:600;
+    letter-spacing:.5em;color:var(--line);
+  }
+  header .sub{color:var(--mid);font-size:12px;letter-spacing:.25em;margin-top:.6em}
+
+  .artifact{
+    position:fixed;
+    top:196px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+
+    margin:0;
+    width:clamp(160px,22vh,240px);
+    height:clamp(160px,22vh,240px);
+
+    border:0;
+    box-shadow:none;
+    background:#000;
+    animation:none;
+  }
+  .artifact iframe{
+    position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;
+  }
+  .artifact .cap{
+    position:absolute;left:0;right:0;bottom:-18px;text-align:center;
+    color:var(--dim);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+  }
+  .artifact .cap b{color:var(--mid);font-weight:400}
+
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
+
+  .stage{
+    width:min(1080px,96vw);position:relative;
+  }
+
+  /* the beam grid: left pole | center | right pole */
+  .beam{
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    gap:0;position:relative;
+    min-height:120px;              /* keeps beam height now that art is gone */
+  }
+
+  /* the stark horizontal line, tilted (heavier/lower on the left) */
+  .axis{
+    position:absolute;left:0;right:0;top:50%;height:0;
+    border-top:1px solid var(--line);
+    transform-origin:center;
+    transform:rotate(-1.4deg);
+    box-shadow:0 0 8px rgba(232,242,239,.25);
+    animation:sway 7s ease-in-out infinite;
+  }
+  .axis::before{ /* fulcrum */
+    content:"▲";position:absolute;left:50%;top:-13px;transform:translateX(-50%);
+    color:var(--dim);font-size:12px;
+  }
+
+  .center{
+    padding:0 18px;text-align:center;color:var(--dim);
+    font-size:11px;letter-spacing:.2em;position:relative;z-index:2;
+    background:linear-gradient(#000,#000);
+  }
+  .center .vs{color:var(--cyan);font-size:13px;letter-spacing:.4em}
+
+  /* small pole markers under the beam ends (text only, no ASCII art) */
+  .arche{
+    text-align:right;color:var(--mid);font-size:11px;letter-spacing:.2em;
+    margin-top:14px;
+  }
+
+  /* labels under each pole */
+  .labels{
+    display:grid;grid-template-columns:1fr 1fr;margin-top:26px;gap:8px;
+    font-size:12px;letter-spacing:.15em;
+  }
+  .labels .l{text-align:left}
+  .labels .r{text-align:right}
+  .tag{color:var(--cyan)}
+  .desc{color:var(--dim);font-size:11px;letter-spacing:.08em;margin-top:.4em;line-height:1.5}
+  .heavy{color:var(--line)}
+  .lens{color:var(--ink)}
+  .lens b{color:var(--cyan);font-weight:600}
+
+  footer{
+    padding:18px 22px 26px;text-align:center;color:var(--dim);
+    font-size:10px;letter-spacing:.35em;
+  }
+  footer a{color:var(--mid);text-decoration:none;border-bottom:1px dotted var(--dim)}
+
+  #state-mark{color:var(--dim);font-size:9px;letter-spacing:.3em;margin-top:8px}
+
+  @keyframes sway{
+    0%,100%{transform:rotate(-1.4deg)}
+    50%{transform:rotate(-2.1deg)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .axis{animation:none}
+  }
+  @media (max-width:620px){
+    .center{padding:0 8px}
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="kick">TAKENS THEOREM</div>
+    <h1>C O R P U S</h1>
+    <div class="sub">a liquid edition · market dynamics as form</div>
+  </header>
+
+  <div class="artifact">
+    <iframe id="piece-frame" title="Live CORPUS" sandbox="allow-scripts" allowfullscreen></iframe>
+    <div class="cap"><b>live on-chain</b> · <span id="state-inline">querying mainnet…</span></div>
+  </div>
+
+  <main>
+    <div class="stage">
+
+      <div class="beam">
+        <!-- LEFT pole (ASCII art removed) -->
+        <div></div>
+
+        <!-- CENTER: fulcrum / vs -->
+        <div class="center">
+          <div class="vs">⟷</div>
+          <div>COUNTERPOISE</div>
+        </div>
+
+        <!-- RIGHT pole (ASCII art removed; archetype labels preserved) -->
+        <div class="arche">SIZE · COHESION · STRUCTURE · ENERGY</div>
+
+        <!-- the stark tilted horizontal line -->
+        <div class="axis"></div>
+      </div>
+
+      <div class="labels">
+        <div class="l">
+          <div class="tag">gm()  · the swarm</div>
+          <div class="desc">
+            <span class="heavy">communal · distributed · numerous</span><br>
+            many induce change with ease.<br>
+          </div>
+        </div>
+        <div class="r">
+          <div class="tag">influence() · the LENS</div>
+          <div class="desc">
+            <span class="lens"><b>four</b> hold the archetypes</span><br>
+            SIZE · COHESION · STRUCTURE · ENERGY<br>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    ░▒▓ &nbsp; C O R P U S &nbsp; ▓▒░ &nbsp;&nbsp;
+    <a href="https://takenstheorem.medium.com/swarming-a-corpus-or-how-i-learned-to-stop-worrying-and-love-the-bots-ff67244674f3" target="_blank" rel="noopener">read the essay</a>
+    <div id="state-mark">STATE // QUERYING MAINNET</div>
+  </footer>
+
+  <!-- summon the live artifact from chain -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.15.0/dist/ethers.umd.min.js"></script>
+  <script>
+    const RENDERER='0x900736A86e55BA38981394Fa69EDc61AA465c679';
+    const RPC_URL='https://eth-mainnet.g.alchemy.com/v2/tP22aP3IvV7K9nbbepaFV6ayJ-UmXz1-';
+    const provider=new ethers.JsonRpcProvider(RPC_URL);
+    const renderer=new ethers.Contract(RENDERER,['function tokenURI() view returns (string)'],provider);
+
+    function parseDataUriJson(uri){
+      if(uri.startsWith('data:application/json;base64,'))return JSON.parse(atob(uri.slice('data:application/json;base64,'.length)));
+      const comma=uri.indexOf(',');
+      return JSON.parse(decodeURIComponent(uri.slice(comma+1)));
+    }
+    function htmlFromAnimationUrl(url){
+      if(url.startsWith('data:text/html;base64,'))return atob(url.slice('data:text/html;base64,'.length));
+      const comma=url.indexOf(',');
+      return decodeURIComponent(url.slice(comma+1));
+    }
+
+    async function loadLivePiece(){
+      const frame=document.getElementById('piece-frame');
+      const mark=document.getElementById('state-mark');
+      const inline=document.getElementById('state-inline');
+      try{
+        mark.textContent='STATE // QUERYING MAINNET';
+        const uri=await renderer['tokenURI()']();
+        const metadata=parseDataUriJson(uri);
+        frame.srcdoc=htmlFromAnimationUrl(metadata.animation_url);
+        mark.textContent='STATE // LIVE ON-CHAIN';
+        inline.textContent='live on-chain';
+      }catch(error){
+        console.error('Live corpus load failed',error);
+        mark.textContent='STATE // RPC UNAVAILABLE';
+        inline.textContent='rpc unavailable';
+      }
+    }
+    loadLivePiece();
+  </script>
+
+</body>
+</html>
