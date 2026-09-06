@@ -10,16 +10,67 @@
   #piece-frame{z-index:0;border:0;background:#000}
   #overlay{pointer-events:none;z-index:10;border:20px solid rgba(255,0,0,.04);background:radial-gradient(circle,transparent 50%,rgba(0,0,0,.85) 100%)}
 
-  /* Large Stark Title - Top Left (Monochrome, No Glow) */
-  #title-card{
-    position:absolute;
-    top:28px;
-    left:28px;
-    z-index:30;
-    user-select:none;
-    background:#000;
-    border:1px solid #fff;
-    padding:14px 22px;
+  #info-container {
+    position: fixed;
+    top: 28px;
+    left: 28px;
+    z-index: 30;
+  }
+
+  #info-trigger {
+    width: 26px;
+    height: 26px;
+    background: #000;
+    border: 1px solid rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+  }
+
+  #info-trigger:hover,
+  #info-container.active #info-trigger {
+    color: #000;
+    background: #fff;
+    border-color: #fff;
+  }
+
+  /* Hidden Dropdown Title Card */
+  #title-card {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    user-select: none;
+    background: #000;
+    border: 1px solid #fff;
+    padding: 14px 22px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+
+  #title-card::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+  }
+
+  /* Reveal on Hover or Click (.active) */
+  #info-container:hover #title-card,
+  #info-container.active #title-card {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
   .title-text{
@@ -72,11 +123,15 @@
   <div id="overlay"></div>
   <div id="state-mark">STATE // QUERYING MAINNET</div>
 
-  <!-- Top Left Large Title & Byline -->
-  <div id="title-card">
-    <span class="title-text">CORPUS</span>
-    <span class="byline">BY <a href="https://takenstheorem.github.io" style="color:rgba(255,255,255,.6);text-decoration:none;">TAKENS THEOREM</a></span>
-    <span class="nav-links"><a href="dashboard.html">DASHBOARD</a> <a href="about.html">ABOUT</a> <a href="https://superrare.com/liquid-editions/1/0x89Ab9b5fCa71a8BE8E00480c7d042a5444ED1D33">LE</a></span>
+  <div id="info-container">
+    <div id="info-trigger">?</div>
+    <div id="title-card">
+      <span class="title-text">CORPUS</span>
+      <span class="byline">BY <a href="https://takenstheorem.github.io" style="color:rgba(255,255,255,.6);text-decoration:none;">TAKENS THEOREM</a></span>
+      <span class="nav-links"><a href="about.html">ABOUT</a></span>
+      <span class="nav-links"><a href="dashboard.html">DASHBOARD</a></span>
+      <span class="nav-links"><a href="https://superrare.com/liquid-editions/1/0x89Ab9b5fCa71a8BE8E00480c7d042a5444ED1D33">Liquid Edition</a></span>
+    </div>
   </div>
 
   <iframe id='piece-frame' title='Live CORPUS' sandbox='allow-scripts' allowfullscreen></iframe>
@@ -99,6 +154,20 @@ function htmlFromAnimationUrl(url){
   const comma=url.indexOf(',');
   return decodeURIComponent(url.slice(comma+1));
 }
+
+const infoContainer = document.getElementById('info-container');
+const infoTrigger = document.getElementById('info-trigger');
+
+infoTrigger.addEventListener('click', (e) => {
+  e.stopPropagation();
+  infoContainer.classList.toggle('active');
+});
+
+document.addEventListener('click', (e) => {
+  if (!infoContainer.contains(e.target)) {
+    infoContainer.classList.remove('active');
+  }
+});
 
 document.getElementById('title-card').onmousedown=e=>e.stopPropagation();
 
