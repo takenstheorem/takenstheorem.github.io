@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Takens Theorem Collectors 🙏</title>
+
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --panel: #161616;
+      --panel2: #1f1f1f;
+      --line: #333333;
+      --text: #eceae4;
+      --muted: #8e8b82;
+      --accent: #fff;
+      --danger: #ff8585;
+      --success: #baf09b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 20px 70px;
+      background: var(--bg);
+      color: var(--text);
+      font: 300 13.5px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    .header-bar {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .artist-logo {
+      width: 58px;
+      height: 58px;
+      min-width: 58px;
+      border-radius: 50%;
+      border: 1.5px solid var(--line);
+      background: #1e1e1e;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--line);
+    }
+
+    .artist-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .artist-logo svg {
+      width: 28px;
+      height: 28px;
+      fill: var(--muted);
+    }
+
+    .header-text h1 {
+      margin: 0 0 2px;
+      font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .header-text p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 4px;
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    p {
+      color: var(--muted);
+    }
+
+    .card {
+      margin-top: 16px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--panel);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(320px, 0.78fr) minmax(460px, 1.22fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 880px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .column {
+      min-height: 600px;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    input[type="search"] {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: #0f0f0f;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      transition: border-color 0.15s ease;
+    }
+
+    input[type="search"]::placeholder {
+      color: #666;
+    }
+
+    input[type="search"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: #141414;
+    }
+
+    button {
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 0;
+      cursor: pointer;
+      background: var(--accent);
+      color: #111a00;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      transition: opacity 0.15s ease;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button.secondary {
+      border: 1px solid var(--line);
+      background: var(--panel2);
+      color: var(--text);
+    }
+
+    button.secondary:hover {
+      border-color: var(--muted);
+      background: #272727;
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.45;
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 0;
+      background: #222222;
+      border: 1px solid #333333;
+      color: #f4eddf;
+      font-size: 0.82rem;
+      overflow-wrap: anywhere;
+    }
+
+    #status {
+      min-height: 22px;
+      margin-top: 14px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    #status.error {
+      color: var(--danger);
+    }
+
+    #status.success {
+      color: var(--success);
+    }
+
+    .summary {
+      margin-top: 14px;
+      padding: 12px;
+      border-left: 2px solid var(--accent);
+      border-radius: 0;
+      background: #15180f;
+      color: #cfe2b7;
+      font-size: 0.82rem;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .collector-list {
+      max-height: 640px;
+      margin-top: 10px;
+      overflow-y: auto;
+      border-top: 1px solid var(--line);
+    }
+
+    .collector {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      margin: 0;
+      padding: 10px 8px;
+      border: 0;
+      border-bottom: 1px solid #242424;
+      border-radius: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      font-weight: 400;
+      text-transform: none;
+    }
+
+    .collector:hover,
+    .collector.selected {
+      background: #232717;
+    }
+
+    .address-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .address {
+      overflow: hidden;
+      color: var(--accent);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.82rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .os-badge {
+      display: inline-block;
+      padding: 1px 4px;
+      font-size: 0.68rem;
+      border: 1px solid #444;
+      color: #bbb;
+      text-decoration: none;
+      border-radius: 0;
+    }
+
+    .os-badge:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .owner {
+      margin: 12px 0 16px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: #111111;
+      font-size: 0.86rem;
+    }
+
+    .owner a,
+    .token a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .owner a:hover,
+    .token a:hover {
+      text-decoration: underline;
+    }
+
+    .owner a {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.84rem;
+      overflow-wrap: anywhere;
+    }
+
+    .token-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .token {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: #131313;
+    }
+
+    .token h3 {
+      font-size: 0.9rem;
+      overflow-wrap: anywhere;
+    }
+
+    .token p {
+      margin: 2px 0 0;
+      font-size: 0.82rem;
+    }
+
+    .token-link {
+      align-self: start;
+      font-size: 0.76rem;
+      font-weight: 600;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .empty {
+      margin-top: 14px;
+      padding: 16px;
+      border: 1px dashed var(--line);
+      border-radius: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header-bar">
+    <a href="https://takenstheorem.github.io"><div class="artist-logo" title="Artist Logo">
+        <img src="deposits.png" />
+    </div></a>
+
+    <div class="header-text">
+      <h1>Takens Theorem Collectors 🙏</h1>
+      <p>Wallets sorted by qualifying artwork tokens held. 🗓️ Snapshot date: 9/5/2026.</p>
+    </div>
+  </header>
+
+  <section class="card" style="display:none;">
+    <button id="reloadButton" class="secondary">Reload JSON files</button>
+    <button id="copyCsvButton" class="secondary">Copy collector CSV</button>
+
+    <div id="status">Loading <code>collections.json</code> and <code>tokens.json</code>…</div>
+    <div id="summary" class="summary hidden"></div>
+  </section>
+
+  <main id="app" class="app hidden">
+    <section class="card column">
+      <h2>Collectors</h2>
+
+      <div class="search-box">
+        <input
+          id="search"
+          type="search"
+          placeholder="Filter by 0x address…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+
+      <p id="collectorCount" class="small"></p>
+
+      <div id="collectorList" class="collector-list"></div>
+    </section>
+
+    <section class="card column">
+      <h2 id="tokenTitle">Tokens</h2>
+
+      <div id="tokenDetail">
+        <div class="empty">
+          Select a collector on the left.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const COLLECTIONS_FILE = "./collections.json";
+    const TOKENS_FILE = "./tokens.json";
+
+    const COLLECTION_FORMAT = "opensea-collection-pages/export/v1";
+    const OWNERS_FORMAT = "opensea-owner-pages/export/v1";
+
+    const reloadButton = document.querySelector("#reloadButton");
+    const copyCsvButton = document.querySelector("#copyCsvButton");
+    const status = document.querySelector("#status");
+    const summary = document.querySelector("#summary");
+    const app = document.querySelector("#app");
+
+    const search = document.querySelector("#search");
+    const collectorCount = document.querySelector("#collectorCount");
+    const collectorList = document.querySelector("#collectorList");
+
+    const tokenTitle = document.querySelector("#tokenTitle");
+    const tokenDetail = document.querySelector("#tokenDetail");
+
+    let collectors = [];
+    let selectedAddress = null;
+
+    function setStatus(message, type = "") {
+      status.textContent = message;
+      status.className = type;
+    }
+
+    function showSummary(message) {
+      summary.textContent = message;
+      summary.classList.remove("hidden");
+    }
+
+    function normalizeAddress(value) {
+      const address = String(value ?? "").trim().toLowerCase();
+      return /^0x[a-f0-9]{40}$/i.test(address) ? address : null;
+    }
+
+    function shortenAddress(address) {
+      return address.length > 14
+        ? `${address.slice(0, 8)}…${address.slice(-6)}`
+        : address;
+    }
+
+    function tokenKey(chain, contractAddress, tokenId) {
+      return [
+        String(chain ?? "ethereum").toLowerCase(),
+        String(contractAddress ?? "").toLowerCase(),
+        String(tokenId ?? "")
+      ].join(":");
+    }
+
+    async function loadJson(path) {
+      const response = await fetch(path, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`Could not load ${path}: HTTP ${response.status}`);
+      }
+      return response.json();
+    }
+
+    function chainFromNft(nft) {
+      const candidates = [
+        nft?.chain,
+        nft?.chain_identifier,
+        nft?.network,
+        nft?.contract?.chain
+      ];
+      for (const candidate of candidates) {
+        if (typeof candidate === "string" && candidate.trim()) {
+          return candidate.toLowerCase();
+        }
+      }
+      return "ethereum";
+    }
+
+    function contractFromNft(nft) {
+      const candidates = [
+        nft?.contract_address,
+        nft?.contractAddress,
+        nft?.contract,
+        nft?.asset_contract?.address,
+        nft?.contract?.address
+      ];
+      for (const candidate of candidates) {
+        const address = normalizeAddress(candidate);
+        if (address) return address;
+      }
+      return null;
+    }
+
+    function tokenIdFromNft(nft) {
+      const candidates = [
+        nft?.identifier,
+        nft?.token_id,
+        nft?.tokenId
+      ];
+      for (const candidate of candidates) {
+        const tokenId = String(candidate ?? "").trim();
+        if (/^\d+$/.test(tokenId)) return tokenId;
+      }
+      return null;
+    }
+
+    function collectionNameFromNft(nft, fallback) {
+      const candidates = [
+        nft?.collection,
+        nft?.collection_name,
+        nft?.collection?.name,
+        nft?.collection?.slug,
+        nft?.contract?.name,
+        nft?.contract_name
+      ];
+      for (const candidate of candidates) {
+        if (typeof candidate === "string" && candidate.trim()) {
+          return candidate.trim();
+        }
+      }
+      return fallback || "Unknown collection";
+    }
+
+    function tokenNameFromNft(nft) {
+      const candidates = [
+        nft?.name,
+        nft?.display_name,
+        nft?.title
+      ];
+      for (const candidate of candidates) {
+        if (typeof candidate === "string" && candidate.trim()) {
+          return candidate.trim();
+        }
+      }
+      return null;
+    }
+
+    function openseaLink(nft, chain, contractAddress, tokenId) {
+      const candidates = [
+        nft?.opensea_url,
+        nft?.permalink,
+        nft?.url
+      ];
+      for (const candidate of candidates) {
+        if (typeof candidate === "string" && /^https?:\/\//i.test(candidate)) {
+          return candidate;
+        }
+      }
+      return (
+        `https://opensea.io/item/` +
+        `${encodeURIComponent(chain)}/` +
+        `${contractAddress}/` +
+        `${encodeURIComponent(tokenId)}`
+      );
+    }
+
+    function buildMetadata(collectionArchive) {
+      const lookup = new Map();
+      let pages = 0;
+      let nftRecords = 0;
+
+      for (const run of collectionArchive.runs ?? []) {
+        for (const page of run.collectionPages ?? []) {
+          pages += 1;
+          const nfts = Array.isArray(page?.payload?.nfts) ? page.payload.nfts : [];
+
+          for (const nft of nfts) {
+            nftRecords += 1;
+            const chain = chainFromNft(nft);
+            const contractAddress = contractFromNft(nft);
+            const tokenId = tokenIdFromNft(nft);
+
+            if (!contractAddress || !tokenId) continue;
+
+            const key = tokenKey(chain, contractAddress, tokenId);
+            if (!lookup.has(key)) {
+              lookup.set(key, {
+                chain,
+                contractAddress,
+                tokenId,
+                collectionName: collectionNameFromNft(
+                  nft,
+                  page.slug ?? "Unknown collection"
+                ),
+                tokenName: tokenNameFromNft(nft),
+                link: openseaLink(nft, chain, contractAddress, tokenId)
+              });
+            }
+          }
+        }
+      }
+
+      return { lookup, pages, nftRecords };
+    }
+
+    function getOwners(payload) {
+      if (!Array.isArray(payload?.owners)) return [];
+      const owners = [];
+      for (const owner of payload.owners) {
+        const address = normalizeAddress(
+          owner?.address ?? owner?.owner_address ?? owner?.account?.address
+        );
+        if (!address) continue;
+
+        const rawQuantity =
+          owner?.quantity_string ?? owner?.quantity ?? owner?.balance ?? "1";
+        const quantity = /^\d+$/.test(String(rawQuantity)) ? String(rawQuantity) : "1";
+        owners.push({ address, quantity });
+      }
+      return owners;
+    }
+
+    function buildCollectors(ownersArchive, metadataLookup) {
+      const map = new Map();
+      let ownerPages = 0;
+      let ownerRows = 0;
+      let missingMetadata = 0;
+
+      for (const run of ownersArchive.runs ?? []) {
+        for (const request of run.ownerRequests ?? []) {
+          ownerPages += 1;
+          const identifier = request.identifier ?? {};
+          const chain = String(identifier.chain ?? "ethereum").toLowerCase();
+          const contractAddress = normalizeAddress(
+            identifier.contract_address ?? identifier.contractAddress ?? identifier.contract
+          );
+          const tokenId = String(
+            identifier.token_id ?? identifier.tokenId ?? identifier.identifier ?? ""
+          ).trim();
+
+          if (!contractAddress || !/^\d+$/.test(tokenId)) continue;
+
+          const key = tokenKey(chain, contractAddress, tokenId);
+          const token = metadataLookup.get(key) ?? {
+            chain,
+            contractAddress,
+            tokenId,
+            collectionName: "Collection metadata not found",
+            tokenName: null,
+            link:
+              `https://opensea.io/item/` +
+              `${encodeURIComponent(chain)}/` +
+              `${contractAddress}/` +
+              `${encodeURIComponent(tokenId)}`,
+            missingMetadata: true
+          };
+
+          if (token.missingMetadata) missingMetadata += 1;
+
+          for (const owner of getOwners(request.payload)) {
+            ownerRows += 1;
+            if (!map.has(owner.address)) {
+              map.set(owner.address, {
+                address: owner.address,
+                tokenMap: new Map()
+              });
+            }
+
+            const collector = map.get(owner.address);
+            if (!collector.tokenMap.has(key)) {
+              collector.tokenMap.set(key, {
+                ...token,
+                quantity: owner.quantity
+              });
+            }
+          }
+        }
+      }
+
+      const result = [...map.values()]
+        .map(collector => {
+          const tokens = [...collector.tokenMap.values()].sort((a, b) => {
+            const collectionCompare = a.collectionName.localeCompare(b.collectionName);
+            if (collectionCompare !== 0) return collectionCompare;
+            try {
+              const aId = BigInt(a.tokenId);
+              const bId = BigInt(b.tokenId);
+              return aId < bId ? -1 : aId > bId ? 1 : 0;
+            } catch {
+              return a.tokenId.localeCompare(b.tokenId);
+            }
+          });
+
+          return {
+            address: collector.address,
+            tokenCount: tokens.length,
+            tokens
+          };
+        })
+        .sort((a, b) => {
+          if (a.tokenCount !== b.tokenCount) return b.tokenCount - a.tokenCount;
+          return a.address.localeCompare(b.address);
+        });
+
+      return {
+        collectors: result,
+        ownerPages,
+        ownerRows,
+        missingMetadata
+      };
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderCollectors() {
+      const query = search.value.trim().toLowerCase();
+
+      const visible = collectors.filter(collector =>
+        collector.address.toLowerCase().includes(query)
+      );
+
+      // If user typed/pasted a full match and nothing is currently selected, select it
+      if (query && visible.length === 1 && selectedAddress !== visible[0].address) {
+        selectedAddress = visible[0].address;
+        renderTokens();
+      }
+
+      collectorCount.textContent =
+        `${visible.length} of ${collectors.length} collectors shown`;
+
+      collectorList.innerHTML = "";
+
+      if (!visible.length) {
+        collectorList.innerHTML = `
+          <div class="empty">No matching collector address found.</div>
+        `;
+        return;
+      }
+
+      for (let index = 0; index < visible.length; index++) {
+        const collector = visible[index];
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "collector";
+
+        if (collector.address === selectedAddress) {
+          button.classList.add("selected");
+        }
+
+        button.innerHTML = `
+          <div class="address-wrapper">
+            <span class="address">
+              ${index + 1}. ${escapeHtml(shortenAddress(collector.address))}
+            </span>
+            <a
+              class="os-badge"
+              href="https://opensea.io/${escapeHtml(collector.address)}"
+              target="_blank"
+              rel="noreferrer"
+              onclick="event.stopPropagation();"
+              title="View on OpenSea"
+            >OS ↗</a>
+          </div>
+          <span class="count">
+            ${collector.tokenCount} token${collector.tokenCount === 1 ? "" : "s"}
+          </span>
+        `;
+
+        button.title = collector.address;
+
+        button.addEventListener("click", () => {
+          selectedAddress = collector.address;
+          renderCollectors();
+          renderTokens();
+        });
+
+        collectorList.append(button);
+      }
+    }
+
+    function renderTokens() {
+      const collector = collectors.find(
+        item => item.address === selectedAddress
+      );
+
+      if (!collector) {
+        tokenTitle.textContent = "Tokens";
+        tokenDetail.innerHTML = `
+          <div class="empty">Select a collector on the left.</div>
+        `;
+        return;
+      }
+
+      tokenTitle.textContent =
+        `${collector.tokenCount} token${collector.tokenCount === 1 ? "" : "s"} held`;
+
+      const etherscan = `https://etherscan.io/address/${collector.address}`;
+
+      const rows = collector.tokens.map(token => {
+        const name = token.tokenName
+          ? `${escapeHtml(token.collectionName)} — ${escapeHtml(token.tokenName)}`
+          : escapeHtml(token.collectionName);
+
+        const quantity =
+          token.quantity && token.quantity !== "1"
+            ? `<p>Quantity: ${escapeHtml(token.quantity)}</p>`
+            : "";
+
+        return `
+          <article class="token">
+            <div>
+              <h3>${name}</h3>
+              <p>Token ID: <code>${escapeHtml(token.tokenId)}</code></p>
+              ${quantity}
+              <p class="small">
+                Contract:
+                <code>${escapeHtml(shortenAddress(token.contractAddress))}</code>
+              </p>
+            </div>
+
+            <a
+              class="token-link"
+              href="${escapeHtml(token.link)}"
+              target="_blank"
+              rel="noreferrer"
+            >OpenSea ↗</a>
+          </article>
+        `;
+      }).join("");
+
+      tokenDetail.innerHTML = `
+        <div class="owner">
+          <strong>Collector Wallet:</strong>
+          <a
+            href="${escapeHtml(etherscan)}"
+            target="_blank"
+            rel="noreferrer"
+          >${escapeHtml(collector.address)}</a>
+        </div>
+
+        <div class="token-list">
+          ${rows}
+        </div>
+      `;
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? "");
+      return /[",\r\n]/.test(text)
+        ? `"${text.replaceAll('"', '""')}"`
+        : text;
+    }
+
+    async function copyCollectorCsv() {
+      if (!collectors.length) {
+        setStatus("No collector data is loaded yet.", "error");
+        return;
+      }
+
+      const lines = [
+        [
+          "rank",
+          "owner_address",
+          "distinct_tokens_held",
+          "opensea_profile"
+        ].join(",")
+      ];
+
+      collectors.forEach((collector, index) => {
+        lines.push(
+          [
+            index + 1,
+            collector.address,
+            collector.tokenCount,
+            `https://opensea.io/${collector.address}`
+          ]
+            .map(csvCell)
+            .join(",")
+        );
+      });
+
+      const csv = lines.join("\n");
+
+      try {
+        await navigator.clipboard.writeText(csv);
+        setStatus(`Copied ${collectors.length} ranked collector rows as CSV.`, "success");
+      } catch (error) {
+        console.error(error);
+        const temporaryTextarea = document.createElement("textarea");
+        temporaryTextarea.value = csv;
+        temporaryTextarea.style.position = "fixed";
+        temporaryTextarea.style.left = "-9999px";
+        document.body.appendChild(temporaryTextarea);
+        temporaryTextarea.focus();
+        temporaryTextarea.select();
+        const copied = document.execCommand("copy");
+        temporaryTextarea.remove();
+
+        setStatus(
+          copied
+            ? `Copied ${collectors.length} ranked collector rows as CSV.`
+            : "Could not access the clipboard.",
+          copied ? "success" : "error"
+        );
+      }
+    }
+
+    async function loadData() {
+      reloadButton.disabled = true;
+      reloadButton.textContent = "Loading…";
+      app.classList.add("hidden");
+      summary.classList.add("hidden");
+
+      setStatus(`Loading ${COLLECTIONS_FILE} and ${TOKENS_FILE}…`);
+
+      try {
+        const [collectionsJson, tokensJson] = await Promise.all([
+          loadJson(COLLECTIONS_FILE),
+          loadJson(TOKENS_FILE)
+        ]);
+
+        if (
+          collectionsJson?.format !== COLLECTION_FORMAT ||
+          !Array.isArray(collectionsJson?.runs)
+        ) {
+          throw new Error(`${COLLECTIONS_FILE} is not an OpenSea collection-pages archive.`);
+        }
+
+        if (
+          tokensJson?.format !== OWNERS_FORMAT ||
+          !Array.isArray(tokensJson?.runs)
+        ) {
+          throw new Error(`${TOKENS_FILE} is not an OpenSea owner-pages archive.`);
+        }
+
+        setStatus("Indexing collection metadata…");
+        const metadataResult = buildMetadata(collectionsJson);
+
+        setStatus("Reading owner payloads and ranking collectors…");
+        const ownerResult = buildCollectors(tokensJson, metadataResult.lookup);
+
+        collectors = ownerResult.collectors;
+        selectedAddress = collectors[0]?.address ?? null;
+
+        renderCollectors();
+        renderTokens();
+
+        showSummary(
+          [
+            `Loaded ${COLLECTIONS_FILE}: ${collectionsJson.runs.length} run(s)`,
+            `Collection pages indexed: ${metadataResult.pages}`,
+            `NFT metadata records read: ${metadataResult.nftRecords}`,
+            `Unique token metadata records: ${metadataResult.lookup.size}`,
+            ``,
+            `Loaded ${TOKENS_FILE}: ${tokensJson.runs.length} run(s)`,
+            `Owner response pages read: ${ownerResult.ownerPages}`,
+            `Owner entries read: ${ownerResult.ownerRows}`,
+            `Unique collector wallets: ${collectors.length}`,
+            `Owner token records without matching collection data: ${ownerResult.missingMetadata}`
+          ].join("\n")
+        );
+
+        app.classList.remove("hidden");
+        setStatus(`Loaded ${collectors.length} collector wallet(s).`, "success");
+      } catch (error) {
+        console.error(error);
+        setStatus(
+          `${error.message} Run this folder via a local web server, not by opening owners.html directly as file:///.`,
+          "error"
+        );
+      } finally {
+        reloadButton.disabled = false;
+        reloadButton.textContent = "Reload JSON files";
+      }
+    }
+
+    reloadButton.addEventListener("click", loadData);
+    copyCsvButton.addEventListener("click", copyCollectorCsv);
+    search.addEventListener("input", () => {
+      renderCollectors();
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
