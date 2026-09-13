@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snapshot Proposal API Tester</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #10131c;
+      --panel: #191e2b;
+      --border: #30394e;
+      --text: #edf1ff;
+      --muted: #aeb8d1;
+      --accent: #7c5cff;
+      --error: #ff6b81;
+      --success: #59d6a5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 32px 16px;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, #2b1d5a 0, transparent 35rem),
+        var(--background);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(100%, 1000px);
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+    }
+
+    .intro {
+      margin: 0 0 28px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .panel {
+      padding: 22px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgb(25 30 43 / 92%);
+      box-shadow: 0 15px 45px rgb(0 0 0 / 20%);
+    }
+
+    label {
+      display: block;
+      margin: 0 0 8px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      color: var(--text);
+      background: #0f1320;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgb(124 92 255 / 20%);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      padding: 11px 16px;
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--accent);
+      border: 0;
+      border-radius: 8px;
+    }
+
+    button:hover {
+      filter: brightness(1.12);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
+    #status {
+      min-height: 1.5em;
+      margin: 16px 0 0;
+      color: var(--muted);
+    }
+
+    #status.error {
+      color: var(--error);
+    }
+
+    #status.success {
+      color: var(--success);
+    }
+
+    #proposalSummary {
+      display: none;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .meta-item {
+      padding: 13px;
+      background: #111624;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .meta-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    pre {
+      max-height: 600px;
+      padding: 18px;
+      margin: 0;
+      overflow: auto;
+      color: #dce6ff;
+      background: #0b0f19;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    code {
+      color: #c6baff;
+    }
+
+    a {
+      color: #b7aaff;
+    }
+
+    .small-note {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Snapshot Proposal API Tester</h1>
+    <p class="intro">
+      Fetch a proposal from Snapshot's GraphQL API and inspect its returned data structure.
+    </p>
+
+    <section class="panel">
+      <form id="proposalForm">
+        <label for="proposalId">Proposal ID</label>
+        <input
+          id="proposalId"
+          name="proposalId"
+          type="text"
+          value="QmWbpCtwdLzxuLKnMW4Vv4MPFd2pdPX71YBKPasfZxqLUS"
+          placeholder="Example: QmWbpCtwdLzxuLKnMW4Vv4MPFd2pdPX71YBKPasfZxqLUS"
+          required
+        />
+
+        <label for="apiKey">Snapshot API Key <span style="color: #aeb8d1;">(optional, if your access requires one)</span></label>
+        <input
+          id="apiKey"
+          name="apiKey"
+          type="password"
+          autocomplete="off"
+          placeholder="Paste your x-api-key here"
+        />
+
+        <div class="actions">
+          <button id="fetchButton" type="submit">Fetch proposal</button>
+        </div>
+
+        <p id="status" role="status">
+          Ready. Enter a proposal ID and select “Fetch proposal”.
+        </p>
+      </form>
+
+      <p class="small-note">
+        API endpoint:
+        <code>https://hub.snapshot.org/graphql</code>
+        —
+        <a href="https://docs.snapshot.box/tools/api" target="_blank" rel="noopener noreferrer">
+          Snapshot API documentation
+        </a>
+      </p>
+    </section>
+
+    <section id="proposalSummary" class="panel">
+      <h2 id="proposalTitle">Proposal details</h2>
+      <div id="proposalMeta" class="meta-grid"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Returned proposal data structure</h2>
+      <pre id="jsonOutput">No proposal loaded yet.</pre>
+    </section>
+  </main>
+
+  <script>
+    // Snapshot Hub GraphQL endpoint from the Snapshot API documentation.
+    const SNAPSHOT_GRAPHQL_URL = "https://hub.snapshot.org/graphql";
+
+    /*
+      This GraphQL query asks Snapshot for one proposal by its IPFS-style proposal ID.
+
+      Add or remove fields below as needed. The returned object will be displayed
+      as formatted JSON in the page.
+    */
+    const PROPOSAL_QUERY = `
+      query GetProposal($id: String!) {
+        proposal(id: $id) {
+          id
+          title
+          body
+          discussion
+          choices
+          start
+          end
+          snapshot
+          state
+          author
+          created
+          scores
+          scores_by_strategy
+          scores_total
+          scores_updated
+          plugins
+          network
+          strategies {
+            name
+            network
+            params
+          }
+          space {
+            id
+            name
+            about
+          }
+        }
+      }
+    `;
+
+    const form = document.getElementById("proposalForm");
+    const proposalIdInput = document.getElementById("proposalId");
+    const apiKeyInput = document.getElementById("apiKey");
+    const fetchButton = document.getElementById("fetchButton");
+    const statusElement = document.getElementById("status");
+    const jsonOutput = document.getElementById("jsonOutput");
+    const proposalSummary = document.getElementById("proposalSummary");
+    const proposalTitle = document.getElementById("proposalTitle");
+    const proposalMeta = document.getElementById("proposalMeta");
+
+    function setStatus(message, type = "") {
+      statusElement.textContent = message;
+      statusElement.className = type;
+    }
+
+    function formatUnixTimestamp(timestamp) {
+      if (!timestamp) return "—";
+
+      return new Date(Number(timestamp) * 1000).toLocaleString();
+    }
+
+    function displayProposalSummary(proposal) {
+      proposalSummary.style.display = "block";
+      proposalTitle.textContent = proposal.title || "Untitled proposal";
+
+      const metadata = [
+        ["Proposal ID", proposal.id],
+        ["Space", proposal.space ? `${proposal.space.name} (${proposal.space.id})` : "—"],
+        ["State", proposal.state],
+        ["Author", proposal.author],
+        ["Network", proposal.network],
+        ["Created", formatUnixTimestamp(proposal.created)],
+        ["Voting starts", formatUnixTimestamp(proposal.start)],
+        ["Voting ends", formatUnixTimestamp(proposal.end)],
+        ["Total score", proposal.scores_total],
+        ["Snapshot block", proposal.snapshot]
+      ];
+
+      proposalMeta.innerHTML = metadata
+        .map(([label, value]) => `
+          <div class="meta-item">
+            <span class="meta-label">${label}</span>
+            <span>${value ?? "—"}</span>
+          </div>
+        `)
+        .join("");
+    }
+
+    async function fetchProposal(proposalId, apiKey) {
+      // The API key is sent only when you entered one.
+      // Snapshot documents this header as: x-api-key
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      if (apiKey) {
+        headers["x-api-key"] = apiKey;
+      }
+
+      const response = await fetch(SNAPSHOT_GRAPHQL_URL, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          query: PROPOSAL_QUERY,
+          variables: {
+            id: proposalId
+          }
+        })
+      });
+
+      // Read JSON even for non-200 replies so GraphQL/API errors can be shown.
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result?.errors?.[0]?.message ||
+          `Request failed with HTTP status ${response.status}.`
+        );
+      }
+
+      if (result.errors?.length) {
+        throw new Error(result.errors.map(error => error.message).join("\n"));
+      }
+
+      return result;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const proposalId = proposalIdInput.value.trim();
+      const apiKey = apiKeyInput.value.trim();
+
+      if (!proposalId) {
+        setStatus("Please enter a proposal ID.", "error");
+        return;
+      }
+
+      fetchButton.disabled = true;
+      setStatus("Loading proposal data…");
+      proposalSummary.style.display = "none";
+      jsonOutput.textContent = "Fetching data from Snapshot…";
+
+      try {
+        const result = await fetchProposal(proposalId, apiKey);
+        const proposal = result.data?.proposal;
+
+        if (!proposal) {
+          throw new Error(
+            "Snapshot returned no proposal. Check that the proposal ID is correct."
+          );
+        }
+
+        // Show the full GraphQL response/data structure as pretty JSON.
+        jsonOutput.textContent = JSON.stringify(result, null, 2);
+        displayProposalSummary(proposal);
+
+        setStatus("Proposal loaded successfully.", "success");
+      } catch (error) {
+        console.error(error);
+
+        proposalSummary.style.display = "none";
+        jsonOutput.textContent = JSON.stringify(
+          {
+            error: error.message
+          },
+          null,
+          2
+        );
+
+        setStatus(`Error: ${error.message}`, "error");
+      } finally {
+        fetchButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
