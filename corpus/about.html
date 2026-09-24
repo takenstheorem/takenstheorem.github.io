@@ -156,14 +156,16 @@
     <article class="panel">
       <div class="panelHead"><span>// The Four Forces</span><span>How the market becomes form</span></div>
       <div class="body">
-        <p>The renderer reads the Liquid Edition's live market state and translates it into four forces. Each governs a distinct aspect of the corpus. Nothing here is authored by hand — the body is whatever the collective's market and participation make it.</p>
+        <p>The renderer reads the Liquid Edition's live market state and translates it into four forces. Each governs a distinct aspect of the corpus. Not authored by hand, rather its body is whatever the market and participation make it. Note: our <a href="https://snapshot.box/#/s:corpus.takens.eth" target="_blank">post-bot vote</a> now has these dimensions varying more chaotically around some key variables described below.</p>
         <ul class="forces">
-          <li><b>Size</b><span>Grows as the launch supply is claimed off the curve. An untouched corpus is a tiny seed; a fully claimed one nearly fills the frame. Early buyers see the fastest, most visible growth. The body swells quickly with the first arrivals, then eases as it matures.</span></li>
-          <li><b>Cohesion</b><span>Follows pool liquidity and price position. Deeper liquidity binds the body into a richer, more detailed surface; thin or absent liquidity lets it dissolve toward a featureless ball. Cohesion also drives how finely the underlying fractals resolve. A well-capitalized corpus is literally more intricate.</span></li>
-          <li><b>Structure</b><span>Tracks where price sits within the liquidity range. It bends the body between organic, bulbous growth and rigid, crystalline scaffolding: the visual difference between a soft collective and a hardened one.</span></li>
-          <li><b>Energy</b><span>Reflects the market's agitation and where price wanders relative to its range. It fuels rotation and chromatic intensity: a restless market spins hotter and brighter; a settled one cools and slows.</span></li>
+
+
+          <li><b>Size</b><span>Grows as the launch supply is claimed off the curve. The body swells quickly with the first arrivals, then eases as it matures.</span></li>
+          <li><b>Cohesion</b><span>Resonates with live market state: price, tick movement, and CORPUS supply condition combine into shifting surface. Small market changes can abruptly tighten the body into dense detail or loosen it toward a softer, more diffuse form.</span></li>
+          <li><b>Structure</b><span>Forms a distinct reading of these market signals. Price and tick do not map smoothly to a single shape. They produce sharp changes between organic swelling, asymmetric mutations, and crystalline scaffolding.</span></li>
+          <li><b>Energy</b><span>Translates signal into motion and color. It is sensitive to small changes in price and tick, producing bursts of rotation, brightness, and chromatic intensity rather than a slow, linear measure of activity.</span></li>
         </ul>
-        <p>In its earliest moments, before any supply is claimed, the CORPUS object barely exists at all: a dark, near-formless void. It emerges into legible form only as participation begins.</p>
+        <p>In its earliest moments, before any supply is claimed, the CORPUS object barely exists at all: a dark, near-formless void. It emerges into legible form only as participation begins. (However, <a href="https://x.com/takenstheorem/status/2094079910151409682" target="_blank">read this post</a> about what happened. Bots teleported its developed into a mature state.)</p>
       </div>
     </article>
 
@@ -177,6 +179,7 @@
         <p><em>Note on accumulation</em>: Influence scales with your balance but saturates at the top of each force's range. At most, roughly 10,000 CORPUS will drive a force from nothing to its ceiling; a force the market has already lifted reaches that ceiling with far less. Beyond the point of saturation, additional holdings have no further visual effect.</p>
         <p>Only the current holder of a given LENS can call <code>influence</code> for it, and only a caller with a non-zero CORPUS balance.</p>
         <p><em>Why "oligarch"? <a href="https://www.etymonline.com/word/oligarch">"Governed by the few."</a> It is meant to be playful for the CORPUS LENS tokens. But I use it with intentional semantics: The organic qualities of emergent human collectives often, and perhaps even inevitably, involve uneven distributions of powers.</em></p>
+        <p>Note: our <a href="https://snapshot.box/#/s:corpus.takens.eth" target="_blank">post-bot vote</a> now has oligarchs softer in their impact on the piece. influence() can still be called, but the vote yielded a preference for collective effect. See below.</p>
       </div>
     </article>
 
@@ -186,6 +189,7 @@
         <p><em>gm</em> is a shared morning greeting turned into a coordination ritual. Like many cheesy things, it has stuck in our wonderfully curious part of the universe. Any holder of CORPUS can call <code>gm()</code> on the renderer to join the current "episode." Each gm episode is a short, fixed window (currently fifteen minutes); the first <em>gm</em> after a quiet stretch opens a new one.</p>
         <p>When you join, your CORPUS balance is added to the episode's running total. The larger the collective balance assembled within the window, the more the whole corpus intensifies. This will present as a brief, shared bloom of energy and agitation across the entire body that everyone can see at once. As the window elapses, the effect fades and the body returns to its ordinary market-driven state.</p>
         <p>Each address can join a given episode only once, and only holders may join. <em>gm</em> is not directed at any single force. It is a collective act that lifts the CORPUS body as a whole and potentially in a chaotic regime. A way for members of the community to make their presence felt.</p>
+        <p>Note: our <a href="https://snapshot.box/#/s:corpus.takens.eth" target="_blank">post-bot vote</a> now allows most calls of gm() to produce a vibrant spark on the body of CORPUS with little required balance.</p>
       </div>
     </article>
 
