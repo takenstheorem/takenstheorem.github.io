@@ -1,5 +1,14 @@
 [
   {
+    "title": "CORPUS",
+    "image_url": "html,corpus/corpus_growth4.mp4",
+    "image_alt": "CORPUS dynamics",
+    "description": "CORPUS is not depicting a collective so much as remaining exposed to one, corporeal collective composed by its own conditions.",
+    "date": "2026-08-27",
+    "tags": [{ "note": "ERC-21" }, { "note": "on-chain" }],
+    "url": "https://takenstheorem.github.io/corpus"
+  },
+  {
     "title": "0xconvo",
     "image_url": "imgs/0xconvo.gif",
     "image_alt": "0xconvo",
