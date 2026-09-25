@@ -1,5 +1,21 @@
 [
     {
+        "title": "0xconvo",
+        "url": "https://x.com/stephensantoro_/status/2053848601055342699",
+        "image_url": "imgs/0xconvo.gif",
+        "image_alt": "Agentic conversation that we cannot understand",
+        "date": "2026-05-11",
+        "description": "0xconvo featured in an X long post by thinker, artist and creator of The Vessel Stephen Santoro."
+    },
+    {
+        "title": "Intimate Systems",
+        "url": "https://superrare.com/curation/exhibitions/intimate-systems",
+        "image_url": "assorted_imgs/intimate_systems.jpg",
+        "image_alt": "Cover animation frame for Intimate Systems",
+        "date": "2025-12-01",
+        "description": "Private Ledger a featured piece on SuperRare for the Intimate Systems event: 'the quiet, interior spaces that exist within networks designed for visibility.'"
+    },
+    {
         "title": "De-Automated",
         "url": "https://x.com/patternbase/status/1775768003860107751",
         "image_url": "assorted_imgs/deaut_featured.jpg",
@@ -14,14 +30,6 @@
         "image_alt": "Rothko on Pennies",
         "date": "2024-09-22",
         "description": "I scratched then fully restored a brilliant on-chain NFT by Yigit Duman: \"Rothko on Pennies\". See here for Yigit's closing notes about this project, notes about my restoral, and my thread here about first scratching the work and this thread about restoring it. This fun on-chain adventure also summarized in Simon de la Rouviere's blog."
-    },
-    {
-        "title": "Metrix featured",
-        "url": "https://function.gallery/",
-        "image_url": "project_imgs/metrix.png",
-        "image_alt": "Metrix visual",
-        "date": "2024-02-01",
-        "description": "Metrix ordinal project included as part of inaugural collection for The Function Gallery release, an artist-led initiative for art inscribed on Bitcoin. You can also visit my artist's channel on their Discord."
     },
     {
         "title": "Perpetual featured in MASSAGE MAGAZINE",
