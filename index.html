@@ -105,9 +105,9 @@
     .topline {
       display: flex;
       align-items: center;
-      gap: 0.9rem;
+      gap: 1rem;
       padding-bottom: 0.7rem;
-      font-size: 0.66rem;
+      font-size: 0.78rem;
       letter-spacing: 0.08em;
       text-transform: lowercase;
     }
@@ -119,7 +119,7 @@
     .social-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.9rem;
     }
 
     .social-links a {
@@ -137,17 +137,17 @@
     .site-nav {
       display: flex;
       align-items: center;
-      gap: clamp(1rem, 2vw, 2rem);
+      gap: clamp(1.15rem, 2.2vw, 2.25rem);
       max-width: var(--page-width);
       margin: 0 auto;
-      padding: 0.8rem var(--page-padding);
+      padding: 0.9rem var(--page-padding);
       overflow-x: auto;
       scrollbar-width: thin;
     }
 
     .site-nav a {
       flex: 0 0 auto;
-      font-size: 0.66rem;
+      font-size: 0.85rem;
       letter-spacing: 0.07em;
       text-decoration: none;
       text-transform: uppercase;
@@ -217,7 +217,7 @@
     .splash__eyebrow {
       display: block;
       margin-bottom: 1.25rem;
-      font-size: clamp(0.62rem, 1vw, 0.75rem);
+      font-size: clamp(0.7rem, 1vw, 0.82rem);
       letter-spacing: 0.13em;
       text-transform: uppercase;
     }
@@ -225,17 +225,17 @@
     .splash h1 {
       max-width: 13ch;
       margin: 0;
-      font-size: clamp(3.1rem, 7.7vw, 7rem);
+      font-size: clamp(2.5rem, 6.1vw, 5.6rem);
       font-weight: 400;
-      letter-spacing: -0.085em;
-      line-height: 0.88;
+      letter-spacing: -0.08em;
+      line-height: 0.9;
       text-shadow: 0 3px 24px rgba(0, 0, 0, 0.8);
     }
 
     .splash__subtitle {
       max-width: 42rem;
       margin: 1.6rem 0 0;
-      font-size: clamp(0.82rem, 1.4vw, 1.05rem);
+      font-size: clamp(0.9rem, 1.4vw, 1.12rem);
       line-height: 1.65;
       text-shadow: 0 1px 10px #000000;
     }
@@ -265,7 +265,7 @@
 
     .section-heading__content {
       max-width: 70rem;
-      font-size: clamp(0.78rem, 1.1vw, 0.9rem);
+      font-size: clamp(0.88rem, 1.15vw, 1rem);
       line-height: 1.85;
     }
 
@@ -288,7 +288,7 @@
     .text-block__inner {
       width: 100%;
       padding-bottom: 1.5rem;
-      font-size: clamp(0.8rem, 1.1vw, 0.92rem);
+      font-size: clamp(0.88rem, 1.15vw, 1rem);
       line-height: 1.9;
     }
 
@@ -328,14 +328,14 @@
     .archive-menu {
       display: grid;
       grid-template-columns: max-content minmax(0, 1fr);
-      gap: 1.25rem;
-      padding: 0.85rem 0;
+      gap: 1.6rem;
+      padding: 1rem 0;
     }
 
     .archive-menu__label {
-      padding-top: 0.16rem;
+      padding-top: 0.2rem;
       color: var(--muted);
-      font-size: 0.62rem;
+      font-size: 0.78rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
@@ -343,7 +343,7 @@
     .archive-menu__items {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.6rem 1.4rem;
+      gap: 0.75rem 1.6rem;
       min-width: 0;
     }
 
@@ -351,18 +351,18 @@
       position: relative;
       display: inline-flex;
       align-items: flex-start;
-      gap: 0.4rem;
-      max-width: min(100%, 23rem);
-      font-size: 0.67rem;
-      line-height: 1.4;
+      gap: 0.5rem;
+      max-width: min(100%, 27rem);
+      font-size: 0.86rem;
+      line-height: 1.45;
       text-decoration: none;
     }
 
     .archive-menu__number {
       flex: 0 0 auto;
-      padding-top: 0.05rem;
+      padding-top: 0.08rem;
       color: var(--muted);
-      font-size: 0.56rem;
+      font-size: 0.72rem;
     }
 
     .archive-menu__title {
@@ -375,8 +375,8 @@
     */
     #writings-menu .archive-menu__items {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-      gap: 0.75rem 1.4rem;
+      grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+      gap: 0.9rem 1.6rem;
     }
 
     #writings-menu .archive-menu__items a {
@@ -388,18 +388,18 @@
     #writings-menu .archive-menu__items a[data-tooltip]::after {
       position: absolute;
       z-index: 100;
-      bottom: calc(100% + 0.65rem);
+      bottom: calc(100% + 0.75rem);
       left: 0;
-      width: min(23rem, 80vw);
-      padding: 0.75rem 0.85rem;
-      border: 1px solid rgba(255, 255, 255, 0.78);
+      width: min(28rem, 86vw);
+      padding: 0.95rem 1.05rem;
+      border: 1px solid rgba(255, 255, 255, 0.82);
       background: #000000;
       color: #ffffff;
       box-shadow: 0 0.7rem 1.8rem rgba(0, 0, 0, 1);
       content: attr(data-tooltip);
-      font-size: 0.7rem;
+      font-size: 0.92rem;
       letter-spacing: 0;
-      line-height: 1.55;
+      line-height: 1.6;
       pointer-events: none;
       transform: translateY(0.3rem);
       visibility: hidden;
@@ -434,7 +434,7 @@
       padding: 2rem 0;
       color: var(--muted);
       content: "Loading archive...";
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       letter-spacing: 0.09em;
       text-transform: uppercase;
     }
@@ -517,9 +517,9 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem 0.75rem;
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.9rem;
       color: var(--muted);
-      font-size: 0.61rem;
+      font-size: 0.72rem;
       letter-spacing: 0.065em;
       line-height: 1.35;
       text-transform: uppercase;
@@ -533,19 +533,19 @@
     .archive-entry__title {
       margin: 0;
       overflow-wrap: anywhere;
-      font-size: clamp(1.15rem, 1.9vw, 1.65rem);
+      font-size: clamp(1.2rem, 1.9vw, 1.7rem);
       font-weight: 400;
       letter-spacing: -0.05em;
       line-height: 1.12;
     }
 
     .archive-entry__description {
-      max-width: 42rem;
+      max-width: 44rem;
       margin: 1rem 0 0;
       overflow-wrap: anywhere;
       color: #dddddd;
-      font-size: 0.75rem;
-      line-height: 1.7;
+      font-size: 0.92rem;
+      line-height: 1.75;
     }
 
     .archive-entry__link {
@@ -554,8 +554,8 @@
       gap: 0.55rem;
       width: fit-content;
       max-width: 100%;
-      margin-top: 1.25rem;
-      font-size: 0.66rem;
+      margin-top: 1.3rem;
+      font-size: 0.8rem;
       letter-spacing: 0.05em;
       text-decoration: none;
       text-transform: uppercase;
@@ -563,7 +563,7 @@
 
     .archive-entry__link::before {
       content: "↗";
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
 
     .archive-entry__tags {
@@ -585,7 +585,7 @@
       background: var(--bg);
       color: #ffffff;
       cursor: help;
-      font-size: 0.86rem;
+      font-size: 0.9rem;
       font-weight: 700;
       line-height: 1;
     }
@@ -596,16 +596,16 @@
       bottom: calc(100% + 0.5rem);
       left: 50%;
       width: max-content;
-      max-width: min(15rem, 80vw);
-      padding: 0.45rem 0.55rem;
+      max-width: min(18rem, 82vw);
+      padding: 0.6rem 0.7rem;
       border: 1px solid rgba(255, 255, 255, 0.78);
       background: #000000;
       color: #ffffff;
       box-shadow: 0 0.5rem 1.4rem rgba(0, 0, 0, 0.8);
       content: attr(data-tooltip);
-      font-size: 0.59rem;
+      font-size: 0.82rem;
       font-weight: 400;
-      line-height: 1.4;
+      line-height: 1.45;
       opacity: 0;
       pointer-events: none;
       transform: translate(-50%, 0.2rem);
@@ -731,7 +731,7 @@
     .featured-copy__inner,
     .cids-copy__inner {
       width: 100%;
-      font-size: clamp(0.78rem, 1.1vw, 0.9rem);
+      font-size: clamp(0.88rem, 1.15vw, 1rem);
       line-height: 1.85;
     }
 
@@ -775,12 +775,13 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 2.8rem;
-      height: 2.8rem;
+      min-width: 3rem;
+      height: 3rem;
+      padding: 0 0.6rem;
       border: 1px solid #ffffff;
       background: #000000;
       color: #ffffff;
-      font-size: 0.62rem;
+      font-size: 0.75rem;
       letter-spacing: 0.04em;
       text-decoration: none;
       text-transform: uppercase;
@@ -838,20 +839,20 @@
       }
 
       .splash h1 {
-        font-size: clamp(3.2rem, 13vw, 5.2rem);
-        letter-spacing: -0.075em;
+        font-size: clamp(2.4rem, 10.5vw, 4.2rem);
+        letter-spacing: -0.07em;
       }
 
       .archive-menu {
         grid-template-columns: 1fr;
-        gap: 0.7rem;
+        gap: 0.85rem;
       }
 
       .archive-menu__items,
       #writings-menu .archive-menu__items {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem 1rem;
+        gap: 0.9rem 1.15rem;
       }
 
       .archive-menu__items a {
@@ -874,11 +875,11 @@
 
     @media (max-width: 460px) {
       .topline {
-        gap: 0.65rem;
+        gap: 0.7rem;
       }
 
       .social-links {
-        gap: 0.6rem;
+        gap: 0.7rem;
       }
 
       .archive-menu__items,
@@ -968,7 +969,7 @@
 
       <div class="splash__content">
         <span class="splash__eyebrow">
-          Computational art / critical systems
+          computation, data / expressive systems
         </span>
 
         <h1 id="site-title">takenstheorem</h1>
@@ -1347,10 +1348,18 @@
         return visual;
       }
 
+      /*
+        The index tooltip now leads with the item TITLE, then the date
+        and description. Newlines are preserved by the CSS
+        `white-space: pre-line` on the tooltip pseudo-element.
+      */
       function buildIndexTooltip(article) {
+        const title = article.title || "Untitled";
         const date = formatDate(article.date);
         const description = article.description || "";
         const parts = [];
+
+        parts.push(title);
 
         if (date) {
           parts.push(`DATE: ${date}`);
@@ -1532,7 +1541,7 @@
 
             container.classList.remove("is-loading");
             container.innerHTML = `
-              <p style="padding: 2rem 0; font-size: 0.8rem;">
+              <p style="padding: 2rem 0; font-size: 0.9rem;">
                 Archive currently unavailable.
               </p>
             `;
