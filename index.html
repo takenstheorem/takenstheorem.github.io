@@ -54,6 +54,7 @@
     html {
       background: var(--bg);
       scroll-behavior: smooth;
+      scroll-padding-top: var(--nav-h, 4.5rem);
     }
 
     body {
@@ -252,7 +253,6 @@
       margin: 0 auto;
       padding-top: clamp(4.5rem, 9vw, 8rem);
       padding-bottom: 1.75rem;
-      scroll-margin-top: 4.5rem;
     }
 
     .section-heading h2 {
@@ -445,7 +445,6 @@
       gap: clamp(1.75rem, 5vw, 6rem);
       align-items: stretch;
       padding: clamp(1.8rem, 4vw, 3.75rem) 0;
-      scroll-margin-top: 5rem;
     }
 
     .archive-entry--text-only {
@@ -1194,6 +1193,14 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const navWrap = document.querySelector(".site-nav-wrap");
+      const syncNavHeight = () =>
+        document.documentElement.style.setProperty(
+          "--nav-h",
+          `${navWrap.offsetHeight}px`
+        );
+      new ResizeObserver(syncNavHeight).observe(navWrap);
+      syncNavHeight();
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -1335,7 +1342,7 @@
 
             iframe.src = source;
             iframe.title = article.title || "Interactive project";
-            iframe.loading = "lazy";
+            // iframe.loading = "lazy";
             iframe.setAttribute("allow", "autoplay");
 
             visual.appendChild(iframe);
@@ -1345,7 +1352,7 @@
 
           image.src = imageUrl;
           image.alt = article.image_alt || article.title || "";
-          image.loading = "lazy";
+          // image.loading = "lazy";
 
           visual.appendChild(image);
         }

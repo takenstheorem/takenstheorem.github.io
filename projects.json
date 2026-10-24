@@ -1,9 +1,18 @@
 [
   {
+    "title": "Timescale",
+    "image_url": "html,timescale_asset.html",
+    "image_alt": "Animated Timescale illustration",
+    "description": "There is a dynamic hidden under lid and epoxy and in darkness countless millions of transistors yield new order. Part of NEORT et al.'s Quietus Machine featured @ Marfa Weekend and Tokyo in November, 2026 (for show and mint).",
+    "date": "2026-10-24",
+    "tags": [{ "note": "ERC-21" }, { "note": "on-chain" }, { "issuance": "64" }],
+    "url": "https://two.neort.io/en/exhibitions/quietus_machine"
+  },
+  {
     "title": "CORPUS",
     "image_url": "html,corpus/corpus_growth4.mp4",
     "image_alt": "CORPUS dynamics",
-    "description": "CORPUS is not depicting a collective so much as remaining exposed to one, corporeal collective composed by its own conditions.",
+    "description": "CORPUS is not depicting a collective as remaining exposed to one; corporeal collective composed by its own conditions. Part of SuperRare's Cohort 1 for their Liquid Editions extensions.",
     "date": "2026-08-27",
     "tags": [{ "note": "ERC-21" }, { "note": "on-chain" }],
     "url": "https://takenstheorem.github.io/corpus"
@@ -106,7 +115,7 @@
     "title": "Identity_{i/j/k}",
     "image_url": "project_imgs/identity.jpg",
     "image_alt": "Identity_{i/j/k}",
-    "description": "Contribution to the G/L Space on SuperRare, expressing interconnections in an expanding concept of identity. The visuals go along with a wonderful and elaborate summary led by hex6l and Chiara Braidotti in a project that visualizes and introduces web3 concepts.",
+    "description": "Contribution to the G/L Space on SuperRare, expressing interconnections in an expanding concept of identity. The visuals go along with a wonderful and elaborate summary led by hex6c and Chiara Braidotti in a project that visualizes and introduces web3 concepts.",
     "date": "2023-07-07",
     "tags": [{ "issuance": "3" }, { "note": "1/1s" }],
     "url": "https://cubiclearn.gitbook.io/dae/dae/g-l-space/identity"

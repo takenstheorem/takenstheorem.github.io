@@ -121,12 +121,6 @@
       text-align: right;
     }
 
-    /*
-      Hidden compatibility controls.
-
-      The original entangl3d scripts may look these elements up by ID.
-      They remain present but are not visible or interactive.
-    */
     #compatibility-ui {
       display: none;
     }
@@ -334,16 +328,6 @@
       ];
     }
 
-    /*
-      First six hexadecimal characters from the function selector become
-      a CSS/HTML colour.
-
-      Examples:
-        func = "a9059cbb" → "#a9059c"
-        func = "095ea7b3" → "#095ea7"
-
-      A simple ETH transfer has no selector, so it retains green.
-    */
     function functionSelectorColor(func, failed) {
       if (failed) {
         return FAILED_TX_COLOR;
@@ -383,9 +367,6 @@
       try {
         const response = await fetch(url, {
           method: "POST",
-          /*
-            No explicit Content-Type avoids a JSON CORS preflight.
-          */
           body: JSON.stringify(payload),
           signal: controller.signal
         });
@@ -512,15 +493,6 @@
       return 0;
     }
 
-    /*
-      The original renderer may create a line material from `tx.color`,
-      `tx.lineColor`, or a comparable transaction field depending on its
-      implementation. These fields are included in every row.
-
-      This function also attempts to recolour material-bearing rendered
-      objects after scene creation, where source transaction metadata was
-      preserved in object.userData.
-    */
     function applyRenderedFunctionColors() {
       if (!window.scene) {
         return;
@@ -557,15 +529,6 @@
       );
     }
 
-    /*
-      Creates invisible-but-clickable copies of every loaded transaction line.
-
-      Why this exists:
-      - Thin WebGL lines are difficult to raycast reliably.
-      - Existing scene geometry may be merged or transformed.
-      - Picking is calculated from canvas.getBoundingClientRect(), so page
-        position, browser scaling, and UI overlays do not offset the click.
-    */
     function buildTransactionPickLayer() {
       if (!window.scene || !window.THREE) {
         return;
@@ -592,10 +555,6 @@
         for (const tx of rows) {
           const geometry = new THREE.BufferGeometry();
 
-          /*
-            Transaction geometry in entangl3d is encoded in the same
-            address-coordinate plane used by the renderer.
-          */
           const points = [
             new THREE.Vector3(tx.fromx, tx.fromy, blockNumber),
             new THREE.Vector3(tx.tox, tx.toy, blockNumber)
@@ -664,12 +623,6 @@
         return;
       }
 
-      /*
-        Correct canvas-relative pointer calculation.
-
-        Do not use clientX/window.innerWidth: that fails when canvas display
-        dimensions differ from the browser viewport.
-      */
       const bounds = canvasEl.getBoundingClientRect();
 
       transactionPointer.x =
@@ -702,10 +655,6 @@
 
       const now = Date.now();
 
-      /*
-        First click inspects the transaction.
-        A second click on the same selected line within 1.5 seconds opens it.
-      */
       if (
         lastPickedHash === tx.hash &&
         now - lastPickedAt < 1500
@@ -807,9 +756,6 @@
 
           haveReceipts = receiptResults.some(Array.isArray);
 
-          /*
-            Full raw receipts available in DevTools Console.
-          */
           window.receiptResults = receiptResults;
           window.receiptsByBlock = Object.fromEntries(
             blockNumbers.map((blockNumber, index) => [
@@ -823,10 +769,6 @@
 
         const ethPriceUsd = await getEthPriceUsd();
 
-        /*
-          Bare assignments are required: original renderer code reads lexical
-          globals rather than properties such as window.blocksData.
-        */
         blocksData = {};
         blockSummaries = {};
 
@@ -917,9 +859,6 @@
               */
               hash: txHash,
 
-              /*
-                Required by original stats.js. Raw wei strings.
-              */
               val: valueWei,
               fee: feeWei.toString(10),
 
@@ -938,12 +877,6 @@
               fail: failed,
               func,
 
-              /*
-                Function-selector colour fields.
-
-                `color`, `lineColor`, and `htmlColor` are intentionally all
-                supplied for compatibility with different renderer paths.
-              */
               color: lineColor,
               lineColor,
               htmlColor: lineColor,
@@ -1006,11 +939,6 @@
 
         selectedTransactionIndex = 0;
 
-        /*
-          Give the original renderer one frame to build its objects, then:
-          - apply colours where it preserves source tx userData;
-          - build reliable invisible click-picking lines.
-        */
         requestAnimationFrame(() => {
           applyRenderedFunctionColors();
           buildTransactionPickLayer();
