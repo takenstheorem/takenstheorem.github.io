@@ -216,6 +216,19 @@
 
     .description p + p { margin-top: 1em; }
 
+    .inline-explore {
+      color: inherit;
+      background: none;
+      border: 0;
+      padding: 0;
+      font: inherit;
+      text-decoration: underline;
+      text-underline-offset: 0.18em;
+      cursor: pointer;
+    }
+
+    .inline-explore:hover { color: var(--fg); }
+
     .colophon {
       color: var(--muted);
       font-size: clamp(0.95rem, 2vw, 1.05rem);
@@ -444,7 +457,7 @@
       <p class="auction" id="work-credit"><strong><em><font style="font-size:2em;">Searching...</font></em><br />by Takens Theorem and Yigit Duman</strong></p>
     <p class="auction"><strong>Auction: Nov. 7th, 2026</strong></p>
     <p class="colophon">Edition: 1/1 · Standard: ERC-721 · Released on SuperRare. Image: PNG, 1,344 × 1,344 pixels (about 4.3 MB); 1,764 panels at 32 × 32 pixels each.</p>
-    <p class="colophon-note">The image remains offchain as a PNG. That feels fitting for an unsuccessful search: each output is an ephemeral attempt, a point in a vast integer space. None encodes or solves the hidden image’s onchain representation. Minted on SuperRare and redundancly stored off-chain with Yigit Duman's <a href="https://muri.yigitduman.com/">MURI Protocol</a>.</p>
+    <p class="colophon-note">The image remains offchain as a PNG. That feels fitting for an unsuccessful search: each output is an ephemeral attempt, a point in a vast integer space. None encodes or solves the hidden image’s onchain representation. Minted on SuperRare and redundantly stored off-chain with Yigit Duman's <a href="https://muri.yigitduman.com/">MURI Protocol</a>.</p>
 
     <nav aria-label="Primary">
       <ul class="links">
@@ -516,7 +529,7 @@
 
     <p>Generating and surveying outputs seemed to hold some other meaning. The depictions themselves, en masse, felt familiar. Searching a vast landscape for something that will seem obvious once we find it. We but never find it, at least we never feel like we've found it, and perhaps we won’t ever. Yet somehow we are drawn to this process by an unenviable impulse to keep going.</p>
 
-      <p>Click <strong>Explore</strong>, then click a panel to see each of the 1,764 test seeds and the semiosis for each.</p>
+      <p>Click <button type="button" class="inline-explore" id="exploreBtnBot">Explore</button>, then click a panel to see each of the 1,764 test seeds and the semiosis for each.</p>
     </div>
   </main>
 
@@ -545,6 +558,7 @@
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const explorer   = document.getElementById('explorer');
+    const exploreBtnBot = document.getElementById('exploreBtnBot');
     const canvas     = document.getElementById('canvas');
     const marker     = document.getElementById('marker');
     const seedLabel  = document.getElementById('seedLabel');
@@ -559,6 +573,7 @@
     let meaningLoadError = null;
     let meaningsLoaded = false;
     let current = null;
+    let explorerOpener = null;
     let scrambleId = 0;
     let animId = 0;
     let view = null;
@@ -750,19 +765,21 @@
       renderIdle();
     }
 
-    function openExplorer() {
+    function openExplorer(event) {
+      explorerOpener = event.currentTarget;
       explorer.hidden = false;
       document.body.classList.add('locked');
       applyView(baseView());
       renderIdle();
-      closeBtn.focus();
+      closeBtn.focus({ preventScroll: true });
     }
 
     function closeExplorer() {
       resetView();
       explorer.hidden = true;
       document.body.classList.remove('locked');
-      exploreBtn.focus();
+      (explorerOpener || exploreBtn).focus({ preventScroll: true });
+      explorerOpener = null;
     }
 
     window.addEventListener('resize', () => {
@@ -787,6 +804,8 @@
     explorer.addEventListener('click', (e) => {
       if (e.target === explorer && current) resetView();
     });
+
+    exploreBtnBot.addEventListener('click', openExplorer);
 
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || explorer.hidden) return;
