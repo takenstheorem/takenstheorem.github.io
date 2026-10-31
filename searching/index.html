@@ -12,7 +12,7 @@
     :root {
       --bg: #000;
       --fg: #fff;
-      --muted: rgba(255, 255, 255, 0.65);
+      --muted: rgba(255, 255, 255, 0.8);
       --line: rgba(255, 255, 255, 0.18);
       --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
     }
@@ -96,6 +96,38 @@
       background: rgba(0, 0, 0, 0.6);
       padding: 6px 10px;
     }
+
+    .hero-actions {
+      position: absolute;
+      right: clamp(20px, 4vw, 40px);
+      bottom: clamp(20px, 4vw, 40px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    a {
+        color: var(--fg);
+    }
+
+    .hero-actions button,
+    .hero-actions a {
+      color: var(--fg);
+      background: transparent;
+      border: 0;
+      font: inherit;
+      font-size: 0.85rem;
+      text-decoration: none;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+
+    .hero-actions :focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
 
     .content {
       width: min(640px, 100%);
@@ -191,6 +223,14 @@
       margin-bottom: 1.25em;
     }
 
+    .colophon-note {
+      color: var(--muted);
+      font-size: 0.9em;
+      line-height: 1.5;
+      margin-top: -0.7em;
+      margin-bottom: 1.5em;
+    }
+
     .description .early-quote {
       color: var(--fg);
       font-size: 1.05em;
@@ -208,6 +248,17 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
+
+    .overview-subtitle {
+      margin: 2em 0 0.7em;
+      color: var(--fg);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    #overview { scroll-margin-top: 2rem; }
 
     .auction {
       margin-bottom: 1.5em;
@@ -381,16 +432,21 @@
       <h1>Searching<span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></h1>
     </div>
     <p class="hero-caption">42 × 42 grid</p>
+    <div class="hero-actions" aria-label="Page actions">
+      <button type="button" id="explore"><span class="icon" aria-hidden="true">🧭</span> Explore <span aria-hidden="true">→</span></button>
+      <a href="#overview">Read the overview <span aria-hidden="true">↓</span></a>
+    </div>
   </section>
 
   <main class="content">
       <p class="auction"><strong><em><font style="font-size:2em;">Searching...</font></em><br />by Takens Theorem and Yigit Duman</strong></p>
     <p class="auction"><strong>Auction: Nov. 7th, 2026</strong></p>
     <p class="colophon">Edition: 1/1 · Standard: ERC-721 · Released on SuperRare. Image: PNG, 1,344 × 1,344 pixels (about 4.3 MB); 1,764 panels at 32 × 32 pixels each.</p>
+    <p class="colophon-note">The image remains offchain as a PNG. That feels fitting for an unsuccessful search: each output is an ephemeral attempt, a point in a vast integer space. None encodes or solves the hidden image’s onchain representation. Minted on SuperRare and redundancly stored off-chain with Yigit Duman's <a href="https://x.com/YigitDuman/status/1957514000306246110">Off-Chain Art</a>.</p>
 
     <nav aria-label="Primary">
       <ul class="links">
-        <li><button type="button" id="explore"><span class="icon" aria-hidden="true">🧭</span>Explore <span class="arrow" aria-hidden="true">→</span></button></li>
+        <li><a href="#overview">Overview <span class="arrow" aria-hidden="true">↓</span></a></li>
         <li><a href="https://superrare.com/takenstheorem" target="_blank">SuperRare <span class="arrow" aria-hidden="true">→</span></a></li>
       </ul>
     </nav>
@@ -402,7 +458,9 @@
         <p>Generating and surveying outputs seemed to hold some other meaning. The depictions themselves, en masse, felt familiar. Searching a vast landscape for something that will seem obvious once we find it. We but never find it, at least we never feel like we've found it, and perhaps we won’t ever. Yet somehow we are drawn to this process by an unenviable impulse to keep going.</p>
       </blockquote>
 
-      <h2 class="overview-title">Overview</h2>
+      <h2 class="overview-title" id="overview">Overview</h2>
+
+      <h3 class="overview-subtitle">The hidden image</h3>
 
       <p>These images were generated from an algorithm defined in the artwork <a href="https://opensea.io/item/ethereum/0xcb337152b6181683010d07e3f00e7508cd348bc7/6" target="_blank"><em>Redemption of Sisyphus</em></a> by Yigit Duman.</p>
 
@@ -413,6 +471,8 @@
       <p>To do so, we draw from 4,294,967,295 possible seed values. Only one of these numbers is correct. Only one gives us precisely the right image, one point in a vast landscape of integers.</p>
 
       <p>While searching, sampling from these billions of seeds, we create many of these alluring images. But all do not match, all except one.</p>
+
+      <h3 class="overview-subtitle">One generated image</h3>
 
       <p>Yigit Duman used this prompt for <em>Redemption</em>:</p>
 
@@ -438,9 +498,11 @@
         <figcaption>For each seed, the algorithm generates a Stable Diffusion image, downsamples it to 32 × 32 pixels, then checks the hash for an exact match.</figcaption>
       </figure>
 
+      <h3 class="overview-subtitle">A wider search</h3>
+
       <p>Testing each possible seed can take a minute or more on some computers. The consequence is one person using one machine to search may take over a thousand years to find <em>Redemption of Sisyphus</em>.</p>
 
-      <p>I became transfixed by <em>Redemption</em>. I conducted this search. I generated thousands of images with a set of seeds I thought might have hidden meaning for Yigit such as hash values of Yigit’s contract, hashes and other values of his past works, echoes of translated or ancient Greek text, and more. <em>Searching...</em></p>
+      <p><a href="https://x.com/takenstheorem/status/1955072021706183041" target="_blank">I</a> <a href="https://x.com/takenstheorem/status/2104215797866680575" target="_blank">became</a> <a href="https://x.com/takenstheorem/status/2106503589351031149" target="_blank">transfixed</a> <a href="https://x.com/takenstheorem/status/2113518721595773362" target="_blank">by</a> <em>Redemption</em>. I conducted this search. I generated thousands of images with a set of seeds I thought might have hidden meaning for Yigit such as hash values of Yigit’s contract, hashes and other values of his past works, echoes of translated or ancient Greek text, and more. <em>Searching...</em></p>
 
     <p>The images in this composite represent an effortful, directed, intentional search. Driven. Each panel is a 32 × 32 image from Duman’s prompt under one of these 4,294,967,295 seeds.</p>
 
