@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Searching is a record of 1,764 attempts to find the hidden image in Yigit Duman's Redemption of Sisyphus." />
+  <title>Searching.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: rgba(255, 255, 255, 0.65);
+      --line: rgba(255, 255, 255, 0.18);
+      --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    [hidden] { display: none !important; }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { background: var(--bg); color-scheme: dark; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.locked { overflow: hidden; }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      height: 100svh;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      image-rendering: pixelated;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .hero-title {
+      position: absolute;
+      top: clamp(20px, 4vw, 40px);
+      left: clamp(20px, 4vw, 40px);
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid var(--line);
+      padding: 12px 20px 14px;
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-weight: 500;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .dots span {
+      display: inline-block;
+      animation: pulse 2.8s infinite ease-in-out both;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.45s; }
+    .dots span:nth-child(3) { animation-delay: 0.9s; }
+
+    @keyframes pulse {
+      0%, 60%, 100% { opacity: 0.15; }
+      30%           { opacity: 1; }
+    }
+
+    .hero-caption {
+      position: absolute;
+      bottom: clamp(20px, 4vw, 40px);
+      left: clamp(20px, 4vw, 40px);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.6);
+      padding: 6px 10px;
+    }
+
+    .content {
+      width: min(640px, 100%);
+      margin: 0 auto;
+      padding: clamp(56px, 10vw, 112px) 24px;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: rise 0.9s var(--ease) forwards;
+    }
+
+    .links {
+      margin-bottom: clamp(24px, 4vw, 32px);
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 32px;
+    }
+
+    .links a,
+    .links button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: 0;
+      color: var(--fg);
+      font: inherit;
+      text-decoration: none;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      padding: 4px 0;
+      cursor: pointer;
+    }
+
+    .icon {
+      display: inline-block;
+      font-size: 0.95em;
+      line-height: 1;
+      transition: transform 0.35s var(--ease);
+    }
+
+    .links a::after,
+    .links button::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--fg);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.35s var(--ease);
+    }
+
+    .links a:hover::after,
+    .links a:focus-visible::after,
+    .links button:hover::after,
+    .links button:focus-visible::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .arrow {
+      display: inline-block;
+      transition: transform 0.35s var(--ease);
+    }
+
+    .links a:hover .arrow,
+    .links button:hover .arrow { transform: translateX(4px); }
+
+    .links button:hover .icon { transform: rotate(-20deg); }
+
+    .links a:focus-visible,
+    .links button:focus-visible {
+      outline: 1px solid var(--fg);
+      outline-offset: 6px;
+    }
+
+    .description {
+      color: var(--muted);
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      max-width: 60ch;
+    }
+
+    .description p + p { margin-top: 1em; }
+
+    .colophon {
+      color: var(--muted);
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      line-height: 1.5;
+      margin-bottom: 1.25em;
+    }
+
+    .description .early-quote {
+      color: var(--fg);
+      font-size: 1.05em;
+      line-height: 1.55;
+      margin: clamp(1.5em, 4vw, 2.25em) 0 clamp(2em, 5vw, 3em) 1em;
+    }
+
+    .description blockquote p + p { margin-top: 0.8em; }
+
+    .overview-title {
+      margin: 0 0 0.9em;
+      color: var(--fg);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .auction {
+      margin-bottom: 1.5em;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+
+    .description blockquote {
+      margin: 1.25em 0 1.25em 1em;
+      padding-left: 1em;
+      border-left: 1px solid var(--line);
+      color: var(--fg);
+    }
+
+    .image-example {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(10px, 3vw, 24px);
+      margin: 1.5em 0;
+    }
+
+    .image-example > div { min-width: 0; }
+
+    .image-example img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+    }
+
+    .image-example .pixelated { image-rendering: pixelated; }
+
+    .image-example .step-label {
+      margin-top: 0.5em;
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .image-example .arrow { font-size: 1.2rem; }
+
+    .image-example figcaption {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .explorer {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--bg);
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    .canvas {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100vmin;
+      height: 100vmin;
+    }
+
+    .canvas img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .marker {
+      position: absolute;
+      display: none;
+      border: 1px solid var(--fg);
+      box-shadow: 0 0 0 1px var(--bg);
+      pointer-events: none;
+    }
+
+    .marker.on { display: block; }
+
+    .hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 24px;
+      pointer-events: none;
+    }
+
+    .readout {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid var(--line);
+      padding: 12px 16px;
+      max-width: min(440px, calc(100vw - 160px));
+    }
+
+    .seed {
+      font-weight: 500;
+      font-size: 0.95rem;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .panel-info {
+      margin-top: 4px;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .meaning {
+      margin-top: 6px;
+      max-width: 48ch;
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .close {
+      pointer-events: auto;
+      background: rgba(0, 0, 0, 0.6);
+      color: var(--fg);
+      border: 1px solid var(--line);
+      font: inherit;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .close:hover { border-color: var(--fg); }
+
+    .close:focus-visible {
+      outline: 1px solid var(--fg);
+      outline-offset: 3px;
+    }
+
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .content { animation: none; opacity: 1; transform: none; }
+      .dots span { animation: none; opacity: 1; }
+      .links a::after, .links button::after, .arrow, .icon, .close { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <img class="hero-img" src="grid_output.png" alt="42 by 42 image grid mosaic" draggable="false" />
+    <div class="hero-title">
+      <h1>Searching<span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></h1>
+    </div>
+    <p class="hero-caption">42 × 42 grid</p>
+  </section>
+
+  <main class="content">
+    <p class="auction"><strong>Auction: Nov. 6th, 2026</strong></p>
+    <p class="colophon">Edition: 1/1 · Standard: ERC-721 · Released on SuperRare. Image: PNG, 1,344 × 1,344 pixels (about 4.3 MB); 1,764 panels at 32 × 32 pixels each.</p>
+
+    <nav aria-label="Primary">
+      <ul class="links">
+        <li><button type="button" id="explore"><span class="icon" aria-hidden="true">🧭</span>Explore <span class="arrow" aria-hidden="true">→</span></button></li>
+        <li><a href="https://superrare.com/takenstheorem" target="_blank">SuperRare <span class="arrow" aria-hidden="true">→</span></a></li>
+      </ul>
+    </nav>
+
+    <div class="description">
+      <p><em>Searching...</em> is composed of 42 × 42 = 1,764 individual images. Each image seems to depict a search in a vast landscape. Many contain a person on a misty mountain at dawn.</p>
+
+      <blockquote class="early-quote">
+        <p>Generating and surveying outputs seemed to hold some other meaning. The depictions themselves, en masse, felt familiar. Searching a vast landscape for something that will seem obvious once we find it. We but never find it, at least we never feel like we've found it, and perhaps we won’t ever. Yet somehow we are drawn to this process by an unenviable impulse to keep going.</p>
+      </blockquote>
+
+      <h2 class="overview-title">Overview</h2>
+
+      <p>These images were generated from an algorithm defined in the artwork <a href="https://opensea.io/item/ethereum/0xcb337152b6181683010d07e3f00e7508cd348bc7/6" target="_blank"><em>Redemption of Sisyphus</em></a> by Yigit Duman.</p>
+
+      <p><em>Redemption</em> challenges us to search for a hidden image. This image currently stored as a hash stored on Ethereum. No one knows what the actual image looks like. Perhaps not even Yigit Duman.</p>
+
+      <p>But <em>Redemption</em> offers potential discovery. If the image is found, it can be exactly matched to this hash. By following the instructions left on <em>Redemption</em>'s metadata, we can search for it.</p>
+
+      <p>To do so, we draw from 4,294,967,295 possible seed values. Only one of these numbers is correct. Only one gives us precisely the right image, one point in a vast landscape of integers.</p>
+
+      <p>While searching, sampling from these billions of seeds, we create many of these alluring images. But all do not match, all except one.</p>
+
+      <p>Yigit Duman used this prompt for <em>Redemption</em>:</p>
+
+      <blockquote>
+        <p>a man stands on a misty mountain at dawn,<br />
+        a stone rolling down the hill.<br />
+        oil painting style, soft brushstrokes,<br />
+        muted tones, romantic landscape.</p>
+      </blockquote>
+
+      <p>This prompt generates an image with a seed. For example, seed 118517663:</p>
+
+      <figure class="image-example" aria-label="A Stable Diffusion image downsampled to 32 by 32 pixels">
+        <div>
+          <img src="118517663.png" alt="512 by 512 Stable Diffusion image of a figure on a misty mountain at dawn" />
+          <p class="step-label">Stable Diffusion · 512 × 512</p>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+        <div>
+          <img class="pixelated" src="118517663_32x32.png" alt="The same image downsampled to 32 by 32 pixels" />
+          <p class="step-label">Downsampled · 32 × 32</p>
+        </div>
+        <figcaption>For each seed, the algorithm generates a Stable Diffusion image, downsamples it to 32 × 32 pixels, then checks the hash for an exact match.</figcaption>
+      </figure>
+
+      <p>Testing each possible seed can take a minute or more on some computers. The consequence is one person using one machine to search may take over a thousand years to find <em>Redemption of Sisyphus</em>.</p>
+
+      <p>I became transfixed by <em>Redemption</em>. I conducted this search. I generated thousands of images with a set of seeds I thought might have hidden meaning for Yigit such as hash values of Yigit’s contract, hashes and other values of his past works, echoes of translated or ancient Greek text, and more. <em>Searching...</em></p>
+
+    <p>The images in this composite represent an effortful, directed, intentional search. Driven. Each panel is a 32 × 32 image from Duman’s prompt under one of these 4,294,967,295 seeds.</p>
+
+    <p>Yet each did not match the hidden image.</p>
+
+    <p>“a stone rolling down the hill.”</p>
+
+    <p>We try again.</p>
+
+    <p>Generating and surveying outputs seemed to hold some other meaning. The depictions themselves, en masse, felt familiar. Searching a vast landscape for something that will seem obvious once we find it. We but never find it, at least we never feel like we've found it, and perhaps we won’t ever. Yet somehow we are drawn to this process by an unenviable impulse to keep going.</p>
+
+      <p>Click <strong>Explore</strong>, then click a panel to see each of the 1,764 test seeds and the semiosis for each.</p>
+    </div>
+  </main>
+
+  <div class="explorer" id="explorer" role="dialog" aria-modal="true" aria-label="Grid explorer" hidden>
+    <div class="canvas" id="canvas">
+      <img src="grid_output.png" alt="42 by 42 image grid mosaic" draggable="false" />
+      <div class="marker" id="marker"></div>
+    </div>
+
+    <div class="hud">
+      <div class="readout" aria-live="polite">
+        <p class="seed" id="seedLabel">Click any panel</p>
+        <p class="panel-info" id="panelLabel">Esc to exit</p>
+        <p class="meaning" id="meaningLabel"></p>
+      </div>
+      <button class="close" id="close" type="button">Close <span aria-hidden="true">×</span></button>
+    </div>
+  </div>
+
+  <script>
+    const GRID = 42;
+    const ZOOM = 14;
+    const ZOOM_MS = 700;
+    const BASE_TITLE = 'Searching';
+    const SCRAMBLE_CHARS = '0123456789#%&*/<>+';
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const explorer   = document.getElementById('explorer');
+    const canvas     = document.getElementById('canvas');
+    const marker     = document.getElementById('marker');
+    const seedLabel  = document.getElementById('seedLabel');
+    const panelLabel = document.getElementById('panelLabel');
+    const meaningLabel = document.getElementById('meaningLabel');
+    const exploreBtn = document.getElementById('explore');
+    const closeBtn   = document.getElementById('close');
+
+    let values = null;
+    let meanings = new Map();
+    let loadError = null;
+    let meaningLoadError = null;
+    let meaningsLoaded = false;
+    let current = null;
+    let scrambleId = 0;
+    let animId = 0;
+    let view = null;
+
+    let dotCount = 1;
+    setInterval(() => {
+      dotCount = (dotCount % 3) + 1;
+      document.title = BASE_TITLE + '.'.repeat(dotCount);
+    }, 900);
+
+    function indexFor(col, row) {
+      return (row - 1) * GRID + (col - 1);
+    }
+
+    function baseView() {
+      const s = Math.min(window.innerWidth, window.innerHeight);
+      return {
+        l: (window.innerWidth - s) / 2,
+        t: (window.innerHeight - s) / 2,
+        s
+      };
+    }
+
+    function cellView(col, row) {
+      const b = baseView();
+      const s = b.s * ZOOM;
+      const fx = (col - 0.5) / GRID;
+      const fy = (row - 0.5) / GRID;
+      return {
+        l: window.innerWidth / 2 - fx * s,
+        t: window.innerHeight / 2 - fy * s,
+        s
+      };
+    }
+
+    function applyView(v) {
+      view = v;
+      canvas.style.left = `${v.l}px`;
+      canvas.style.top = `${v.t}px`;
+      canvas.style.width = `${v.s}px`;
+      canvas.style.height = `${v.s}px`;
+    }
+
+    function animateTo(target) {
+      const id = ++animId;
+      if (reduceMotion) {
+        applyView(target);
+        return;
+      }
+      const from = { ...view };
+      const start = performance.now();
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+      const lerp = (a, b, t) => a + (b - a) * t;
+
+      function frame(now) {
+        if (id !== animId) return;
+        const t = Math.min(1, (now - start) / ZOOM_MS);
+        const e = ease(t);
+        applyView({
+          l: lerp(from.l, target.l, e),
+          t: lerp(from.t, target.t, e),
+          s: lerp(from.s, target.s, e)
+        });
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function scrambleTo(text) {
+      const id = ++scrambleId;
+      if (reduceMotion) {
+        seedLabel.textContent = text;
+        return;
+      }
+
+      const start = performance.now();
+      const duration = 500 + text.length * 60;
+
+      function frame(now) {
+        if (id !== scrambleId) return;
+        const t = Math.min(1, (now - start) / duration);
+        const locked = Math.floor(t * text.length);
+        let out = '';
+        for (let i = 0; i < text.length; i++) {
+          if (i < locked || text[i] === ' ') {
+            out += text[i];
+          } else {
+            out += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+          }
+        }
+        seedLabel.textContent = t < 1 ? out : text;
+        if (t < 1) requestAnimationFrame(frame);
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    async function loadSeeds() {
+      try {
+        const res = await fetch('ros_seeds.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : Object.values(data).find(Array.isArray);
+        if (!list) throw new Error('ros_seeds.json has no array');
+        values = list;
+      } catch (err) {
+        loadError = err.message;
+        console.error('Could not load ros_seeds.json:', err);
+      }
+    }
+
+    async function loadMeanings() {
+      try {
+        const res = await fetch('ros_meanings.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!Array.isArray(data)) throw new Error('ros_meanings.json has no array');
+        meanings = new Map(data
+          .filter((entry) => Array.isArray(entry) && entry.length >= 2)
+          .map(([seed, description]) => [String(seed), String(description)]));
+        meaningsLoaded = true;
+      } catch (err) {
+        meaningLoadError = err.message;
+        console.error('Could not load ros_meanings.json:', err);
+      }
+    }
+
+    Promise.all([loadSeeds(), loadMeanings()]).then(() => {
+      if (explorer.hidden) return;
+      if (current) renderCell(current.col, current.row);
+      else renderIdle();
+    });
+
+    function renderIdle() {
+      scrambleId++;
+      meaningLabel.textContent = '';
+      if (loadError) {
+        seedLabel.textContent = 'ros_seeds.json did not load';
+        panelLabel.textContent = loadError;
+      } else if (!values) {
+        seedLabel.textContent = 'Loading…';
+        panelLabel.textContent = '';
+      } else {
+        seedLabel.textContent = 'Click any panel';
+        panelLabel.textContent = `${values.length} values loaded · Esc to exit`;
+      }
+    }
+
+    function renderCell(col, row) {
+      const i = indexFor(col, row);
+      panelLabel.textContent = `Panel ${col}, ${row} · index ${i}`;
+      meaningLabel.textContent = '';
+
+      if (loadError) {
+        scrambleId++;
+        seedLabel.textContent = 'ros_seeds.json did not load';
+      } else if (!values) {
+        scrambleId++;
+        seedLabel.textContent = 'Loading…';
+      } else if (i < values.length) {
+        const seed = String(values[i]);
+        scrambleTo(seed);
+        meaningLabel.textContent = meanings.get(seed)
+          ?? (meaningLoadError ? 'Description unavailable' : meaningsLoaded ? 'No description available' : 'Loading description…');
+      } else {
+        scrambleId++;
+        seedLabel.textContent = 'No value at this index';
+      }
+    }
+
+    function zoomTo(col, row) {
+      current = { col, row };
+
+      const pct = 100 / GRID;
+      marker.style.left = `${(col - 1) * pct}%`;
+      marker.style.top = `${(row - 1) * pct}%`;
+      marker.style.width = `${pct}%`;
+      marker.style.height = `${pct}%`;
+      marker.classList.add('on');
+
+      animateTo(cellView(col, row));
+      renderCell(col, row);
+    }
+
+    function resetView() {
+      marker.classList.remove('on');
+      current = null;
+      animateTo(baseView());
+      renderIdle();
+    }
+
+    function openExplorer() {
+      explorer.hidden = false;
+      document.body.classList.add('locked');
+      applyView(baseView());
+      renderIdle();
+      closeBtn.focus();
+    }
+
+    function closeExplorer() {
+      resetView();
+      explorer.hidden = true;
+      document.body.classList.remove('locked');
+      exploreBtn.focus();
+    }
+
+    window.addEventListener('resize', () => {
+      if (explorer.hidden) return;
+      animId++;
+      applyView(current ? cellView(current.col, current.row) : baseView());
+    });
+
+    canvas.addEventListener('click', (e) => {
+      const r = canvas.getBoundingClientRect();
+      const clamp = (v) => Math.min(GRID, Math.max(1, v));
+      const col = clamp(Math.floor((e.clientX - r.left) / r.width * GRID) + 1);
+      const row = clamp(Math.floor((e.clientY - r.top) / r.height * GRID) + 1);
+
+      if (current && current.col === col && current.row === row) {
+        resetView();
+      } else {
+        zoomTo(col, row);
+      }
+    });
+
+    explorer.addEventListener('click', (e) => {
+      if (e.target === explorer && current) resetView();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || explorer.hidden) return;
+      if (current) resetView();
+      else closeExplorer();
+    });
+
+    exploreBtn.addEventListener('click', openExplorer);
+    closeBtn.addEventListener('click', closeExplorer);
+  </script>
+</body>
+</html>
