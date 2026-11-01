@@ -372,6 +372,9 @@
       pointer-events: none;
     }
 
+    .explorer.showcase-mode .hud,
+    .explorer.showcase-mode .marker { display: none; }
+
     .readout {
       background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(6px);
@@ -446,15 +449,16 @@
     <div class="hero-title">
       <h1>Searching<span class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></h1>
     </div>
-    <p class="hero-caption">42 × 42 grid</p>
     <div class="hero-actions" aria-label="Page actions">
-      <button type="button" id="explore"><span class="icon" aria-hidden="true">🧭</span> Explore <span aria-hidden="true">→</span></button>
+      <button type="button" id="explore"><span class="icon" aria-hidden="true">🧭</span> Explore <span aria-hidden="true">&uarr;</span></button>
+      <button type="button" id="showcase" aria-label="Start fullscreen showcase" title="Start fullscreen showcase">(auto)</button>
       <a href="#work-credit">Read the overview <span aria-hidden="true">↓</span></a>
     </div>
   </section>
 
   <main class="content">
-      <p class="auction" id="work-credit"><strong><em><font style="font-size:2em;">Searching...</font></em><br />by Takens Theorem and Yigit Duman</strong></p>
+      <p class="auction" id="work-credit"><strong><em><font style="font-size:2em;">Searching...</font></em><br />
+          by <a href="https://takenstheorem.github.io/" target="_blank">Takens Theorem</a> and <a href="https://www.yigitduman.com/" target="_blank">Yigit Duman</a></strong></p>
     <p class="auction"><strong>Auction: Nov. 7th, 2026</strong></p>
     <p class="colophon">Edition: 1/1 · Standard: ERC-721 · Released on SuperRare. Image: PNG, 1,344 × 1,344 pixels (about 4.3 MB); 1,764 panels at 32 × 32 pixels each.</p>
     <p class="colophon-note">The image remains offchain as a PNG. That feels fitting for an unsuccessful search: each output is an ephemeral attempt, a point in a vast integer space. None encodes or solves the hidden image’s onchain representation. Minted on SuperRare and redundantly stored off-chain with Yigit Duman's <a href="https://muri.yigitduman.com/">MURI Protocol</a>.</p>
@@ -552,7 +556,7 @@
   <script>
     const GRID = 42;
     const ZOOM = 14;
-    const ZOOM_MS = 700;
+    const ZOOM_MS = 1000;
     const BASE_TITLE = 'Searching';
     const SCRAMBLE_CHARS = '0123456789#%&*/<>+';
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -566,6 +570,7 @@
     const meaningLabel = document.getElementById('meaningLabel');
     const exploreBtn = document.getElementById('explore');
     const closeBtn   = document.getElementById('close');
+    const showcaseBtn = document.getElementById('showcase');
 
     let values = null;
     let meanings = new Map();
@@ -574,6 +579,8 @@
     let meaningsLoaded = false;
     let current = null;
     let explorerOpener = null;
+    let showcaseActive = false;
+    let showcaseInterval = null;
     let scrambleId = 0;
     let animId = 0;
     let view = null;
@@ -765,7 +772,17 @@
       renderIdle();
     }
 
+    function stopShowcase() {
+      showcaseActive = false;
+      if (showcaseInterval !== null) {
+        clearInterval(showcaseInterval);
+        showcaseInterval = null;
+      }
+    }
+
     function openExplorer(event) {
+      stopShowcase();
+      explorer.classList.remove('showcase-mode');
       explorerOpener = event.currentTarget;
       explorer.hidden = false;
       document.body.classList.add('locked');
@@ -774,9 +791,64 @@
       closeBtn.focus({ preventScroll: true });
     }
 
+    function exploreNearbyPanel() {
+      let col;
+      let row;
+      if (!current) {
+        col = Math.floor(0.5 * GRID) + 1;
+        row = Math.floor(0.5 * GRID) + 1;
+      } else {
+        const steps = [-3, -2, -1, 0, 1, 2, 3];
+        do {
+          col = Math.min(GRID, Math.max(1, current.col + steps[Math.floor(Math.random() * steps.length)]));
+          row = Math.min(GRID, Math.max(1, current.row + steps[Math.floor(Math.random() * steps.length)]));
+        } while (col === current.col && row === current.row);
+      }
+      zoomTo(col, row);
+    }
+
+    function requestSystemFullscreen() {
+      const request = explorer.requestFullscreen || explorer.webkitRequestFullscreen;
+      if (!request) return;
+      try {
+        const result = request.call(explorer);
+        if (result && typeof result.catch === 'function') {
+          result.catch((err) => console.warn('Could not enter fullscreen:', err));
+        }
+      } catch (err) {
+        console.warn('Could not enter fullscreen:', err);
+      }
+    }
+
+    function exitSystemFullscreen() {
+      if (document.fullscreenElement === explorer && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitFullscreenElement === explorer && document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+
+    function showcase(event) {
+      stopShowcase();
+      showcaseActive = true;
+      explorerOpener = event.currentTarget;
+      explorer.hidden = false;
+      explorer.classList.add('showcase-mode');
+      document.body.classList.add('locked');
+      applyView(baseView());
+      renderIdle();
+      requestSystemFullscreen();
+      closeBtn.focus({ preventScroll: true });
+      exploreNearbyPanel();
+      showcaseInterval = window.setInterval(exploreNearbyPanel, 8000);
+    }
+
     function closeExplorer() {
+      stopShowcase();
+      exitSystemFullscreen();
       resetView();
       explorer.hidden = true;
+      explorer.classList.remove('showcase-mode');
       document.body.classList.remove('locked');
       (explorerOpener || exploreBtn).focus({ preventScroll: true });
       explorerOpener = null;
@@ -805,15 +877,29 @@
       if (e.target === explorer && current) resetView();
     });
 
+    function syncShowcaseFullscreen() {
+      const isFullscreen = document.fullscreenElement === explorer
+        || document.webkitFullscreenElement === explorer;
+      if (showcaseActive && !isFullscreen) closeExplorer();
+    }
+
+    document.addEventListener('fullscreenchange', syncShowcaseFullscreen);
+    document.addEventListener('webkitfullscreenchange', syncShowcaseFullscreen);
+
     exploreBtnBot.addEventListener('click', openExplorer);
 
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || explorer.hidden) return;
+      if (showcaseActive) {
+        closeExplorer();
+        return;
+      }
       if (current) resetView();
       else closeExplorer();
     });
 
     exploreBtn.addEventListener('click', openExplorer);
+    if (showcaseBtn) showcaseBtn.addEventListener('click', showcase);
     closeBtn.addEventListener('click', closeExplorer);
   </script>
 </body>
